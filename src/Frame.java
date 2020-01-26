@@ -1,8 +1,8 @@
-/**
- * Code Authors:
- * Thomas O'Gara (18379576) (thomas.ogara@ucdconnect.ie)
- * Jarrett (?) (?)
- * Daniel (?) (?)
+/*
+  Code Authors:
+  Thomas O'Gara (18379576) (thomas.ogara@ucdconnect.ie)
+  Jarrett (?) (?)
+  Daniel (?) (?)
  */
 
 import java.util.ArrayList;
@@ -20,14 +20,14 @@ public class Frame{
      * @see Frame#letters
      */
     public Frame(){
-        this.letters = new HashSet<Character>();
+        this.letters = new HashSet<>();
     }
 
     /**
      * A method which allows the Frame to be refilled via the Pool class's API.
      */
     public void refill(){
-        this.letters = new HashSet<Character>();
+        this.letters = new HashSet<>();
         // TODO: Implement Pool API interaction
     }
 
@@ -190,7 +190,7 @@ public class Frame{
     public List<Character> getLettersAsCharacterList(){
         int letter_count = this.letters.size();
         Character[] lettersToCharacterArray = (Character[]) this.letters.toArray();
-        ArrayList<Character> lettersToCharacterList = new ArrayList<Character>();
+        ArrayList<Character> lettersToCharacterList = new ArrayList<>();
         lettersToCharacterList.ensureCapacity(letter_count);
         lettersToCharacterList.addAll(Arrays.asList(lettersToCharacterArray));
         return lettersToCharacterList;
