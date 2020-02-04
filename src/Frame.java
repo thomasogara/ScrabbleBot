@@ -7,11 +7,10 @@
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashSet;
 import java.util.List;
 
 public class Frame{
-    private HashSet<Character> letters;
+    private ArrayList<Tile> letters;
     private Pool pool;
     public static final int FRAME_CAPACITY = 7;
 
@@ -20,14 +19,14 @@ public class Frame{
      * @see Frame#letters
      */
     public Frame(){
-        this.letters = new HashSet<>();
+        this.letters = new ArrayList<Tile>();
+        this.refill();
     }
 
     /**
      * A method which allows the Frame to be refilled via the Pool class's API.
      */
     public void refill(){
-        this.letters = new HashSet<>();
         // TODO: Implement Pool API interaction
     }
 
@@ -35,7 +34,7 @@ public class Frame{
      * A basic console rendering method. Outputs the current state of the Frame to the console as a Character[] array.
      */
     public void consoleRender(){
-        System.out.println(Arrays.toString(this.letters.toArray()));
+        System.out.println(Arrays.toString(this.getLetters().toArray()));
     }
 
     public void render(){
@@ -47,108 +46,99 @@ public class Frame{
 
     /**
      * An overloaded method which removes all elements of the argument from the 'letters' instance variable.
-     *
      * @see Frame#letters
-     * @param letters_to_be_removed char[] array containing all letters to be removed from the Frame.
+     * @param tiles List<Tile> containing a list of Objects to be removed from the Frame
      */
-    public final void removeAll(char[] letters_to_be_removed){
-        for(char letter : letters_to_be_removed){
-            Character letter_as_object = letter;
-            if(letters.contains(letter_as_object))
-                letters.remove(letter);
-            else
-                throw new IllegalArgumentException(String.format("cannot remove character %c from Frame as not present", letter));
-        }
+    public final void removeAll(List<Tile> tiles){
+        this.getLetters().removeAll(tiles);
     }
 
     /**
-     * @param letters_to_be_removed List<Character> containing all letters to be removed from the Frame
+     * @param letters_to_be_removed char[] array containing all letters to be removed from the Frame.
      */
-    public final void removeAll(List<Character> letters_to_be_removed){
-        for(Character letter : letters_to_be_removed){
-            if(letters.contains(letter))
-                letters.remove(letter);
-            else
-                throw new IllegalArgumentException(String.format("cannot remove character %c from Frame as not present", letter));
-        }
+    public final void removeAll(char[] letters_to_be_removed){
+        this.removeAll(Arrays.asList(Tile.tileArrayFromCharArray(letters_to_be_removed)));
     }
 
     /**
      * @param letters_to_be_removed String containing all letters to be removed from the Frame
      */
     public final void removeAll(String letters_to_be_removed){
-        for(char letter : letters_to_be_removed.toCharArray()){
-            Character letter_as_object = letter;
-            if(letters.contains(letter_as_object)){
-                letters.remove(letter);
-            }
-            else{
-                throw new IllegalArgumentException(String.format("cannot remove character %c from Frame as not present", letter));
-            }
-        }
+        this.removeAll(Arrays.asList(Tile.tileArrayFromCharArray(letters_to_be_removed.toCharArray())));
     }
 
     /**
      * A very simple method which allows for a check to be made if a given letter is in the Frame.
-     * @param letter char to be searched for in the Frame
+     * @param letter Tile to be searched for in the Frame
      * @return boolean representing whether or not letter is in the Frame.
      */
-    public boolean hasLetter(char letter){
-        Character letter_as_object = letter;
-        return letters.contains(letter_as_object);
+    public final boolean hasLetter(Tile letter){
+        return this.getLetters().contains(letter);
+    }
+
+    /**
+     * @param letter char to be searched for in the Frame
+     * @return boolean representing whether or not letter is in the Frame
+     */
+    public final boolean hasLetter(char letter) {
+        return this.hasLetter(new Tile(letter));
+    }
+
+    /**
+     * @param letter Character to be searched for in the Frame
+     * @return boolean representing whether or not letter is in the Frame.
+     */
+    public final boolean hasLetter(Character letter){
+        return this.hasLetter(new Tile(letter));
     }
 
     /**
      * A method to check if a given set of letters is present in the Frame.
-     * @param letter_array char[] array containing letters to be searched for in the Frame
+     * @param letter_array Tile[] array containing letters to be searched for in the Frame
      * @return boolean representing whether or not ALL letters are in the Frame.
      */
-    public boolean hasLetters(char[] letter_array){
-        for(char letter : letter_array){
-            Character letter_as_object = letter;
-            if(!letters.contains(letter_as_object))
+    public final boolean hasLetters(Tile[] letter_array){
+        for(Tile letter : letter_array){
+            if(!this.getLetters().contains(letter))
                 return false;
         }
         return true;
     }
 
     /**
-     * @param letter_list List<Character> containing all letters to be searched for in the Frame
+     * @param tiles the Tile's to be removed from the Frame
+     * @return
      */
-    public boolean hasLetters(List<Character> letter_list){
-        for(Character letter : letter_list){
-            if(!letters.contains(letter))
-                return false;
-        }
-        return true;
+    public final boolean hasLetters(List<Tile> tiles){
+        return this.getLetters().containsAll(tiles);
     }
+
+    public final boolean hasLetters(char[] letter_array){
+        return this.hasLetters(Tile.tileArrayFromCharArray(letter_array));
+    }
+
 
     /**
      * @param letter_string String containing all letters to be searched for in the Frame
      */
-    public boolean hasLetters(String letter_string){
-        for(char letter : letter_string.toCharArray()){
-            Character letter_as_object = letter;
-            if(!letters.contains(letter_as_object))
-                return false;
-        }
-        return true;
+    public final boolean hasLetters(String letter_string){
+        return this.hasLetters(letter_string.replaceAll("\\s+", "").toUpperCase().toCharArray());
     }
 
     /**
      * A simple method to check whether or not the Frame is empty
      * @return boolean representing whether the Frame is empty.
      */
-    public boolean isEmpty(){
-        return letters == null || letters.isEmpty();
+    public final boolean isEmpty(){
+        return this.getLetters() == null || this.getLetters().isEmpty();
     }
 
     /**
-     * A method to get all letters in the Frame as a HashSet of Character's
-     * Note: Changes to the returned HashSet WILL cause changed to the Frame. It is NOT a copy.
+     * A method to get all letters in the Frame as an ArrayList of Character's
+     * Note: Changes to the returned ArrayList WILL cause changed to the Frame. It is NOT a copy.
      * @return a reference to the Frame's 'letters' instance variable.
      */
-    public HashSet<Character> getLetters(){
+    public final ArrayList<Tile> getLetters(){
         return this.letters;
     }
 
@@ -157,42 +147,80 @@ public class Frame{
      * Note: Changes to the char[] array returned WILL NOT cause changes to the Frame.
      * @return the contents of the Frame, as a char[] array.
      */
-    public char[] getLettersAsCharArray(){
-        int letter_count = this.letters.size();
-        Character[] lettersToCharacterArray = (Character[]) this.letters.toArray();
-        char[] lettersToCharArray = new char[letter_count];
-        for(int i = 0; i < letter_count; i++){
+    public final char[] getLettersAsCharArray(){
+        Character[] lettersToCharacterArray = this.getLettersAsCharacterArray();
+        char[] lettersToCharArray = new char[lettersToCharacterArray.length];
+        for(int i = 0; i < lettersToCharacterArray.length; i++){
                 lettersToCharArray[i] = lettersToCharacterArray[i];
         }
         return lettersToCharArray;
     }
 
     /**
-     * A method to get all the letters in the Frame as a char[] array
+     * A method to get all the letters in the Frame as a Character[] array
+     * Note: Changes to the Character[] array returned WILL cause changes to the Frame. The Character objects therein
+     * are NOT COPIES.
+     * @return the contents of the Frame, as a Character[] array.
+     */
+    public final Character[] getLettersAsCharacterArray(){
+        Character[] characters = new Character[this.getLetters().size()];
+        for(int i = 0; i < this.getLetters().size(); i++){
+            characters[i] = this.getLetters().get(i).getValue();
+        }
+        return characters;
+    }
+
+    /**
+     * A method to get all the letters in the Frame as a String (all tokens space-separated)
      * Note: Changes to the String returned WILL NOT cause changes to the Frame.
      * @return the contents of the Frame, as a String.
      */
-    public String getLettersAsString(){
-        int letter_count = this.letters.size();
-        Character[] lettersToCharacterArray = (Character[]) this.letters.toArray();
+    public final String getLettersAsString(){
+        char[] lettersToCharacterArray = this.getLettersAsCharArray();
         StringBuilder lettersStringBuilder = new StringBuilder();
         for(char c : lettersToCharacterArray){
-            lettersStringBuilder.append(c);
+            lettersStringBuilder.append(c).append(" ");
         }
+        lettersStringBuilder.deleteCharAt(lettersStringBuilder.length() - 1); // remove final space character ' ' in StringBuilder
         return lettersStringBuilder.toString();
     }
 
     /**
-     * A method to get all the letters in the Frame[] as a List<Character>
-     * Note: Changes to the List<Character> returned WILL NOT cause changes to the Frame.
-     * @return the contents of the Frame, as a List<Character>
+     * A method to allow a single Tile to be added to the Frame, if capacity has not been reached
+     * @param tile the Tile to be added to the Frame
+     * @return whether the Tile was successfully added to the Frame
      */
-    public List<Character> getLettersAsCharacterList(){
-        int letter_count = this.letters.size();
-        Character[] lettersToCharacterArray = (Character[]) this.letters.toArray();
-        ArrayList<Character> lettersToCharacterList = new ArrayList<>();
-        lettersToCharacterList.ensureCapacity(letter_count);
-        lettersToCharacterList.addAll(Arrays.asList(lettersToCharacterArray));
-        return lettersToCharacterList;
+    public final boolean add(Tile tile) {
+        if (!(this.getLetters().size() < Frame.FRAME_CAPACITY)){
+            return false;
+        }
+        this.letters.add(tile);
+        return true;
     }
+
+    /**
+     * A method to allow a single char to be added to the Frame, if capacity has not been reached
+     * @param letter char to be added to the Frame
+     * @return whether the letter was successfully added to the Frame
+     */
+    public final boolean add(char letter){
+        return this.add(new Tile(letter));
+    }
+
+    /**
+     * A method to allow an array of Tile's to be added to the Frame, if the capacity has not been reached, and will
+     * not be exceeded if all Tile's in the Array are added.
+     * @param tiles Tile[] array containging all Tile's to be added to the Frame
+     * @return boolean value representing whether or not all Tiles were successfully added to the Frame
+     */
+    public final boolean addAll(Tile[] tiles) {
+        if (!(this.letters.size() + tiles.length <= Frame.FRAME_CAPACITY)) {
+            return false;
+        }
+        for (Tile tile : tiles) {
+            this.add(tile);
+        }
+        return true;
+    }
+    
 }
