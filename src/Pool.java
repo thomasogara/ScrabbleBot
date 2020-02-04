@@ -5,11 +5,6 @@
    Daniel (?) (?)
  */
 
-import java.util.Arrays;
-
 public class Pool {
-	public static void main(String[] args){
-		Tile tile = new Tile('A');
-		System.out.println(tile.getValidCharSet());
-	}
+
 }

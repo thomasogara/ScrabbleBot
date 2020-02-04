@@ -105,10 +105,17 @@ public class Tile{
 	 * @return the resulting ArrayList<Tile>
 	 */
     public static ArrayList<Tile> tileArrayListFromCharacterList(List<Character> letters){
-        ArrayList<Tile> tiles = new ArrayList<Tile>();
+        ArrayList<Tile> tiles = new ArrayList<>();
         for(Character c : letters){
             tiles.add(new Tile(c));
         }
         return tiles;
     }
+
+	@Override
+	public String toString() {
+		return "Tile{" +
+				"value=" + value +
+				'}';
+	}
 }

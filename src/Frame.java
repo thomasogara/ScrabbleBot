@@ -19,7 +19,7 @@ public class Frame{
      * @see Frame#letters
      */
     public Frame(){
-        this.letters = new ArrayList<Tile>();
+        this.letters = new ArrayList<>();
         this.refill();
     }
 
@@ -70,7 +70,7 @@ public class Frame{
     /**
      * A very simple method which allows for a check to be made if a given letter is in the Frame.
      * @param letter Tile to be searched for in the Frame
-     * @return boolean representing whether or not letter is in the Frame.
+     * @return boolean representing whether letter is in the Frame.
      */
     public final boolean hasLetter(Tile letter){
         return this.getLetters().contains(letter);
@@ -78,7 +78,7 @@ public class Frame{
 
     /**
      * @param letter char to be searched for in the Frame
-     * @return boolean representing whether or not letter is in the Frame
+     * @return boolean representing whether letter is in the Frame
      */
     public final boolean hasLetter(char letter) {
         return this.hasLetter(new Tile(letter));
@@ -86,7 +86,7 @@ public class Frame{
 
     /**
      * @param letter Character to be searched for in the Frame
-     * @return boolean representing whether or not letter is in the Frame.
+     * @return boolean representing whether letter is in the Frame.
      */
     public final boolean hasLetter(Character letter){
         return this.hasLetter(new Tile(letter));
@@ -95,7 +95,7 @@ public class Frame{
     /**
      * A method to check if a given set of letters is present in the Frame.
      * @param letter_array Tile[] array containing letters to be searched for in the Frame
-     * @return boolean representing whether or not ALL letters are in the Frame.
+     * @return boolean representing whether ALL letters are in the Frame.
      */
     public final boolean hasLetters(Tile[] letter_array){
         for(Tile letter : letter_array){
@@ -107,7 +107,7 @@ public class Frame{
 
     /**
      * @param tiles the Tile's to be removed from the Frame
-     * @return
+     * @return whether an equivalent Tile exists in the Frame for all elements of the input List
      */
     public final boolean hasLetters(List<Tile> tiles){
         return this.getLetters().containsAll(tiles);
@@ -188,39 +188,31 @@ public class Frame{
     /**
      * A method to allow a single Tile to be added to the Frame, if capacity has not been reached
      * @param tile the Tile to be added to the Frame
-     * @return whether the Tile was successfully added to the Frame
      */
-    public final boolean add(Tile tile) {
+    public final void add(Tile tile) {
         if (!(this.getLetters().size() < Frame.FRAME_CAPACITY)){
-            return false;
+            throw new IllegalArgumentException("Frame is at capacity. Additional Tile cannot be placed");
         }
         this.letters.add(tile);
-        return true;
     }
 
     /**
      * A method to allow a single char to be added to the Frame, if capacity has not been reached
      * @param letter char to be added to the Frame
-     * @return whether the letter was successfully added to the Frame
      */
-    public final boolean add(char letter){
-        return this.add(new Tile(letter));
+    public final void add(char letter){
+        this.add(new Tile(letter));
     }
 
     /**
      * A method to allow an array of Tile's to be added to the Frame, if the capacity has not been reached, and will
      * not be exceeded if all Tile's in the Array are added.
      * @param tiles Tile[] array containging all Tile's to be added to the Frame
-     * @return boolean value representing whether or not all Tiles were successfully added to the Frame
      */
-    public final boolean addAll(Tile[] tiles) {
-        if (!(this.letters.size() + tiles.length <= Frame.FRAME_CAPACITY)) {
-            return false;
-        }
+    public final void addAll(Tile[] tiles) {
         for (Tile tile : tiles) {
             this.add(tile);
         }
-        return true;
     }
     
 }
