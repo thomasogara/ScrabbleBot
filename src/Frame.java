@@ -10,12 +10,22 @@ import java.util.Arrays;
 import java.util.List;
 
 public class Frame{
+    /*
+        Instance variables
+     */
+    /* An ArrayList of Tile's, containing all the tiles which are currently on the frame*/
     private ArrayList<Tile> letters;
+    /* A reference to the global Pool for a given game. */
     private Pool pool;
+
+    /*
+        Class variables
+     */
+    /* An integer constant of the Frame class, representing the maximum number of Tile's which can be placed on a Frame*/
     public static final int FRAME_CAPACITY = 7;
 
     /**
-     * The default constructor, initialises the 'letters' instance variable
+     * The default constructor, initialises the 'letters' instance variable, and fills it from the Pool
      * @see Frame#letters
      */
     public Frame(){
@@ -31,7 +41,7 @@ public class Frame{
     }
 
     /**
-     * A basic console rendering method. Outputs the current state of the Frame to the console as a Character[] array.
+     * A basic console rendering method. Outputs the current state of the Frame to the console.
      */
     public void consoleRender(){
         System.out.println(Arrays.toString(this.getLetters().toArray()));
