@@ -203,7 +203,7 @@ public class Frame{
         if (!(this.getLetters().size() < Frame.FRAME_CAPACITY)){
             throw new IllegalArgumentException("Frame is at capacity. Additional Tile cannot be placed");
         }
-        this.letters.add(tile);
+        this.getLetters().add(tile);
     }
 
     /**
@@ -223,6 +223,14 @@ public class Frame{
         for (Tile tile : tiles) {
             this.add(tile);
         }
+    }
+
+    /**
+     * A very simple method, allowing the 'pool' instance variable of a Frame to be set.
+     * @param pool the Pool to be assigned as this Frame's 'pool' variable.
+     */
+    public final void setPool(Pool pool){
+        this.pool = pool;
     }
     
 }

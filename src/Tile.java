@@ -23,7 +23,7 @@ public class Tile{
 		CLASS VARIABLES
 	 */
 	/*The set of all valid Tile values, stored as a HashSet of Character objects*/
-	private static final HashSet<Character> validCharacters = Tile.createValidCharactersSet();
+	private static final HashSet<Character> VALID_CHARACTERS_SET = Tile.createValidCharactersSet();
 
 
 	/**
@@ -34,7 +34,7 @@ public class Tile{
 	 * @param value a char representing the value of the tile {'A', 'B', 'C' . . .}
 	 */
 	public Tile(char value){
-		if(!Tile.validCharacters.contains(value)){
+		if(!Tile.VALID_CHARACTERS_SET.contains(value)){
 			throw new IllegalArgumentException(String.format("char %c not valid with current character validity constraints", value));
 		}
 		this.value = value;
@@ -53,8 +53,8 @@ public class Tile{
 	 * @return a reference to the class variable 'validCharacters', which is a HashSet<Character> representing all
 	 * valid value of a Tile object
 	 */
-	public static HashSet<Character> getValidCharacters(){
-		return Tile.validCharacters;
+	public static HashSet<Character> getValidCharactersSet(){
+		return Tile.VALID_CHARACTERS_SET;
 	}
 
 	/**
@@ -125,7 +125,7 @@ public class Tile{
 	@Override
 	public String toString() {
 		return "Tile{" +
-				"value=" + value +
+				"value=" + this.getValue() +
 				'}';
 	}
 }
