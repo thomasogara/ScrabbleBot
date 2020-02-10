@@ -147,20 +147,28 @@ public class Pool {
      * Draws a random tile from the pool & decrements that tiles quantity in the pool by 1
      * @return a character value representing the tile
      */
-    public Character drawRandTile(){
+    public Character[] drawRandTiles(int number){
 
-        // Get list of available tiles
-        HashMap<Character, Integer> availableTiles = this.getAvailableTiles();
+        Character[] randomTiles = new Character[number];
 
-        // Select a random tile from poolTiles HashMap
-        Character randTile = (Character) availableTiles.keySet().toArray()[new Random().nextInt(availableTiles.keySet().toArray().length)];
+        for(int i = 0; i < number; i++) {
 
-        // Get the random tiles current quantity & decrement it's quantity/count by 1
-        Integer currentCount = this.poolTiles.get(randTile);
-        this.poolTiles.replace(randTile, currentCount, currentCount - 1);
+            // Get list of available tiles
+            HashMap<Character, Integer> availableTiles = this.getAvailableTiles();
 
-        // Since we have drawn that tile, decrement it's count available in
-        return randTile;
+            // Select a random tile from poolTiles HashMap
+            Character randTile = (Character) availableTiles.keySet().toArray()[new Random().nextInt(availableTiles.keySet().toArray().length)];
+
+            // Get the random tiles current quantity & decrement it's quantity/count by 1
+            Integer currentCount = this.poolTiles.get(randTile);
+            this.poolTiles.replace(randTile, currentCount, currentCount - 1);
+
+
+            randomTiles[i] = randTile;
+
+        }
+
+        return randomTiles;
     }
 
     /**
