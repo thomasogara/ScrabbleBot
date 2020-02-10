@@ -1,0 +1,14 @@
+How to run Scrabble.jar
+
+Make sure the /assets folder is present with a charset.conf file within it.
+This charset.conf file contains the list of valid characters for a tile.
+Note: the '0' tile represents a blank tile.
+
+1. Navigate to the directory of Scrabble.jar
+
+2. Execute the command ' java -jar Scrabble.jar '
+
+3. Observe the output. And confirm all actions performed are correct;
+
+
+
