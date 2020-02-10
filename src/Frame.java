@@ -29,6 +29,7 @@ public class Frame{
      * @see Frame#letters
      */
     public Frame(){
+        this.setPool(PlayerTest.gamePool);
         this.letters = new ArrayList<>();
         this.refill();
     }
@@ -37,7 +38,7 @@ public class Frame{
      * A method which allows the Frame to be refilled via the Pool class's API.
      */
     public void refill(){
-        // TODO: Implement Pool API interaction
+        this.letters.addAll(this.pool.drawRandTiles(FRAME_CAPACITY - this.letters.size()));
     }
 
     /**

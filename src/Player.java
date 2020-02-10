@@ -42,6 +42,11 @@ public class Player {
         this.username = name;
     }
 
+    // get player's name method
+    public String getUsername(){
+        return this.username;
+    }
+
     // set user score
     public void setScore(int value){
        this.score = value;
@@ -58,8 +63,8 @@ public class Player {
     }
 
     // access players tiles
-    public Character[] getFrame() {
-        return this.frame.getLettersAsCharacterArray();
+    public Frame getFrame() {
+        return this.frame;
     }
 
     // displays username when called
