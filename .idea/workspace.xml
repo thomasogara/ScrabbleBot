@@ -8,8 +8,8 @@
   <component name="ChangeListManager">
     <list default="true" id="9b3e9c7d-9c5a-48e3-a8eb-e825d457c28f" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Main.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Pool.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Pool.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Main.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/PlayerTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/PlayerTest.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -58,16 +58,16 @@
       <recent name="$PROJECT_DIR$/assets" />
     </key>
   </component>
-  <component name="RunManager" selected="Application.Main">
-    <configuration name="Main" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
-      <option name="MAIN_CLASS_NAME" value="Main" />
+  <component name="RunManager" selected="Application.PlayerTest">
+    <configuration name="MainTestSuite" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="MainTestSuite" />
       <module name="Scrabble" />
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="MainTestSuite" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
-      <option name="MAIN_CLASS_NAME" value="MainTestSuite" />
+    <configuration name="PlayerTest" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="PlayerTest" />
       <module name="Scrabble" />
       <method v="2">
         <option name="Make" enabled="true" />
@@ -84,9 +84,15 @@
       <option name="JAR_PATH" value="$PROJECT_DIR$/out/artifacts/Scrabble_jar/Scrabble.jar" />
       <method v="2" />
     </configuration>
+    <list>
+      <item itemvalue="Application.PlayerTest" />
+      <item itemvalue="Application.MainTestSuite" />
+      <item itemvalue="Application.Pool" />
+      <item itemvalue="JAR Application.Scrabble.jar" />
+    </list>
     <recent_temporary>
       <list>
-        <item itemvalue="Application.Main" />
+        <item itemvalue="Application.PlayerTest" />
         <item itemvalue="Application.MainTestSuite" />
         <item itemvalue="JAR Application.Scrabble.jar" />
         <item itemvalue="Application.Pool" />
@@ -121,8 +127,6 @@
       <workItem from="1580991024482" duration="893000" />
       <workItem from="1581002399679" duration="24000" />
       <workItem from="1581081439985" duration="303000" />
-      <workItem from="1581330797379" duration="60000" />
-      <workItem from="1581331576265" duration="719000" />
     </task>
     <task id="LOCAL-00001" summary="adding charset.conf config file">
       <created>1580071584181</created>
@@ -219,6 +223,10 @@
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="555" y="180" width="800" height="672" key="#Deployment/0.0.1920.1040@0.0.1920.1040" timestamp="1579958400874" />
+    <state x="184" y="123" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1581332630600">
+      <screen x="0" y="23" width="1440" height="877" />
+    </state>
+    <state x="184" y="123" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.23.1440.877@0.23.1440.877" timestamp="1581332630600" />
     <state x="716" y="223" width="478" height="587" key="#com.intellij.ide.util.MemberChooser" timestamp="1580822994589">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
@@ -247,26 +255,26 @@
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="759" y="332" width="424" height="479" key="FileChooserDialogImpl/0.0.1920.1040@0.0.1920.1040" timestamp="1581081491721" />
-    <state width="1493" height="210" key="GridCell.Tab.0.bottom" timestamp="1581332513367">
-      <screen x="0" y="0" width="1536" height="824" />
+    <state width="1398" height="230" key="GridCell.Tab.0.bottom" timestamp="1581332649276">
+      <screen x="0" y="23" width="1440" height="877" />
     </state>
-    <state width="1493" height="210" key="GridCell.Tab.0.bottom/0.0.1536.824@0.0.1536.824" timestamp="1581332513367" />
     <state width="1878" height="272" key="GridCell.Tab.0.bottom/0.0.1920.1040@0.0.1920.1040" timestamp="1581081751198" />
-    <state width="1493" height="210" key="GridCell.Tab.0.center" timestamp="1581332513367">
-      <screen x="0" y="0" width="1536" height="824" />
+    <state width="1398" height="230" key="GridCell.Tab.0.bottom/0.23.1440.877@0.23.1440.877" timestamp="1581332649276" />
+    <state width="1398" height="230" key="GridCell.Tab.0.center" timestamp="1581332649275">
+      <screen x="0" y="23" width="1440" height="877" />
     </state>
-    <state width="1493" height="210" key="GridCell.Tab.0.center/0.0.1536.824@0.0.1536.824" timestamp="1581332513367" />
     <state width="1878" height="272" key="GridCell.Tab.0.center/0.0.1920.1040@0.0.1920.1040" timestamp="1581081751198" />
-    <state width="1493" height="210" key="GridCell.Tab.0.left" timestamp="1581332513367">
-      <screen x="0" y="0" width="1536" height="824" />
+    <state width="1398" height="230" key="GridCell.Tab.0.center/0.23.1440.877@0.23.1440.877" timestamp="1581332649275" />
+    <state width="1398" height="230" key="GridCell.Tab.0.left" timestamp="1581332649275">
+      <screen x="0" y="23" width="1440" height="877" />
     </state>
-    <state width="1493" height="210" key="GridCell.Tab.0.left/0.0.1536.824@0.0.1536.824" timestamp="1581332513367" />
     <state width="1878" height="272" key="GridCell.Tab.0.left/0.0.1920.1040@0.0.1920.1040" timestamp="1581081751197" />
-    <state width="1493" height="210" key="GridCell.Tab.0.right" timestamp="1581332513367">
-      <screen x="0" y="0" width="1536" height="824" />
+    <state width="1398" height="230" key="GridCell.Tab.0.left/0.23.1440.877@0.23.1440.877" timestamp="1581332649275" />
+    <state width="1398" height="230" key="GridCell.Tab.0.right" timestamp="1581332649276">
+      <screen x="0" y="23" width="1440" height="877" />
     </state>
-    <state width="1493" height="210" key="GridCell.Tab.0.right/0.0.1536.824@0.0.1536.824" timestamp="1581332513367" />
     <state width="1878" height="272" key="GridCell.Tab.0.right/0.0.1920.1040@0.0.1920.1040" timestamp="1581081751198" />
+    <state width="1398" height="230" key="GridCell.Tab.0.right/0.23.1440.877@0.23.1440.877" timestamp="1581332649276" />
     <state width="1878" height="340" key="GridCell.Tab.1.bottom" timestamp="1580936321103">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
@@ -295,10 +303,6 @@
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="555" y="255" width="800" height="523" key="Vcs.Push.Dialog.v2/0.0.1920.1040@0.0.1920.1040" timestamp="1581081638145" />
-    <state x="465" y="238" key="com.intellij.ide.util.TipDialog" timestamp="1581331578425">
-      <screen x="0" y="0" width="1536" height="824" />
-    </state>
-    <state x="465" y="238" key="com.intellij.ide.util.TipDialog/0.0.1536.824@0.0.1536.824" timestamp="1581331578425" />
     <state x="1103" y="228" width="672" height="678" key="search.everywhere.popup" timestamp="1580935234062">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
