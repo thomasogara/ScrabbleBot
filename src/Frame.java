@@ -13,15 +13,15 @@ public class Frame{
     /*
         Instance variables
      */
-    /* An ArrayList of Tile's, containing all the tiles which are currently on the frame*/
+    /** An ArrayList of Tile's, containing all the tiles which are currently on the frame*/
     private ArrayList<Tile> letters;
-    /* A reference to the global Pool for a given game. */
+    /** A reference to the global Pool for a given game. */
     private Pool pool;
 
     /*
         Class variables
      */
-    /* An integer constant of the Frame class, representing the maximum number of Tile's which can be placed on a Frame*/
+    /** An integer constant of the Frame class, representing the maximum number of Tile's which can be placed on a Frame*/
     public static final int FRAME_CAPACITY = 7;
 
     /**
@@ -47,6 +47,9 @@ public class Frame{
         System.out.println(Arrays.toString(this.getLetters().toArray()));
     }
 
+    /**
+     * A placeholder method to be used in a future release, when javafx implementation is being written.
+     */
     public void render(){
         // TODO: Assignment 3, JavaFX / GUI implementation
         /*
@@ -64,6 +67,7 @@ public class Frame{
     }
 
     /**
+     * An overloaded method which removes all elements of the argument from the 'letters' instance variable.
      * @param letters_to_be_removed char[] array containing all letters to be removed from the Frame.
      */
     public final void removeAll(char[] letters_to_be_removed){
@@ -71,6 +75,7 @@ public class Frame{
     }
 
     /**
+     * An overloaded method which removes all elements of the argument from the 'letters' instance variable.
      * @param letters_to_be_removed String containing all letters to be removed from the Frame
      */
     public final void removeAll(String letters_to_be_removed){
@@ -87,6 +92,7 @@ public class Frame{
     }
 
     /**
+     * A method to check if a given letter is present in the Frame, where the letter is stored as a char.
      * @param letter char to be searched for in the Frame
      * @return boolean representing whether letter is in the Frame
      */
@@ -95,6 +101,7 @@ public class Frame{
     }
 
     /**
+     * A method to check if a given letter is present in the Frame, where the letter is stored as a Character.
      * @param letter Character to be searched for in the Frame
      * @return boolean representing whether letter is in the Frame.
      */
@@ -116,6 +123,7 @@ public class Frame{
     }
 
     /**
+     * A method to check if a given set of letters is present in the Frame, where the letters are stored as a List<Tile>
      * @param tiles the Tile's to be removed from the Frame
      * @return whether an equivalent Tile exists in the Frame for all elements of the input List
      */
@@ -123,12 +131,19 @@ public class Frame{
         return this.getLetters().containsAll(tiles);
     }
 
+    /**
+     * A method to check if a given set of letters is present in the Frame, where the letters are stored as a char array
+     * @param letter_array the Tile's to be removed from the Frametiles
+     * @return whether an equivalent Tile exists in the Frame for all elements of the input List
+     */
     public final boolean hasLetters(char[] letter_array){
         return this.hasLetters(Tile.tileArrayFromCharArray(letter_array));
     }
 
 
     /**
+     * A method to check if a given set of letters is present in the Frame, where the letters are stored as a
+     * String.
      * @param letter_string String containing all letters to be searched for in the Frame
      */
     public final boolean hasLetters(String letter_string){

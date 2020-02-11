@@ -16,13 +16,13 @@ public class Tile{
 	/*
 		INSTANCE VARIABLES
 	 */
-	/*The value of the given tile, stored as a Character object*/
+	/**The value of the given tile, stored as a Character object*/
 	private Character value;
 
 	/*
 		CLASS VARIABLES
 	 */
-	/*The set of all valid Tile values, stored as a HashSet of Character objects*/
+	/**The set of all valid Tile values, stored as a HashSet of Character objects*/
 	private static final HashSet<Character> VALID_CHARACTERS_SET = Tile.createValidCharactersSet();
 
 
