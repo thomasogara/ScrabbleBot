@@ -6,10 +6,15 @@
     </artifacts-to-build>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="9b3e9c7d-9c5a-48e3-a8eb-e825d457c28f" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/docs/Assignment1/howtorun.txt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/META-INF/MANIFEST.MF" afterDir="false" />
+    <list default="true" id="9b3e9c7d-9c5a-48e3-a8eb-e825d457c28f" name="Default Changelist" comment="Howtorun.txt">
+      <change afterPath="$PROJECT_DIR$/docs/Assignment1/docs.pdf" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/Assignment1/docs.odt" beforeDir="false" afterPath="$PROJECT_DIR$/docs/Assignment1/docs.odt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Frame.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Frame.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Player.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Player.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/PlayerTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/PlayerTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Pool.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Pool.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Tile.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Tile.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -130,6 +135,7 @@
       <workItem from="1581081439985" duration="303000" />
       <workItem from="1581330797379" duration="60000" />
       <workItem from="1581331576265" duration="719000" />
+      <workItem from="1581786204036" duration="546000" />
     </task>
     <task id="LOCAL-00001" summary="adding charset.conf config file">
       <created>1580071584181</created>
@@ -187,7 +193,14 @@
       <option name="project" value="LOCAL" />
       <updated>1581337143167</updated>
     </task>
-    <option name="localTasksCounter" value="9" />
+    <task id="LOCAL-00009" summary="Howtorun.txt">
+      <created>1581337894520</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1581337894520</updated>
+    </task>
+    <option name="localTasksCounter" value="10" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -226,7 +239,8 @@
     <MESSAGE value="My final commit for Assignment 1.&#10;Docs completed, refactoring finished for this revision of the project." />
     <MESSAGE value="pushing empty Main class, to be used as entry-point for executable jar" />
     <MESSAGE value="Documentation update" />
-    <option name="LAST_COMMIT_MESSAGE" value="Documentation update" />
+    <MESSAGE value="Howtorun.txt" />
+    <option name="LAST_COMMIT_MESSAGE" value="Howtorun.txt" />
     <option name="OPTIMIZE_IMPORTS_BEFORE_PROJECT_COMMIT" value="true" />
   </component>
   <component name="WindowStateProjectService">
@@ -255,10 +269,10 @@
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="707" y="269" width="495" height="494" key="ANALYSIS_DLG_com.intellij.analysis.BaseAnalysisAction$1/0.0.1920.1040@0.0.1920.1040" timestamp="1581081492840" />
-    <state x="474" y="16" width="790" height="798" key="CommitChangelistDialog2" timestamp="1581337875283">
+    <state x="474" y="16" width="790" height="798" key="CommitChangelistDialog2" timestamp="1581337953398">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state x="474" y="16" key="CommitChangelistDialog2/0.0.1536.824@0.0.1536.824" timestamp="1581337875283" />
+    <state x="474" y="16" key="CommitChangelistDialog2/0.0.1536.824@0.0.1536.824" timestamp="1581337953398" />
     <state x="560" y="117" width="790" height="798" key="CommitChangelistDialog2/0.0.1920.1040@0.0.1920.1040" timestamp="1581081635668" />
     <state x="100" y="99" width="1720" height="840" key="DiffContextDialog" timestamp="1580823948648">
       <screen x="0" y="0" width="1920" height="1040" />
@@ -268,45 +282,45 @@
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="759" y="332" width="424" height="479" key="FileChooserDialogImpl/0.0.1920.1040@0.0.1920.1040" timestamp="1581081491721" />
-    <state width="1493" height="210" key="GridCell.Tab.0.bottom" timestamp="1581337352097">
+    <state width="1493" height="261" key="GridCell.Tab.0.bottom" timestamp="1581339632739">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state width="1493" height="210" key="GridCell.Tab.0.bottom/0.0.1536.824@0.0.1536.824" timestamp="1581337352097" />
+    <state width="1493" height="261" key="GridCell.Tab.0.bottom/0.0.1536.824@0.0.1536.824" timestamp="1581339632739" />
     <state width="1878" height="272" key="GridCell.Tab.0.bottom/0.0.1920.1040@0.0.1920.1040" timestamp="1581081751198" />
-    <state width="1493" height="210" key="GridCell.Tab.0.center" timestamp="1581337352097">
+    <state width="1493" height="261" key="GridCell.Tab.0.center" timestamp="1581339632739">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state width="1493" height="210" key="GridCell.Tab.0.center/0.0.1536.824@0.0.1536.824" timestamp="1581337352097" />
+    <state width="1493" height="261" key="GridCell.Tab.0.center/0.0.1536.824@0.0.1536.824" timestamp="1581339632739" />
     <state width="1878" height="272" key="GridCell.Tab.0.center/0.0.1920.1040@0.0.1920.1040" timestamp="1581081751198" />
-    <state width="1493" height="210" key="GridCell.Tab.0.left" timestamp="1581337352097">
+    <state width="1493" height="261" key="GridCell.Tab.0.left" timestamp="1581339632739">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state width="1493" height="210" key="GridCell.Tab.0.left/0.0.1536.824@0.0.1536.824" timestamp="1581337352097" />
+    <state width="1493" height="261" key="GridCell.Tab.0.left/0.0.1536.824@0.0.1536.824" timestamp="1581339632739" />
     <state width="1878" height="272" key="GridCell.Tab.0.left/0.0.1920.1040@0.0.1920.1040" timestamp="1581081751197" />
-    <state width="1493" height="210" key="GridCell.Tab.0.right" timestamp="1581337352097">
+    <state width="1493" height="261" key="GridCell.Tab.0.right" timestamp="1581339632739">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state width="1493" height="210" key="GridCell.Tab.0.right/0.0.1536.824@0.0.1536.824" timestamp="1581337352097" />
+    <state width="1493" height="261" key="GridCell.Tab.0.right/0.0.1536.824@0.0.1536.824" timestamp="1581339632739" />
     <state width="1878" height="272" key="GridCell.Tab.0.right/0.0.1920.1040@0.0.1920.1040" timestamp="1581081751198" />
-    <state width="1493" height="261" key="GridCell.Tab.1.bottom" timestamp="1581334049162">
+    <state width="1493" height="261" key="GridCell.Tab.1.bottom" timestamp="1581339632739">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state width="1493" height="261" key="GridCell.Tab.1.bottom/0.0.1536.824@0.0.1536.824" timestamp="1581334049162" />
+    <state width="1493" height="261" key="GridCell.Tab.1.bottom/0.0.1536.824@0.0.1536.824" timestamp="1581339632739" />
     <state width="1878" height="340" key="GridCell.Tab.1.bottom/0.0.1920.1040@0.0.1920.1040" timestamp="1580936321103" />
-    <state width="1493" height="261" key="GridCell.Tab.1.center" timestamp="1581334049162">
+    <state width="1493" height="261" key="GridCell.Tab.1.center" timestamp="1581339632739">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state width="1493" height="261" key="GridCell.Tab.1.center/0.0.1536.824@0.0.1536.824" timestamp="1581334049162" />
+    <state width="1493" height="261" key="GridCell.Tab.1.center/0.0.1536.824@0.0.1536.824" timestamp="1581339632739" />
     <state width="1878" height="340" key="GridCell.Tab.1.center/0.0.1920.1040@0.0.1920.1040" timestamp="1580936321102" />
-    <state width="1493" height="261" key="GridCell.Tab.1.left" timestamp="1581334049162">
+    <state width="1493" height="261" key="GridCell.Tab.1.left" timestamp="1581339632739">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state width="1493" height="261" key="GridCell.Tab.1.left/0.0.1536.824@0.0.1536.824" timestamp="1581334049162" />
+    <state width="1493" height="261" key="GridCell.Tab.1.left/0.0.1536.824@0.0.1536.824" timestamp="1581339632739" />
     <state width="1878" height="340" key="GridCell.Tab.1.left/0.0.1920.1040@0.0.1920.1040" timestamp="1580936321102" />
-    <state width="1493" height="261" key="GridCell.Tab.1.right" timestamp="1581334049162">
+    <state width="1493" height="261" key="GridCell.Tab.1.right" timestamp="1581339632739">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state width="1493" height="261" key="GridCell.Tab.1.right/0.0.1536.824@0.0.1536.824" timestamp="1581334049162" />
+    <state width="1493" height="261" key="GridCell.Tab.1.right/0.0.1536.824@0.0.1536.824" timestamp="1581339632739" />
     <state width="1878" height="340" key="GridCell.Tab.1.right/0.0.1920.1040@0.0.1920.1040" timestamp="1580936321103" />
     <state x="598" y="221" width="713" height="591" key="NewModule_or_Project.wizard" timestamp="1580403819126">
       <screen x="0" y="0" width="1920" height="1040" />
@@ -317,19 +331,23 @@
     </state>
     <state x="371" y="122" key="SettingsEditor/0.0.1536.824@0.0.1536.824" timestamp="1581337498770" />
     <state x="464" y="154" width="1024" height="840" key="SettingsEditor/0.0.1920.1040@0.0.1920.1040" timestamp="1580902246399" />
-    <state x="444" y="202" width="800" height="523" key="Vcs.Push.Dialog.v2" timestamp="1581337150652">
+    <state x="444" y="202" width="800" height="523" key="Vcs.Push.Dialog.v2" timestamp="1581337961735">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state x="444" y="202" key="Vcs.Push.Dialog.v2/0.0.1536.824@0.0.1536.824" timestamp="1581337150652" />
+    <state x="444" y="202" key="Vcs.Push.Dialog.v2/0.0.1536.824@0.0.1536.824" timestamp="1581337961735" />
     <state x="555" y="255" width="800" height="523" key="Vcs.Push.Dialog.v2/0.0.1920.1040@0.0.1920.1040" timestamp="1581081638145" />
-    <state x="465" y="238" key="com.intellij.ide.util.TipDialog" timestamp="1581331578425">
+    <state x="465" y="238" key="com.intellij.ide.util.TipDialog" timestamp="1581786207114">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state x="465" y="238" key="com.intellij.ide.util.TipDialog/0.0.1536.824@0.0.1536.824" timestamp="1581331578425" />
+    <state x="465" y="238" key="com.intellij.ide.util.TipDialog/0.0.1536.824@0.0.1536.824" timestamp="1581786207114" />
     <state x="578" y="330" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2" timestamp="1581336020922">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
     <state x="578" y="330" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2/0.0.1536.824@0.0.1536.824" timestamp="1581336020922" />
+    <state x="462" y="205" key="git4idea.merge.GitPullDialog" timestamp="1581337899980">
+      <screen x="0" y="0" width="1536" height="824" />
+    </state>
+    <state x="462" y="205" key="git4idea.merge.GitPullDialog/0.0.1536.824@0.0.1536.824" timestamp="1581337899980" />
     <state x="1103" y="228" width="672" height="678" key="search.everywhere.popup" timestamp="1580935234062">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
@@ -340,8 +358,12 @@
       <breakpoints>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/Tile.java</url>
-          <line>81</line>
+          <line>82</line>
           <option name="timeStamp" value="1" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/Tile.java</url>
+          <option name="timeStamp" value="2" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>

@@ -1,12 +1,8 @@
 /*
-   Code Authors:
-   Thomas O'Gara (18379576) (thomas.ogara@ucdconnect.ie)
-   Jarrett (?) (?)
-   Daniel (17481174) (daniel.nwabueze@ucdconnect.ie)
-
-   TODO;;;
-   1. Change references of <Character, Integer> to <Tile, Integer> once Tile.java has been imported
-
+  Code Authors:
+  Thomas O'Gara (18379576) (thomas.ogara@ucdconnect.ie)
+  Jarrett (18375813 (jarrett.pierse@ucdconnect.ie)
+  Daniel (17481174) (daniel.nwabueze@ucdconnect.ie)
  */
 
 import java.util.ArrayList;
