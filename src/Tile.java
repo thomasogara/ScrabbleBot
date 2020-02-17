@@ -45,7 +45,7 @@ public class Tile{
 	 * Default getter for 'value' instance variable
 	 * @return reference to Character object representing the value of this Tile
 	 */
-	public final Character getValue(){
+	public Character getValue(){
 		return this.value;
 	}
 
