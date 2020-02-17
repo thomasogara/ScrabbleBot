@@ -1,8 +1,8 @@
 /*
   Code Authors:
   Thomas O'Gara (18379576) (thomas.ogara@ucdconnect.ie)
-  Jarrett (?) (?)
-  Daniel (?) (?)
+  Jarrett (18375813 (jarrett.pierse@ucdconnect.ie)
+  Daniel (17481174) (daniel.nwabueze@ucdconnect.ie)
  */
 
 import java.util.ArrayList;

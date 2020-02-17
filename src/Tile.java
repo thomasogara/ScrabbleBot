@@ -1,8 +1,9 @@
 /*
+/*
   Code Authors:
   Thomas O'Gara (18379576) (thomas.ogara@ucdconnect.ie)
-  Jarrett (?) (?)
-  Daniel (?) (?)
+  Jarrett (18375813 (jarrett.pierse@ucdconnect.ie)
+  Daniel (17481174) (daniel.nwabueze@ucdconnect.ie)
  */
 
 import java.io.BufferedReader;
@@ -44,7 +45,7 @@ public class Tile{
 	 * Default getter for 'value' instance variable
 	 * @return reference to Character object representing the value of this Tile
 	 */
-	public final Character getValue(){
+	public Character getValue(){
 		return this.value;
 	}
 
