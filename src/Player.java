@@ -21,7 +21,7 @@ public class Player {
         this.frame = new Frame();
     }
 
-    // constructor with just name arg
+    // constructor with just name argtiles
     public Player(String name) {
         this.username = name;
         this.score = score;
