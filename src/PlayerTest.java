@@ -17,7 +17,10 @@ public class PlayerTest {
 
         // Intialise the game board
         gameBoard = new Board();
-
+        gameBoard.points[0][0].setTile(new Tile('A'));
+        gameBoard.points[1][0].setTile(new Tile('B'));
+        gameBoard.points[0][1].setTile(new Tile('G'));
+        gameBoard.points[0][2].setTile(new Tile('E'));
 
         System.out.println(gameBoard.points[0][0].getFormedWords());
 
