@@ -30,6 +30,9 @@ public class Point {
     private Board board;
 
     public Point(int x, int y) {
+        if(x < 0 || x >= 15 || y < 0 || y >= 15){
+            throw new IllegalArgumentException("x and y must both be in the range (0, 14) inclusive");
+        }
         this.x = x;
         this.y = y;
         this.formedWords = new ArrayList<>();
@@ -40,6 +43,9 @@ public class Point {
      * Alternative constructor for Point class to set the Board instance too
      */
     public Point(int x, int y, Board board) {
+        if(x < 0 || x >= 15 || y < 0 || y >= 15){
+            throw new IllegalArgumentException("x and y must both be in the range (0, 14) inclusive");
+        }
         this.x = x;
         this.y = y;
         this.board = board;
@@ -116,7 +122,7 @@ public class Point {
         // Traverse right
         Point right = this.getRight(); // Get the point beside this current point
         StringBuilder rightWord = new StringBuilder();
-        while(right != null && right.filled()) { // Make sure that point isn't null & actually has a Tile/Letter on it
+        while(right != null && right.isFilled()) { // Make sure that point isn't null & actually has a Tile/Letter on it
             rightWord.append(right.getTile().getValue()); // Append this points' tiles' letter onto the word formed @ the right hand side
             right = right.getRight(); // Go to the next point beside it
         }
@@ -130,31 +136,31 @@ public class Point {
         // Traverse left
         Point left = this.getLeft();
         StringBuilder leftWord = new StringBuilder();
-        while(left != null && left.filled()) {
+        while(left != null && left.isFilled()) {
             leftWord.append(left.getTile().getValue());
             left = left.getLeft();
         }
         if(leftWord.length() >= 1) {
             leftWord.insert(0, this.getTile().getValue());
-            this.formedWords.add(leftWord.toString());
+            this.formedWords.add(leftWord.reverse().toString());
         }
 
         // Traverse UP
         Point up = this.getUp();
         StringBuilder upWord = new StringBuilder();
-        while(up != null && up.filled()) {
+        while(up != null && up.isFilled()) {
             upWord.append(up.getTile().getValue());
             up = up.getUp();
         }
         if(upWord.length() >= 1) {
             upWord.insert(0, this.getTile().getValue());
-            this.formedWords.add(upWord.toString());
+            this.formedWords.add(upWord.reverse().toString());
         }
 
         // Traverse Down
         Point down = this.getDown();
         StringBuilder downWord = new StringBuilder();
-        while(down != null && down.filled()) {
+        while(down != null && down.isFilled()) {
             downWord.append(down.getTile().getValue());
             down = down.getDown();
         }
@@ -189,8 +195,8 @@ public class Point {
         this.board = board;
     }
 
-    public boolean filled() {
-        return (this.getTile() != null && this.getTile().getValue() != null && this.getTile().getValue() != '0');
+    public boolean isFilled() {
+        return (this.getTile() != null && this.getTile().getValue() != null && this.getTile().getValue() != '\0');
     }
 
     /**
@@ -199,7 +205,7 @@ public class Point {
      */
     public Point getRight() {
         if( x + 1 < 15 )
-            return this.board.points[x + 1][y];
+            return this.board.points[y][x + 1];
 
         return null;
     }
@@ -210,7 +216,7 @@ public class Point {
      */
     public Point getLeft() {
         if( x - 1 > 0 )
-            return this.board.points[x - 1][y];
+            return this.board.points[y][x - 1];
 
         return null;
     }
@@ -221,7 +227,7 @@ public class Point {
      */
     public Point getUp() {
         if( y + 1 < 15 )
-            return this.board.points[x][y + 1];
+            return this.board.points[y - 1][x];
 
         return null;
     }
@@ -232,7 +238,7 @@ public class Point {
      */
     public Point getDown() {
         if( y - 1 > 0 )
-         return this.board.points[x][y - 1];
+         return this.board.points[y + 1][x];
 
         return null;
     }
