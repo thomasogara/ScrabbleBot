@@ -205,9 +205,8 @@ public class Frame{
         char[] lettersToCharacterArray = this.getLettersAsCharArray();
         StringBuilder lettersStringBuilder = new StringBuilder();
         for(char c : lettersToCharacterArray){
-            lettersStringBuilder.append(c).append(" ");
+            lettersStringBuilder.append(c);
         }
-        lettersStringBuilder.deleteCharAt(lettersStringBuilder.length() - 1); // remove final space character ' ' in StringBuilder
         return lettersStringBuilder.toString();
     }
 
@@ -242,11 +241,30 @@ public class Frame{
     }
 
     /**
+     * A method to allow a String to be added to the Frame's letters
+     */
+    public final void addAll(String s){
+        this.addAll(Tile.tileArrayFromCharArray(s.toCharArray()));
+    }
+
+    /**
      * A very simple method, allowing the 'pool' instance variable of a Frame to be set.
      * @param pool the Pool to be assigned as this Frame's 'pool' variable.
      */
     public final void setPool(Pool pool){
         this.pool = pool;
     }
-    
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append('[');
+        for(Tile tile : letters){
+            sb.append(tile.getValue()).append(", ");
+        }
+        if(sb.length() > 1)
+            sb.delete(sb.length() - 2, sb.length());
+        sb.append(']');
+        return sb.toString();
+    }
 }

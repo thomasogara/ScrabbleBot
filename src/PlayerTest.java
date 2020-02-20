@@ -6,7 +6,6 @@
  */
 
 public class PlayerTest {
-
     public static Board gameBoard;
     public static Pool gamePool;
 
@@ -14,17 +13,46 @@ public class PlayerTest {
     public static Player player2;
 
     public static void main(String[] args) {
-
         // Intialise the game board
         gameBoard = new Board();
-        gameBoard.points[0][0].setTile(new Tile('A'));
-        gameBoard.points[1][0].setTile(new Tile('B'));
-        gameBoard.points[0][1].setTile(new Tile('G'));
-        gameBoard.points[0][2].setTile(new Tile('E'));
+        //Use the addTile() method from Board to place tiles on the gameBoard
+        gameBoard.add(new Tile('A'), 6 ,6);
+        gameBoard.add(new Tile('B'), 6 ,7);
+        gameBoard.add(new Tile('G'), 7 ,6);
+        gameBoard.add(new Tile('E'), 8 ,6);
+        System.out.println(gameBoard);
+        System.out.println("Actual: " + gameBoard.points[6][6].getFormedWords());
+        System.out.println("Expected: " + "[AGE, AB]");
+        System.out.println("Actual == Expected ?: " + gameBoard.points[6][6].getFormedWords().toString().equals("[AGE, AB]"));
 
-        System.out.println(gameBoard.points[0][0].getFormedWords());
+        gameBoard = new Board();
+        System.out.print("\r\n\r\n");
+        gamePool = new Pool();
+        player1 = new Player("Brent Corrigan");
+        player2 = new Player("Sean Cody");
+        player1.getFrame().setPool(gamePool);
+        player2.getFrame().setPool(gamePool);
+        player1.getFrame().getLetters().clear();
+        player2.getFrame().getLetters().clear();
+        player1.getFrame().addAll("ABCDEFG");
+        player2.getFrame().addAll("ABCDEFG");
 
-//
+        System.out.println(player1.getUsername() + "'s Frame: " + player1.getFrame());
+        System.out.println(player2.getUsername() + "'s Frame: " + player2.getFrame());
+
+        gameBoard.add(player1.getFrame().getLettersAsString(), new Point(6, 6), 'R');
+        player1.getFrame().removeAll(player1.getFrame().getLettersAsString());
+        System.out.println(gameBoard);
+
+        System.out.println(player1.getUsername() + "'s Frame: " + player1.getFrame());
+        System.out.println(player2.getUsername() + "'s Frame: " + player2.getFrame());
+
+        gameBoard.add(player2.getFrame().getLettersAsString(), new Point(6, 6), 'D');
+        player2.getFrame().removeAll(player2.getFrame().getLettersAsString());
+        System.out.println(gameBoard);
+
+        System.out.println(player1.getUsername() + "'s Frame: " + player1.getFrame());
+        System.out.println(player2.getUsername() + "'s Frame: " + player2.getFrame());
 //        // Initialise the game pool
 //        gamePool = new Pool();
 //
