@@ -95,6 +95,11 @@ public class Board {
         return this.getOccupiedTileCount() == 0;
     }
 
+
+    /**
+     * temporary toString() method until Board.render() is complete <3
+     * @return String representation of the Board
+     */
     @Override
     public String toString() {
         String[] strings = new String[15];

@@ -3,13 +3,13 @@ import java.util.ArrayList;
 public class Point {
 
     // Enum values for bonus types
-    public static enum BonusType {
+    public enum BonusType {
         DL, // Double Letter - LETTER played points is worth x2 it's orig. value
         TL, // Triple Letter - LETTER played points is worth x3 it's orig. value
         DW, // Double Word - WORD played is worth x2 it's orig. value
         TW, // Triple Word - WORD played is worth x3 it's orig. value
         S, // Start point / center of the board
-    };
+    }
 
     // The tile placed on this Point
     private Tile tile;
@@ -226,7 +226,7 @@ public class Point {
      * @return The point instance belong to the point above of this point
      */
     public Point getUp() {
-        if( y + 1 < 15 )
+        if( y > 0 )
             return this.board.points[y - 1][x];
 
         return null;
@@ -237,7 +237,7 @@ public class Point {
      * @return The point instance belong to the point to below this point
      */
     public Point getDown() {
-        if( y - 1 > 0 )
+        if( y + 1 < 15 )
          return this.board.points[y + 1][x];
 
         return null;
