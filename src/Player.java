@@ -5,6 +5,8 @@
   Daniel (17481174) (daniel.nwabueze@ucdconnect.ie)
  */
 
+import javax.swing.*;
+import java.util.ArrayList;
 import java.util.Scanner;
 
 public class Player {
@@ -12,6 +14,8 @@ public class Player {
     private String username = "";
     private int score = 0; // holds score for user
     private Frame frame;
+    private ArrayList<Point> currentWord;
+    private ArrayList<Point> storedWords;
 
 
     // default constructor for Player object
@@ -19,6 +23,8 @@ public class Player {
         this.username = username;
         this.score = score;
         this.frame = new Frame();
+        this.storedWords = new ArrayList<Point>(); // stored words of that player
+        this.currentWord = new ArrayList<Point>();
     }
 
     // constructor with just name argtiles
@@ -35,6 +41,22 @@ public class Player {
     public void resetUser(){
        this.username = "";
        this.score = 0;
+    }
+
+    public void setCurrentWord(ArrayList<String> currentWord){
+        this.currentWord = currentWord;
+    }
+
+    public void setStoredWords(ArrayList<Point> storedWords){
+        this.storedWords = storedWords;
+    }
+
+    public List<Point> getCurrentWord() {
+        return this.currentWord;
+    }
+
+    public List<Point> getStoredWords() {
+        return this.storedWords;
     }
 
     // set player's name method

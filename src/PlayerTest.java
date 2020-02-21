@@ -47,15 +47,14 @@ public class PlayerTest {
         System.out.println(player1.getUsername() + "'s Frame: " + player1.getFrame());
         System.out.println(player2.getUsername() + "'s Frame: " + player2.getFrame());
 
-        String str = "APPLES";
-        gameBoard.add(str, new Point(6, 8), 'D');
+        gameBoard.add(player1.getFrame().getLettersAsString(), new Point(6, 8), 'D');
         player2.getFrame().removeAll(player2.getFrame().getLettersAsString());
         System.out.println(gameBoard);
 
         System.out.println("Board before reset: ");
         System.out.println(gameBoard);
         System.out.println("Board after reset: ");
-        gameBoard.resetBoard();
+      //  gameBoard.resetBoard();
         System.out.println(gameBoard);
 
         System.out.println(player1.getUsername() + "'s Frame: " + player1.getFrame());

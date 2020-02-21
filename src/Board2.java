@@ -39,13 +39,6 @@ public class Board {
     }
 
     /**
-     * Allows board to be displayed using ASCII characters via console
-     */
-    public void displayBoard(){
-
-    }
-
-    /**
      * An alternative to placePoint() which instead accepts a Tile as a parameter, as well as two integers x and y
      * representing the chosen square on the board. It attempts to place a given Tile onto this board at the given
      * position and returns a boolean indicating success/failure.
@@ -57,7 +50,6 @@ public class Board {
     public final boolean add(Tile t, int x, int y) {
         Point p = new Point(x, y);
         // check if tile is empty, if yes - check if player's rack contains tile - if yes place tile, else false
-        //                         if not - check if tiles match, if yes - check if player's rack has tile - if yes - place tile else false
         if (this.points[y][x].getTile() == null) {
 
             //           for (int i = 0; i < PLAYER FRAME LENGTH; i++)
@@ -85,57 +77,13 @@ public class Board {
 
     }
 
-
     /**
-     * Implementation of the add method - this takes in values for the word, starintg co-ords, word direction
-     * @param p Point encapsulating the x/y position where the first character of the String should be placed
-     * @param d Character indicating the direction the word should be placed in ('D' => Down, 'R' => Right)
+     * Add method to add a tile to the board - performs error checks for tile placement validity
+     * @param
      */
-    public final boolean add(String s, Point p, char d){
-        char[] chars = s.toUpperCase().toCharArray(); // converts string to char array
-        Point[] wordPoints = new Point[s.length()]; //  creates point array for each point of word
-
-        switch (d){
-            case 'R':
-                for(int z=0; z < s.length(); z++){
-                    int x = p.getX() + z;
-                    int y = p.getY();
-                    wordPoints[z] = new Point(x, y);
-                }
-                if(this.isValidWordPoints(wordPoints)) { // true if word is valid
-                    for(int i = 0; i < s.length(); i++) {
-                        char c = chars[i];
-                        int x = p.getX() + i;
-                        int y = p.getY();
-                        this.add(new Tile(c), x, y);
-                    }
-                    return true;
-                }
-                else{ return false; }
-                break;
-            case 'D':
-                for(int z=0; z < s.length(); z++){
-                    int x = p.getX();
-                    int y = p.getY() + z;
-                    wordPoints[z] = new Point(x, y);
-                }
-                if(this.isValidWordPoints(wordPoints)) { // true if word is valid
-                    for(int i = 0; i < s.length(); i++) {
-                        char c = chars[i];
-                        int x = p.getX() + i;
-                        int y = p.getY();
-                        this.add(new Tile(c), x, y);
-                    }
-                    return true;
-                }
-                else{ return false; }
-                break;
-            default:
-                return false;
-        }
-        return true;
+    public final boolean add(Player u, Tile t, Point p){
+        //
     }
-
 
     /**
      * Ensures that a word placement is valid by checking that it connects to another tile and that i
