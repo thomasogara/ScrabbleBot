@@ -43,7 +43,7 @@ public class Player {
        this.score = 0;
     }
 
-    public void setCurrentWord(ArrayList<String> currentWord){
+    public void setCurrentWord(ArrayList<Point> currentWord){
         this.currentWord = currentWord;
     }
 
@@ -51,11 +51,11 @@ public class Player {
         this.storedWords = storedWords;
     }
 
-    public List<Point> getCurrentWord() {
+    public ArrayList<Point> getCurrentWord() {
         return this.currentWord;
     }
 
-    public List<Point> getStoredWords() {
+    public ArrayList<Point> getStoredWords() {
         return this.storedWords;
     }
 
