@@ -86,7 +86,7 @@ public class Point {
     }
 
     /**
-     * Get the X coordinate of his Point
+     * Get the X coordinate of this Point
      * @return The integer value X coordinate of this point
      */
     public int getX() {
