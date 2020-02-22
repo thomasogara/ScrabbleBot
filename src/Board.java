@@ -146,6 +146,21 @@ public class Board {
         for(Point point : point_array)
             this.add(point);
 
+        // Remove all necessary tiles form the Player's Frame
+        removeTilesFromPLayerFrame(s, overlap, u);
+
+        // The turn has been executed successfully
+        return true;
+    }
+
+    /**
+     * A utility method to allow all necessary tiles for a given turn to be removed from the Player's Frame
+     * @param s String representing thr word being played
+     * @param overlap String representing the characters which are already on the board in the path of this turn
+     * @param u the Player who's Frame is to be altered
+     */
+    public final void removeTilesFromPLayerFrame(String s, String overlap, Player u){
+
         // Construct a new ArrayList which will contain Tile representing all of the Points to be placed during this turn
         ArrayList<Tile> s_list = new ArrayList<>();
 
@@ -160,9 +175,6 @@ public class Board {
 
         // Remove all the letters from the player's frame which they would have to use in order to execute this turn
         u.getFrame().removeAll(s_list);
-
-        // The turn has been executed successfully
-        return true;
     }
 
     /**
