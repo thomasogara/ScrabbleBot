@@ -13,65 +13,65 @@ public class PlayerTest {
     public static Player player2;
 
     public static void main(String[] args) {
-        // Intialise the game board
+        // Intialise the game board and necessary objects
         gameBoard = new Board();
-        //Use the addTile() method from Board to place tiles on the gameBoard
-        gameBoard.add(new Tile('A'), 6 ,6);
-        gameBoard.add(new Tile('B'), 6 ,7);
-        gameBoard.add(new Tile('G'), 7 ,6);
-        gameBoard.add(new Tile('E'), 8 ,6);
-        System.out.println(gameBoard);
-        System.out.println("Actual: " + gameBoard.points[6][6].getFormedWords());
-        System.out.println("Expected: " + "[AGE, AB]");
-        System.out.println("Actual == Expected ?: " + gameBoard.points[6][6].getFormedWords().toString().equals("[AGE, AB]"));
-
-        gameBoard = new Board();
-        System.out.print("\r\n\r\n");
+        System.out.print("\n\n");
         gamePool = new Pool();
         player1 = new Player("Brent Corrigan");
         player2 = new Player("Sean Cody");
+
+        // setup
         player1.getFrame().setPool(gamePool);
         player2.getFrame().setPool(gamePool);
         player1.getFrame().getLetters().clear();
         player2.getFrame().getLetters().clear();
-        player1.getFrame().addAll("ABCDEFG");
-        player2.getFrame().addAll("ABCDEFG");
 
-        System.out.println(player1.getUsername() + "'s Frame: " + player1.getFrame());
-        System.out.println(player2.getUsername() + "'s Frame: " + player2.getFrame());
+        //First test
 
-        gameBoard.add(player1.getFrame().getLettersAsString(), new Point(6, 6), 'R', player1);
+        player1.getFrame().addAll("AAPPLES");
+        player2.getFrame().addAll("BATHXDE");
+        System.out.println(player1.getUsername() + "'s Frame Before Move: " + player1.getFrame());
+        System.out.println(player2.getUsername() + "'s Frame Before Move: " + player2.getFrame());
+
+        gameBoard.add("APPLE", new Point(6, 6), 'R', player1);
+
         System.out.println(gameBoard);
+        System.out.println(player1.getUsername() + "'s Frame After Move: " + player1.getFrame());
+        System.out.println(player2.getUsername() + "'s Frame After Move: " + player2.getFrame());
 
-        System.out.println(player1.getUsername() + "'s Frame: " + player1.getFrame());
-        System.out.println(player2.getUsername() + "'s Frame: " + player2.getFrame());
+        System.out.println("\n\n\n\n");
 
-        gameBoard.add(player2.getFrame().getLettersAsString(), new Point(6, 6), 'D', player2);
+        // Second Test
+
+        player1.getFrame().refill();
+        player2.getFrame().refill();
+        System.out.println(player1.getUsername() + "'s Frame Before Test: " + player1.getFrame());
+        System.out.println(player2.getUsername() + "'s Frame Before Test: " + player2.getFrame());
+
+
+        gameBoard.add("BATH", new Point(6, 5), 'D', player2);
+
         System.out.println(gameBoard);
+        System.out.println(player1.getUsername() + "'s Frame After Test: " + player1.getFrame());
+        System.out.println(player2.getUsername() + "'s Frame After Test: " + player2.getFrame());
 
-        System.out.println(player1.getUsername() + "'s Frame: " + player1.getFrame());
-        System.out.println(player2.getUsername() + "'s Frame: " + player2.getFrame());
+        System.out.println("\n\n\n\n");
 
+        /*
+            Check for single-letter placements at end of existing word
+            e.g. |A|P|P|L|E|
+            place |S| at end
+            should result in |A|P|P|L|E|S| with only |S| removed from PLayer's frame
+         */
         player1.getFrame().getLetters().clear();
-        player2.getFrame().getLetters().clear();
+        player1.getFrame().add(new Tile('S'));
+        player1.getFrame().refill();
+        player2.getFrame().refill();
 
-        player1.getFrame().addAll("ABCDEFG");
-        player2.getFrame().addAll("ABCDEFG");
+        System.out.println(player1.getUsername() + "'s Frame Before Test: " + player1.getFrame());
+        System.out.println(player2.getUsername() + "'s Frame Before Test: " + player2.getFrame());
 
-        System.out.println();
-        System.out.println(player1.getUsername() + "'s Frame: " + player1.getFrame());
-        System.out.println(player2.getUsername() + "'s Frame: " + player2.getFrame());
-
-        gameBoard.add("ABCDEFG", new Point(9, 3), 'D', player1);
-        System.out.println(gameBoard);
-        System.out.println(player1.getUsername() + "'s Frame: " + player1.getFrame());
-        System.out.println(player2.getUsername() + "'s Frame: " + player2.getFrame());
-
-        player1.getFrame().getLetters().clear();
-        player2.getFrame().getLetters().clear();
-        player1.getFrame().addAll("ABCDEFG");
-        player2.getFrame().addAll("ABCDEFG");
-        gameBoard.add("ABCDEFG", new Point(5, 7), 'R', player2);
+        gameBoard.add("APPLES", new Point(6, 6), 'R', player1);
         System.out.println(gameBoard);
         System.out.println(player1.getUsername() + "'s Frame: " + player1.getFrame());
         System.out.println(player2.getUsername() + "'s Frame: " + player2.getFrame());

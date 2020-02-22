@@ -125,7 +125,7 @@ public class Board {
 
         // if the direction is not properly defined, or the player's Frame does not contain the necessary letters
         // to execute the turn (excluding the overlap tiles), then the turn cannot be executed
-        if((d != 'R' && d != 'D' )|| !u.getFrame().hasLetters((u.getFrame().getLettersAsString() + overlap).toCharArray())){
+        if((d != 'R' && d != 'D' )|| !u.getFrame().hasLetters(stringDifference(s, overlap))){
             return false;
         }
 
@@ -160,21 +160,8 @@ public class Board {
      * @param u the Player who's Frame is to be altered
      */
     public final void removeTilesFromPLayerFrame(String s, String overlap, Player u){
-
-        // Construct a new ArrayList which will contain Tile representing all of the Points to be placed during this turn
-        ArrayList<Tile> s_list = new ArrayList<>();
-
-        // Add the Tile representation of each letter of the input to the ArrayList s_list
-        for(char c : s.toCharArray())
-            s_list.add(new Tile(c));
-
-        // Remove the Tile representation of each letter of the overlap from the ArrayList s_list, as these
-        // tiles mustn't be removed from the Player's Frame, since they already exist on the board
-        for(char c : overlap.toCharArray())
-            s_list.remove(new Tile(c));
-
         // Remove all the letters from the player's frame which they would have to use in order to execute this turn
-        u.getFrame().removeAll(s_list);
+        u.getFrame().removeAll(this.stringDifference(s, overlap));
     }
 
     /**
@@ -308,5 +295,30 @@ public class Board {
      */
     private void incrementOccupiedTileCount(){
         this.occupiedTileCount++;
+    }
+
+    /**
+     * A utility function for calculating the difference between two Strings
+     * Anything that is common between the strings is removed
+     * @param src the String to be altered
+     * @param rmv the String whose elements should be removed from src
+     * @return String representation of src - rmv
+     */
+    private final String stringDifference(String src, String rmv){
+        ArrayList<Tile> s_list = new ArrayList<>();
+        for(char c : src.toCharArray()){
+            s_list.add(new Tile(c));
+        }
+
+        for(char c : rmv.toCharArray()){
+            s_list.remove(new Tile(c));
+        }
+
+        StringBuilder sb = new StringBuilder();
+        for(Tile t : s_list){
+            sb.append(t.getValue());
+        }
+
+        return sb.toString();
     }
 }
