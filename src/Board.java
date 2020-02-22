@@ -235,32 +235,6 @@ public class Board {
         return this.getOccupiedTileCount() == 0;
     }
 
-
-    /**
-     * temporary toString() method until Board.render() is complete <3
-     * @return String representation of the Board
-     */
-    @Override
-    public String toString() {
-        String[] strings = new String[15];
-        StringBuilder sb = new StringBuilder();
-        for(int i = 0; i < 15; i++){
-            strings[i] = "";
-            for(int j = 0; j < 15; j++){
-                if(this.points[i][j].getTile() != null) {
-                    strings[i] += this.points[i][j].getTile().getValue() + " ";
-                }
-                else{
-                    strings[i] += "  ";
-                }
-            }
-        }
-        for(String s : strings){
-            sb.append(s).append('\n');
-        }
-        return sb.toString();
-    }
-
     /**
      * Utility method for translating a query into an alternative form, as a Point[] array
      * @param s the String from the parent query
@@ -294,6 +268,31 @@ public class Board {
             }
         }
         return point_array;
+    }
+
+    /**
+     * temporary toString() method until Board.render() is complete <3
+     * @return String representation of the Board
+     */
+    @Override
+    public String toString() {
+        String[] strings = new String[15];
+        StringBuilder sb = new StringBuilder();
+        for(int i = 0; i < 15; i++){
+            strings[i] = ( i + 1 < 10 ? " " + (i + 1) : i + 1) + " |";
+            for(int j = 0; j < 15; j++){
+                if(this.points[i][j].getTile() != null) {
+                    strings[i] += this.points[i][j].getTile().getValue() + " ";
+                }
+                else{
+                    strings[i] += "  ";
+                }
+            }
+        }
+        for(String s : strings){
+            sb.append(s).append('\n');
+        }
+        return sb.toString();
     }
 
     /**
