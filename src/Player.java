@@ -1,8 +1,8 @@
 /*
   Code Authors:
   Thomas O'Gara (18379576) (thomas.ogara@ucdconnect.ie)
-  Jarrett (18375813 (jarrett.pierse@ucdconnect.ie)
-  Daniel (17481174) (daniel.nwabueze@ucdconnect.ie)
+  Jarrett Pierse (18375813 (jarrett.pierse@ucdconnect.ie)
+  Daniel Nwabueze (17481174) (daniel.nwabueze@ucdconnect.ie)
  */
 
 import javax.swing.*;
@@ -14,17 +14,12 @@ public class Player {
     private String username = "";
     private int score = 0; // holds score for user
     private Frame frame;
-    private ArrayList<Point> currentWord;
-    private ArrayList<Point> storedWords;
-
 
     // default constructor for Player object
     public Player() {
         this.username = username;
         this.score = score;
         this.frame = new Frame();
-        this.storedWords = new ArrayList<Point>(); // stored words of that player
-        this.currentWord = new ArrayList<Point>();
     }
 
     // constructor with just name argtiles
@@ -41,22 +36,6 @@ public class Player {
     public void resetUser(){
        this.username = "";
        this.score = 0;
-    }
-
-    public void setCurrentWord(ArrayList<Point> currentWord){
-        this.currentWord = currentWord;
-    }
-
-    public void setStoredWords(ArrayList<Point> storedWords){
-        this.storedWords = storedWords;
-    }
-
-    public ArrayList<Point> getCurrentWord() {
-        return this.currentWord;
-    }
-
-    public ArrayList<Point> getStoredWords() {
-        return this.storedWords;
     }
 
     // set player's name method
