@@ -30,9 +30,6 @@ public class Point {
     private Board board;
 
     public Point(int x, int y) {
-        if(x < 0 || x >= 15 || y < 0 || y >= 15){
-            throw new IllegalArgumentException("x and y must both be in the range (0, 14) inclusive");
-        }
         this.x = x;
         this.y = y;
         this.formedWords = new ArrayList<>();
@@ -43,9 +40,6 @@ public class Point {
      * Alternative constructor for Point class to set the Board instance too
      */
     public Point(int x, int y, Board board) {
-        if(x < 0 || x >= 15 || y < 0 || y >= 15){
-            throw new IllegalArgumentException("x and y must both be in the range (0, 14) inclusive");
-        }
         this.x = x;
         this.y = y;
         this.board = board;

@@ -2,12 +2,6 @@ import java.util.ArrayList;
 
 public class Board {
     private int occupiedTileCount;
-    private boolean inProgress;
-    private final ArrayList<Point> buffer = new ArrayList<>();
-
-    private final void endTurn(){
-        inProgress = !inProgress;
-    }
 
     public Point[][] points;
 
@@ -42,12 +36,42 @@ public class Board {
      * @param p the Point to be queried
      * @return boolean representing whether the placement of the given Point p would be valid
      */
-    public final boolean isValid(Point p){
-        if(this.isFirst()){
-            return this.isCentered(p);
-        }else{
-            return this.isAvailable(p) && this.isConnecting(p);
+    public final boolean isValid(Point[] p){
+        boolean connecting = false;
+        boolean centred = false;
+        boolean valid = true;
+
+        for(int i = 0; i < p.length; i++){
+            if(this.isFirst()){
+                /*
+                    If at least one of the points in p[] is in the centre of the board, centred will evaluate to true
+                 */
+                centred |= isCentered(p[i]);
+            }
+            /*
+                Validity is determined by:
+                    - the point being in range
+                    - the point on the board being available, OR the point on the board already having the same value as the one being placed there
+             */
+            valid &= (isAvailable(p[i]) || isOnBoard(p[0])) && isInRange(p[i]);
+            /*
+                If at least one of the points in p[] has a neighbour, connecting will evaluate to true
+             */
+            connecting |= isConnecting(p[i]);
         }
+
+        if(this.isFirst()){
+            return valid && centred;
+        }
+        return valid && connecting;
+    }
+
+    public final boolean isOnBoard(Point p){
+        return points[p.getY()][p.getX()].getTile().getValue().equals(p.getTile().getValue());
+    }
+
+    public final boolean isInRange(Point p){
+        return p.getX() >= 0 && p.getX() < 15 && p.getY() >= 0 && p.getY() < 15;
     }
 
     /**
@@ -59,7 +83,7 @@ public class Board {
      * @param y The y co-ordinate of the chosen square of the board
      * @return
      */
-    public final boolean add(Tile t, int x, int y){
+    protected boolean add(Tile t, int x, int y){
         Point p = new Point(x, y);
         p.setBoard(this);
         p.setTile(t);
@@ -72,10 +96,7 @@ public class Board {
      * @param p The Point to be placed onto this board
      * @return boolean indicating the success/failure of the placement.
      */
-    public final boolean add(Point p){
-        if(!this.isValid(p)){
-            return false;
-        }
+    protected boolean add(Point p){
         p.setBoard(this);
         this.points[p.getY()][p.getX()] = p;
         this.incrementOccupiedTileCount();
@@ -90,25 +111,76 @@ public class Board {
      * @param p Point encapsulating the x/y position where the first character of the String should be placed
      * @param d Character indicating the direction the word should be placed in ('D' => Down, 'R' => Right)
      */
-    public final boolean add(String s, Point p, char d){
-        char[] chars = s.toCharArray();
-        switch (d){
-            case 'R':
-                for(int i = 0; i < s.length(); i++) {
-                    char c = chars[i];
-                    this.add(new Tile(c), p.getX() + i, p.getY());
-                }
-                break;
-            case 'D':
-                for(int i = 0; i < s.length(); i++) {
-                    char c = chars[i];
-                    this.add(new Tile(c), p.getX(), p.getY() + i);
-                }
-                break;
-            default:
-                return false;
+    public final boolean add(String s, Point p, char d, Player u){
+        String overlap = this.getOverlap(s, p, d);
+        if((d != 'R' && d != 'D' )|| !u.getFrame().hasLetters((u.getFrame().getLettersAsString() + overlap).toCharArray())){
+            return false;
         }
+
+        /*
+            Construct a point array to represent the Point's being placed onto the Board
+            this point array is used to check the validity of the move
+         */
+        char[] chars = s.toCharArray();
+        Point[] point_array = new Point[s.length()];
+        for(int i = 0; i < s.length(); i++){
+            Tile tile;
+            Point point;
+            switch (d){
+                case 'R':
+                    tile = new Tile(chars[i]);
+                    point = new Point(p.getX() + i, p.getY(), this);
+                    point.setTile(tile);
+                    point_array[i] = point;
+                    break;
+                case 'D':
+                    tile = new Tile(chars[i]);
+                    point = new Point(p.getX(), p.getY() + i, this);
+                    point.setTile(tile);
+                    point_array[i] = point;
+                    break;
+            }
+        }
+
+        /*
+            If this point array is invalid, quit
+         */
+        if(!isValid(point_array)){
+            return false;
+        }
+
+        /*
+            ALL VALIDITY CHECKS COMPLETE, EXECUTE TURN
+         */
+        // Add each point to the board
+        for(Point point : point_array){
+            this.add(point);
+        }
+
+        // Remove all the letters from the player's frame which they would have to use in order to execute this turn
+        u.getFrame().removeAll(s.replaceAll(overlap, ""));
+
+        // The turn has been executed successfully
         return true;
+    }
+
+    public final String getOverlap(String s, Point p, char d){
+        StringBuilder sb = new StringBuilder();
+        for(int i = 0; i < s.length(); i++){
+            Tile t;
+            if(d == 'R'){
+                t = points[p.getY()][p.getX() + i].getTile();
+                if(t != null && t.getValue() != null){
+                    sb.append(t.getValue());
+                }
+            }else{
+                t = points[p.getY() + i][p.getX()].getTile();
+                if(t != null && t.getValue() != null){
+                    sb.append(t.getValue());
+                }
+            }
+        }
+        return sb.toString();
     }
 
     /**
@@ -118,7 +190,11 @@ public class Board {
      * @return boolean representing whether this Point has any neighbours on this Board
      */
     public final boolean isConnecting(Point p){
-        return p.getFormedWords().size() != 0;
+        return points[p.getY()][p.getX()].isFilled() ||
+                (p.getRight()!= null && p.getRight().isFilled()) ||
+                (p.getLeft()!= null && p.getLeft().isFilled()) ||
+                (p.getDown()!= null && p.getDown().isFilled()) ||
+                (p.getUp()!= null && p.getUp().isFilled());
     }
 
 

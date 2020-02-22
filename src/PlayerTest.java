@@ -40,21 +40,13 @@ public class PlayerTest {
         System.out.println(player1.getUsername() + "'s Frame: " + player1.getFrame());
         System.out.println(player2.getUsername() + "'s Frame: " + player2.getFrame());
 
-        gameBoard.add(player1.getFrame().getLettersAsString(), new Point(6, 6), 'R');
-        player1.getFrame().removeAll(player1.getFrame().getLettersAsString());
+        gameBoard.add(player1.getFrame().getLettersAsString(), new Point(6, 6), 'R', player1);
         System.out.println(gameBoard);
 
         System.out.println(player1.getUsername() + "'s Frame: " + player1.getFrame());
         System.out.println(player2.getUsername() + "'s Frame: " + player2.getFrame());
 
-        gameBoard.add(player2.getFrame().getLettersAsString(), new Point(6, 8), 'D');
-        player2.getFrame().removeAll(player2.getFrame().getLettersAsString());
-        System.out.println(gameBoard);
-
-        System.out.println("Board before reset: ");
-        System.out.println(gameBoard);
-        System.out.println("Board after reset: ");
-      //  gameBoard.resetBoard();
+        gameBoard.add(player2.getFrame().getLettersAsString(), new Point(6, 6), 'D', player2);
         System.out.println(gameBoard);
 
         System.out.println(player1.getUsername() + "'s Frame: " + player1.getFrame());
