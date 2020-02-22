@@ -51,6 +51,31 @@ public class PlayerTest {
 
         System.out.println(player1.getUsername() + "'s Frame: " + player1.getFrame());
         System.out.println(player2.getUsername() + "'s Frame: " + player2.getFrame());
+
+        player1.getFrame().getLetters().clear();
+        player2.getFrame().getLetters().clear();
+
+        player1.getFrame().addAll("ABCDEFG");
+        player2.getFrame().addAll("ABCDEFG");
+
+        System.out.println();
+        System.out.println(player1.getUsername() + "'s Frame: " + player1.getFrame());
+        System.out.println(player2.getUsername() + "'s Frame: " + player2.getFrame());
+
+        gameBoard.add("ABCDEFG", new Point(9, 3), 'D', player1);
+        System.out.println(gameBoard);
+        System.out.println(player1.getUsername() + "'s Frame: " + player1.getFrame());
+        System.out.println(player2.getUsername() + "'s Frame: " + player2.getFrame());
+
+        player1.getFrame().getLetters().clear();
+        player2.getFrame().getLetters().clear();
+        player1.getFrame().addAll("ABCDEFG");
+        player2.getFrame().addAll("ABCDEFG");
+        gameBoard.add("ABCDEFG", new Point(5, 7), 'R', player2);
+        System.out.println(gameBoard);
+        System.out.println(player1.getUsername() + "'s Frame: " + player1.getFrame());
+        System.out.println(player2.getUsername() + "'s Frame: " + player2.getFrame());
+
 //        // Initialise the game pool
 //        gamePool = new Pool();
 //

@@ -1,4 +1,5 @@
 import java.util.ArrayList;
+import java.util.Arrays;
 
 public class Board {
     private int occupiedTileCount;
@@ -53,7 +54,7 @@ public class Board {
                     - the point being in range
                     - the point on the board being available, OR the point on the board already having the same value as the one being placed there
              */
-            valid &= (isAvailable(p[i]) || isOnBoard(p[0])) && isInRange(p[i]);
+            valid &= (isAvailable(p[i]) || isOnBoard(p[i])) && isInRange(p[i]);
             /*
                 If at least one of the points in p[] has a neighbour, connecting will evaluate to true
              */
@@ -67,7 +68,7 @@ public class Board {
     }
 
     public final boolean isOnBoard(Point p){
-        return points[p.getY()][p.getX()].getTile().getValue().equals(p.getTile().getValue());
+        return points[p.getY()][p.getX()].isFilled() && points[p.getY()][p.getX()].getTile().getValue().equals(p.getTile().getValue());
     }
 
     public final boolean isInRange(Point p){
@@ -157,8 +158,18 @@ public class Board {
             this.add(point);
         }
 
+        ArrayList<Tile> s_list = new ArrayList<>();
+
+        for(char c : s.toCharArray()){
+            s_list.add(new Tile(c));
+        }
+
+        for(char c : overlap.toCharArray()){
+            s_list.remove(new Tile(c));
+        }
+
         // Remove all the letters from the player's frame which they would have to use in order to execute this turn
-        u.getFrame().removeAll(s.replaceAll(overlap, ""));
+        u.getFrame().removeAll(s_list);
 
         // The turn has been executed successfully
         return true;
