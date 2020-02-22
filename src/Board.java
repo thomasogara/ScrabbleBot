@@ -1,5 +1,4 @@
 import java.util.ArrayList;
-import java.util.Arrays;
 
 public class Board {
     private int occupiedTileCount;
@@ -38,10 +37,11 @@ public class Board {
      * @return boolean representing whether the placement of the given Point p would be valid
      */
     public final boolean isValid(Point[] p){
-        boolean connecting = false;
-        boolean centred = false;
-        boolean valid = true;
+        boolean connecting = false; // initialised to false to allow for boolean algebra hackz
+        boolean centred = false; // initialised to false to allow for boolean algebra hackz
+        boolean valid = true; // initialised to true to allow for boolean algebra hackz
 
+        // Iterate over the Point[] array p, and combine the result of calling the validity checks on each element
         for(int i = 0; i < p.length; i++){
             if(this.isFirst()){
                 /*
@@ -61,12 +61,19 @@ public class Board {
             connecting |= isConnecting(p[i]);
         }
 
+        // The first move must only be valid and pass through the centre
         if(this.isFirst()){
             return valid && centred;
         }
+        // ALl other moves must be valid and must connect to other words already on the board
         return valid && connecting;
     }
 
+    /**
+     * Confirm that a given Point p already has an equal counterpart at its x and y co-ords on the Board
+     * @param p the Point to be tested
+     * @return boolean representing the Point p's presence/absence on the Board
+     */
     public final boolean isOnBoard(Point p){
         return points[p.getY()][p.getX()].isFilled() && points[p.getY()][p.getX()].getTile().getValue().equals(p.getTile().getValue());
     }
@@ -113,39 +120,20 @@ public class Board {
      * @param d Character indicating the direction the word should be placed in ('D' => Down, 'R' => Right)
      */
     public final boolean add(String s, Point p, char d, Player u){
+        // Construct a String containing all the overlapping tiles
         String overlap = this.getOverlap(s, p, d);
+
+        // if the direction is not properly defined, or the player's Frame does not contain the necessary letters
+        // to execute the turn (excluding the overlap tiles), then the turn cannot be executed
         if((d != 'R' && d != 'D' )|| !u.getFrame().hasLetters((u.getFrame().getLettersAsString() + overlap).toCharArray())){
             return false;
         }
 
-        /*
-            Construct a point array to represent the Point's being placed onto the Board
-            this point array is used to check the validity of the move
-         */
-        char[] chars = s.toCharArray();
-        Point[] point_array = new Point[s.length()];
-        for(int i = 0; i < s.length(); i++){
-            Tile tile;
-            Point point;
-            switch (d){
-                case 'R':
-                    tile = new Tile(chars[i]);
-                    point = new Point(p.getX() + i, p.getY(), this);
-                    point.setTile(tile);
-                    point_array[i] = point;
-                    break;
-                case 'D':
-                    tile = new Tile(chars[i]);
-                    point = new Point(p.getX(), p.getY() + i, this);
-                    point.setTile(tile);
-                    point_array[i] = point;
-                    break;
-            }
-        }
+        // Translate the input information into a more manageable form, a Point[] array
+        // This array can then be checked for validity, and placed onto the Board
+        Point[] point_array = createPointArrayFromQuery(s, p, d);
 
-        /*
-            If this point array is invalid, quit
-         */
+        // If this point array is invalid, quit
         if(!isValid(point_array)){
             return false;
         }
@@ -153,20 +141,22 @@ public class Board {
         /*
             ALL VALIDITY CHECKS COMPLETE, EXECUTE TURN
          */
-        // Add each point to the board
-        for(Point point : point_array){
-            this.add(point);
-        }
 
+        // Add each point to the board
+        for(Point point : point_array)
+            this.add(point);
+
+        // Construct a new ArrayList which will contain Tile representing all of the Points to be placed during this turn
         ArrayList<Tile> s_list = new ArrayList<>();
 
-        for(char c : s.toCharArray()){
+        // Add the Tile representation of each letter of the input to the ArrayList s_list
+        for(char c : s.toCharArray())
             s_list.add(new Tile(c));
-        }
 
-        for(char c : overlap.toCharArray()){
+        // Remove the Tile representation of each letter of the overlap from the ArrayList s_list, as these
+        // tiles mustn't be removed from the Player's Frame, since they already exist on the board
+        for(char c : overlap.toCharArray())
             s_list.remove(new Tile(c));
-        }
 
         // Remove all the letters from the player's frame which they would have to use in order to execute this turn
         u.getFrame().removeAll(s_list);
@@ -175,6 +165,13 @@ public class Board {
         return true;
     }
 
+    /**
+     * Construct a String representing the values of the Points which already exist on the board, in the path of the turn
+     * @param s the String to be placed on the Board
+     * @param p the Point representing the origin of the move
+     * @param d the direction of the move ('R' => Right, 'D' => Down)
+     * @return String representing the overlap
+     */
     public final String getOverlap(String s, Point p, char d){
         StringBuilder sb = new StringBuilder();
         for(int i = 0; i < s.length(); i++){
@@ -250,6 +247,41 @@ public class Board {
             sb.append(s).append('\n');
         }
         return sb.toString();
+    }
+
+    /**
+     * Utility method for translating a query into an alternative form, as a Point[] array
+     * @param s the String from the parent query
+     * @param p the Point of the origin of the parent query
+     * @param d the direction of the parent query
+     * @return Point[] array representing the Points to be placed on the board
+     */
+    public final Point[] createPointArrayFromQuery(String s, Point p, char d){
+        /*
+            Construct a point array to represent the Point's being placed onto the Board
+            this point array is used to check the validity of the move
+         */
+        Point[] point_array = new Point[s.length()];
+        char[] chars = s.toCharArray();
+        for(int i = 0; i < s.length(); i++){
+            Tile tile;
+            Point point;
+            switch (d){
+                case 'R':
+                    tile = new Tile(chars[i]);
+                    point = new Point(p.getX() + i, p.getY(), this);
+                    point.setTile(tile);
+                    point_array[i] = point;
+                    break;
+                case 'D':
+                    tile = new Tile(chars[i]);
+                    point = new Point(p.getX(), p.getY() + i, this);
+                    point.setTile(tile);
+                    point_array[i] = point;
+                    break;
+            }
+        }
+        return point_array;
     }
 
     /**
