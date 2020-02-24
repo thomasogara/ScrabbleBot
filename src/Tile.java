@@ -106,7 +106,7 @@ public class Tile{
 	}
 
 	/**
-	 * A method to convert a List<Character> to an ArrayList<Tile><
+	 * A method to convert a List<Character> to an ArrayList<Tile>
 	 * @param letters the List<Character> to be converted
 	 * @return the resulting ArrayList<Tile>
 	 */

@@ -29,9 +29,7 @@ public class Frame{
      * @see Frame#letters
      */
     public Frame(){
-        this.setPool(PlayerTest.gamePool);
         this.letters = new ArrayList<>();
-        this.refill();
     }
 
     /**
@@ -63,8 +61,10 @@ public class Frame{
      * @see Frame#letters
      * @param tiles List<Tile> containing a list of Objects to be removed from the Frame
      */
-    public final void removeAll(List<Tile> tiles){
-        this.getLetters().removeAll(tiles);
+    public final void removeAll(List<Tile> tiles) {
+        for(Tile tile : tiles){
+            this.getLetters().remove(tile);
+        }
     }
 
     /**

@@ -6,76 +6,6 @@
  */
 
 public class PlayerTest {
-    public static Board gameBoard;
-    public static Pool gamePool;
-
-    public static Player player1;
-    public static Player player2;
-
-    public static void main(String[] args) {
-        // Intialise the game board and necessary objects
-        gameBoard = new Board();
-        System.out.print("\n\n");
-        gamePool = new Pool();
-        player1 = new Player("Brent Corrigan");
-        player2 = new Player("Sean Cody");
-
-        // setup
-        player1.getFrame().setPool(gamePool);
-        player2.getFrame().setPool(gamePool);
-        player1.getFrame().getLetters().clear();
-        player2.getFrame().getLetters().clear();
-
-        //First test
-
-        player1.getFrame().addAll("AAPPLES");
-        player2.getFrame().addAll("BATHXDE");
-        System.out.println(player1.getUsername() + "'s Frame Before Move: " + player1.getFrame());
-        System.out.println(player2.getUsername() + "'s Frame Before Move: " + player2.getFrame());
-
-        gameBoard.add("APPLE", new Point(6, 6), 'R', player1);
-
-        System.out.println(gameBoard);
-        System.out.println(player1.getUsername() + "'s Frame After Move: " + player1.getFrame());
-        System.out.println(player2.getUsername() + "'s Frame After Move: " + player2.getFrame());
-
-        System.out.println("\n\n\n\n");
-
-        // Second Test
-
-        player1.getFrame().refill();
-        player2.getFrame().refill();
-        System.out.println(player1.getUsername() + "'s Frame Before Test: " + player1.getFrame());
-        System.out.println(player2.getUsername() + "'s Frame Before Test: " + player2.getFrame());
-
-
-        gameBoard.add("BATH", new Point(6, 5), 'D', player2);
-
-        System.out.println(gameBoard);
-        System.out.println(player1.getUsername() + "'s Frame After Test: " + player1.getFrame());
-        System.out.println(player2.getUsername() + "'s Frame After Test: " + player2.getFrame());
-
-        System.out.println("\n\n\n\n");
-
-        /*
-            Check for single-letter placements at end of existing word
-            e.g. |A|P|P|L|E|
-            place |S| at end
-            should result in |A|P|P|L|E|S| with only |S| removed from PLayer's frame
-         */
-        player1.getFrame().getLetters().clear();
-        player1.getFrame().add(new Tile('S'));
-        player1.getFrame().refill();
-        player2.getFrame().refill();
-
-        System.out.println(player1.getUsername() + "'s Frame Before Test: " + player1.getFrame());
-        System.out.println(player2.getUsername() + "'s Frame Before Test: " + player2.getFrame());
-
-        gameBoard.add("APPLES", new Point(6, 6), 'R', player1);
-        System.out.println(gameBoard);
-        System.out.println(player1.getUsername() + "'s Frame: " + player1.getFrame());
-        System.out.println(player2.getUsername() + "'s Frame: " + player2.getFrame());
-
 //        // Initialise the game pool
 //        gamePool = new Pool();
 //
@@ -128,8 +58,6 @@ public class PlayerTest {
 //        System.out.println("Removing the '" + randomPlayer1Tile.getValue() + "' tile from Player 1's Frame..");
 //        player1.getFrame().removeAll("" + randomPlayer1Tile.getValue());
 //        System.out.println("Player 1's Frame: " + player1.getFrame().getLettersAsString());
-
-    }
 
 
 }
