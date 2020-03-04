@@ -5,6 +5,10 @@
   Daniel Nwabueze (17481174) (daniel.nwabueze@ucdconnect.ie)
  */
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.util.HashSet;
 import java.util.Scanner;
 
 public class Scrabble {
@@ -14,14 +18,14 @@ public class Scrabble {
     /* The default number of players for a game of Scrabble */
     public static final int PLAYER_COUNT = 2;
     public static final Scanner STDIN = new Scanner(System.in);
+    public static final HashSet<String> VALID_WORD_SET = createValidWordSet();
 
     public static void main(String[] args){
         Board board = new Board();
         Player[] players = new Player[Scrabble.PLAYER_COUNT];
-        welcomeMessage();
-        initPlayers(players);
-        System.out.println(players[0].getUsername());
-        System.out.println(players[1].getUsername());
+        printWelcomeMessage();
+        System.out.println(Scrabble.VALID_WORD_SET.size());
+        System.out.println(Scrabble.isValidWord("hello"));
     }
 
     /**
@@ -53,8 +57,41 @@ public class Scrabble {
     /**
      * Basic method to print the welcome message to the screen.
      */
-    private static void welcomeMessage(){
+    private static void printWelcomeMessage(){
         String greeting = "============================== WELCOME TO SCRABBLE ==============================";
         System.out.println(greeting);
     }
+
+    /**
+     * Method to create a HashSet containing all valid word values from a text file (text file should be located
+     * in /assets/words.txt)
+     * @return HashSet<String> representing all valid word values
+     */
+    public static HashSet<String> createValidWordSet(){
+        HashSet<String> legalWords = new HashSet<>();
+        try {
+            File file = new File("assets/words.txt");
+            FileReader fr = new FileReader(file);
+            BufferedReader br = new BufferedReader(fr);
+            String line;
+            while((line = br.readLine()) != null){
+                legalWords.add(line);
+            }
+        } catch (Exception ex){
+            ex.printStackTrace();
+        }
+        return legalWords;
+    }
+
+    /**
+     * A simple method to allow checks to be made to ensure a word is a valid scrabble word,
+     * as per the Collins 2019 Scrabble Dictionary
+     * @param s the String to be verified
+     * @return the validity of the word (true => valid, false => invalid)
+     */
+    public static final boolean isValidWord(String s){
+        return Scrabble.VALID_WORD_SET.contains(s.toUpperCase());
+    }
+
+
 }
