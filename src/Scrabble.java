@@ -19,11 +19,12 @@ public class Scrabble {
     public static final int PLAYER_COUNT = 2;
     public static final Scanner STDIN = new Scanner(System.in);
     public static final HashSet<String> VALID_WORD_SET = createValidWordSet();
+    public static final String WELCOME_MESSAGE = createWelcomeMessage();
 
     public static void main(String[] args){
         Board board = new Board();
         Player[] players = new Player[Scrabble.PLAYER_COUNT];
-        printWelcomeMessage();
+        System.out.print(Scrabble.WELCOME_MESSAGE);
         System.out.println(Scrabble.VALID_WORD_SET.size());
         System.out.println(Scrabble.isValidWord("hello"));
     }
@@ -55,14 +56,6 @@ public class Scrabble {
     }
 
     /**
-     * Basic method to print the welcome message to the screen.
-     */
-    private static void printWelcomeMessage(){
-        String greeting = "============================== WELCOME TO SCRABBLE ==============================";
-        System.out.println(greeting);
-    }
-
-    /**
      * Method to create a HashSet containing all valid word values from a text file (text file should be located
      * in /assets/words.txt)
      * @return HashSet<String> representing all valid word values
@@ -81,6 +74,26 @@ public class Scrabble {
             ex.printStackTrace();
         }
         return legalWords;
+    }
+
+    /**
+     * Create the static class variable WELCOME_MESSAGE which is contained in the file banner.txt
+     * @return String representing the message to be printed to stdout on start-up
+     */
+    public static String createWelcomeMessage(){
+        StringBuilder sb = new StringBuilder();
+        try {
+            File file = new File("assets/banner.txt");
+            FileReader fr = new FileReader(file);
+            BufferedReader br = new BufferedReader(fr);
+            String line;
+            while((line = br.readLine()) != null){
+                sb.append(line).append("\n");
+            }
+        } catch (Exception ex){
+            ex.printStackTrace();
+        }
+        return sb.toString();
     }
 
     /**
