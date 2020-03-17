@@ -8,6 +8,7 @@
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Scanner;
 
@@ -17,6 +18,7 @@ public class Scrabble {
      */
     /* The default number of players for a game of Scrabble */
     public static final int PLAYER_COUNT = 2;
+    public static Board BOARD;
     public static final Scanner STDIN = new Scanner(System.in);
     public static final HashSet<String> VALID_WORD_SET = createValidWordSet();
     public static final String WELCOME_MESSAGE = createWelcomeMessage();
@@ -24,11 +26,40 @@ public class Scrabble {
     public static void main(String[] args){
         Board board = new Board();
         Player[] players = new Player[Scrabble.PLAYER_COUNT];
+        Point.readBonusFile();
+        for(Point.BonusType[] row : Point.bonusTypes){
+            System.out.print("[");
+            for(Point.BonusType item : row){
+                if(item == Point.BonusType.NB){
+                    System.out.print("  ,");
+                }else{
+                    System.out.print(item + ",");
+                }
+            }
+            System.out.println("]");
+        }
         System.out.print(Scrabble.WELCOME_MESSAGE);
-        System.out.println(Scrabble.VALID_WORD_SET.size());
-        System.out.println(Scrabble.isValidWord("hello"));
+        initPlayers(players);
+        for(int i = 0; i < players.length; i++){
+            System.out.println("Welcome to scrabble, player " + (i + 1) + ", who has decided upon the username: " + players[i].getUsername());
+        }
     }
 
+    private static int calculateScore(String s, Point p, char d, Player u ){
+        Point[] required = BOARD.getRequiredTilesAsPointArray(s, p, d);
+        int sum = 0;
+        int wordMultiplier = 1;
+        for(Point point : required){
+            if(point.getBonusType() == Point.BonusType.DW){
+                wordMultiplier *= 2;
+            }
+            if(point.getBonusType() == Point.BonusType.TW){
+                wordMultiplier *= 3;
+            }
+            sum += point.getScore();
+        }
+        return 0;
+    }
     /**
      * A simple method allowing for an array of Players to have its members initialised, and for all
      * players in that array to have valid usernames set, these usernames being read from stdin.
@@ -49,7 +80,7 @@ public class Scrabble {
     private static String readUsername(int playerNumber){
         String username = "";
         do{
-            System.out.println("Please enter the username you would like to set for player " + playerNumber + " and then press the enter key");
+            System.out.println("Please enter the username you would like to set for player " + (playerNumber + 1) + " and then press the enter key");
             username = Scrabble.STDIN.nextLine().replaceAll("(^\\s+)|(\\s+$)", "").replaceAll("\\s+", " ");
         }while(username.equals(""));
         return username;

@@ -138,7 +138,7 @@ public class Board {
 
         // Translate the input information into a more manageable form, a Point[] array
         // This array can then be checked for validity, and placed onto the Board
-        Point[] point_array = createPointArrayFromQuery(s, p, d);
+        Point[] point_array = Board.createPointArrayFromQuery(s, p, d, this);
 
         // If this point array is invalid, quit
         if(!isValid(point_array)){
@@ -166,9 +166,9 @@ public class Board {
      * @param overlap String representing the characters which are already on the board in the path of this turn
      * @param u the Player who's Frame is to be altered
      */
-    public final void removeTilesFromPLayerFrame(String s, String overlap, Player u){
+    public static void removeTilesFromPLayerFrame(String s, String overlap, Player u){
         // Remove all the letters from the player's frame which they would have to use in order to execute this turn
-        u.getFrame().removeAll(this.stringDifference(s, overlap));
+        u.getFrame().removeAll(Board.stringDifference(s, overlap));
     }
 
     /**
@@ -195,6 +195,20 @@ public class Board {
             }
         }
         return sb.toString();
+    }
+
+    public final Point[] getRequiredTilesAsPointArray(String s, Point p, char d){
+        ArrayList<Point> required = new ArrayList<>();
+        Point[] query = Board.createPointArrayFromQuery(s, p, d, this);
+        for(Point point : query){
+            if(!this.isOnBoard(point))
+                required.add(point);
+        }
+        Point[] requiredPointsArray = new Point[required.size()];
+        for(int i = 0; i < required.size(); i++){
+            requiredPointsArray[i] = required.get(i);
+        }
+        return requiredPointsArray;
     }
 
     /**
@@ -236,7 +250,7 @@ public class Board {
      * @param d the direction of the parent query
      * @return Point[] array representing the Points to be placed on the board
      */
-    public final Point[] createPointArrayFromQuery(String s, Point p, char d){
+    public static Point[] createPointArrayFromQuery(String s, Point p, char d, Board b){
         /*
             Construct a point array to represent the Point's being placed onto the Board
             this point array is used to check the validity of the move
@@ -249,13 +263,13 @@ public class Board {
             switch (d){
                 case 'R':
                     tile = new Tile(chars[i]);
-                    point = new Point(p.getX() + i, p.getY(), this);
+                    point = new Point(p.getX() + i, p.getY(), b);
                     point.setTile(tile);
                     point_array[i] = point;
                     break;
                 case 'D':
                     tile = new Tile(chars[i]);
-                    point = new Point(p.getX(), p.getY() + i, this);
+                    point = new Point(p.getX(), p.getY() + i, b);
                     point.setTile(tile);
                     point_array[i] = point;
                     break;
@@ -311,7 +325,7 @@ public class Board {
      * @param rmv the String whose elements should be removed from src
      * @return String representation of src - rmv
      */
-    private final String stringDifference(String src, String rmv){
+    public static String stringDifference(String src, String rmv){
         ArrayList<Tile> s_list = new ArrayList<>();
         for(char c : src.toCharArray()){
             s_list.add(new Tile(c));

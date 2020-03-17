@@ -5,6 +5,9 @@
   Daniel Nwabueze (17481174) (daniel.nwabueze@ucdconnect.ie)
  */
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
 import java.util.ArrayList;
 
 public class Point {
@@ -15,8 +18,10 @@ public class Point {
         TL, // Triple Letter - LETTER played points is worth x3 it's orig. value
         DW, // Double Word - WORD played is worth x2 it's orig. value
         TW, // Triple Word - WORD played is worth x3 it's orig. value
-        S, // Start point / center of the board
+        NB, // No Bonus - This point is not a bonus square
     }
+
+    public static BonusType[][] bonusTypes;
 
     // The tile placed on this Point
     private Tile tile;
@@ -55,6 +60,14 @@ public class Point {
     }
 
     /**
+     * A method allowing for the score associated with a given Point to be calculated.
+     * @return the score associated with this Point.
+     */
+    public int getScore(){
+        return 0;
+    }
+
+    /**
      * Init the bonus type of the Tile placed on this Point
      */
     public void initBonusType() {
@@ -82,7 +95,7 @@ public class Point {
      * Gets the bonus type of this point
      * @return The bonus type of this point i.e Double Letter, Triple Letter, etc..
      */
-    private BonusType getBonusType() {
+    public BonusType getBonusType() {
         return this.bonus;
     }
 
@@ -244,6 +257,53 @@ public class Point {
         return null;
     }
 
-
+    public static void readBonusFile(){
+        try{
+            BonusType[][] bonusArray = new BonusType[15][15];
+            File file = new File("./assets/bonus.conf");
+            FileReader fr = new FileReader(file);
+            BufferedReader br = new BufferedReader(fr);
+            ArrayList<String> lines = new ArrayList<>();
+            ArrayList<String[]> split_lines = new ArrayList<>();
+            String line = null;
+            while((line = br.readLine()) != null){
+                lines.add(line);
+            }
+            for(String s : lines){
+                split_lines.add(s.split("_"));
+            }
+            for(String[] s : split_lines){
+                int y = Integer.parseInt(s[1].split(",")[0]);
+                int x = Integer.parseInt(s[1].split(",")[1]);
+                switch(s[0]){
+                    case "DL":
+                        bonusArray[y][x] = BonusType.DL;
+                        break;
+                    case "TL":
+                        bonusArray[y][x] = BonusType.TL;
+                        break;
+                    case "DW":
+                        bonusArray[y][x] = BonusType.DW;
+                        break;
+                    case "TW":
+                        bonusArray[y][x] = BonusType.TW;
+                        break;
+                    default:
+                        bonusArray[y][x] = BonusType.NB;
+                        break;
+                }
+            }
+            for(int y = 0; y < bonusArray.length; y++){
+                for(int x = 0; x < bonusArray[y].length; x++){
+                    if(bonusArray[y][x] == null){
+                        bonusArray[y][x] = BonusType.NB;
+                    }
+                }
+            }
+            Point.bonusTypes = bonusArray;
+        } catch(Exception ex){
+            ex.printStackTrace();
+        }
+    }
 
 }
