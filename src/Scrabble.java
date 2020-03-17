@@ -8,7 +8,6 @@
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
-import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Scanner;
 
@@ -18,47 +17,57 @@ public class Scrabble {
      */
     /* The default number of players for a game of Scrabble */
     public static final int PLAYER_COUNT = 2;
-    public static Board BOARD;
+    public static final Board BOARD = new Board();
+    public static final Pool POOL = new Pool();
+    public static final Player[] PLAYERS = new Player[Scrabble.PLAYER_COUNT];
     public static final Scanner STDIN = new Scanner(System.in);
-    public static final HashSet<String> VALID_WORD_SET = createValidWordSet();
+    public static final HashSet<String> DICTIONARY = createDictionary();
     public static final String WELCOME_MESSAGE = createWelcomeMessage();
+    public static int NUMBER_OF_SCORELESS_TURNS = 0;
 
     public static void main(String[] args){
-        Board board = new Board();
-        Player[] players = new Player[Scrabble.PLAYER_COUNT];
-        Point.readBonusFile();
-        for(Point.BonusType[] row : Point.BONUS_TYPES){
-            System.out.print("[");
-            for(Point.BonusType item : row){
-                if(item == Point.BonusType.NB){
-                    System.out.print("  ,");
-                }else{
-                    System.out.print(item + ",");
-                }
-            }
-            System.out.println("]");
-        }
         System.out.print(Scrabble.WELCOME_MESSAGE);
-        initPlayers(players);
-        for(int i = 0; i < players.length; i++){
-            System.out.println("Welcome to scrabble, player " + (i + 1) + ", who has decided upon the username: " + players[i].getUsername());
+        initPlayers(Scrabble.PLAYERS);
+        for(int i = 0; i < Scrabble.PLAYERS.length; i++){
+            System.out.println("Welcome to scrabble, player " + (i + 1) + ", who has decided upon the username: " + Scrabble.PLAYERS[i].getUsername());
         }
+        System.out.println();
+        while(Scrabble.NUMBER_OF_SCORELESS_TURNS < 6 && !Scrabble.POOL.isEmpty()){
+            for(int i = 0; i < Scrabble.PLAYER_COUNT; i++){
+                String command = Scrabble.STDIN.nextLine();
+                // TODO implement proper interaction with the UI interface once complete
+                // should approximately have a pattern as per below template
+                // UI.parseInput(command);
+            }
+        }
+        Scrabble.STDIN.close();
     }
 
     private static int calculateScore(String s, Point p, char d, Player u ){
-        Point[] required = BOARD.getRequiredTilesAsPointArray(s, p, d);
+        Point[] required = Scrabble.BOARD.getRequiredTilesAsPointArray(s, p, d);
         int sum = 0;
         int wordMultiplier = 1;
         for(Point point : required){
-            if(point.getBonusType() == Point.BonusType.DW){
-                wordMultiplier *= 2;
+            int score = point.getScore();
+            switch (point.getBonusType()){
+                case DW:
+                    wordMultiplier *= 2;
+                    break;
+                case TW:
+                    wordMultiplier *= 3;
+                    break;
+                case DL:
+                    score *= 2;
+                    break;
+                case TL:
+                    score *= 3;
+                    break;
+                default:
+                    break;
             }
-            if(point.getBonusType() == Point.BonusType.TW){
-                wordMultiplier *= 3;
-            }
-            sum += point.getScore();
+            sum += score;
         }
-        return 0;
+        return sum;
     }
     /**
      * A simple method allowing for an array of Players to have its members initialised, and for all
@@ -66,7 +75,7 @@ public class Scrabble {
      * @param players the array of players whose members are to be initialised.
      */
     private static void initPlayers(Player[] players){
-        for(int i = 0; i < PLAYER_COUNT; i++) {
+        for(int i = 0; i < Scrabble.PLAYER_COUNT; i++) {
             players[i] = new Player();
             players[i].setUsername(Scrabble.readUsername(i));
         }
@@ -91,10 +100,10 @@ public class Scrabble {
      * in /assets/words.txt)
      * @return HashSet<String> representing all valid word values
      */
-    public static HashSet<String> createValidWordSet(){
+    public static HashSet<String> createDictionary(){
         HashSet<String> legalWords = new HashSet<>();
         try {
-            File file = new File("assets/words.txt");
+            File file = new File("assets/dictionary.txt");
             FileReader fr = new FileReader(file);
             BufferedReader br = new BufferedReader(fr);
             String line;
@@ -133,8 +142,8 @@ public class Scrabble {
      * @param s the String to be verified
      * @return the validity of the word (true => valid, false => invalid)
      */
-    public static final boolean isValidWord(String s){
-        return Scrabble.VALID_WORD_SET.contains(s.toUpperCase());
+    public static boolean isValidWord(String s){
+        return Scrabble.DICTIONARY.contains(s.toUpperCase());
     }
 
 

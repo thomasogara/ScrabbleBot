@@ -21,7 +21,7 @@ public class Point {
         NB, // No Bonus - This point is not a bonus square
     }
 
-    public static BonusType[][] BONUS_TYPES;
+    public static BonusType[][] BONUS_TYPES = readBonusFile();
 
     // The tile placed on this Point
     private Tile tile;
@@ -244,24 +244,44 @@ public class Point {
         return null;
     }
 
-    public static void readBonusFile(){
+    public static BonusType[][] readBonusFile(){
         try{
+            // initialise the array of BonusType variables which will be returned by the method
             BonusType[][] bonusArray = new BonusType[15][15];
+            // open the file containing the information relating to the bonus types of each file
             File file = new File("./assets/bonus.conf");
-            FileReader fr = new FileReader(file);
-            BufferedReader br = new BufferedReader(fr);
+            // initialise a BufferedReader which will read the contents of the above opened file
+            BufferedReader br = new BufferedReader(new FileReader(file));
+
+            /* begin the file reading process */
+
+            // this arraylist will store all the lines contained within the file
             ArrayList<String> lines = new ArrayList<>();
-            ArrayList<String[]> split_lines = new ArrayList<>();
+            // this string will temporarily store the contents of each line of the file while reading
             String line = null;
+            // read all lines of the file until EOF is encountered, and append the lines read into the 'lines' arraylist
             while((line = br.readLine()) != null){
                 lines.add(line);
             }
+            // the file reader can now be closed, and any system resources allocated to it can be freed
+            br.close();
+            /* the file has now been read into memory */
+
+            // this arraylist will store all the lines contained within the file, split according to the pattern "_"
+            ArrayList<String[]> split_lines = new ArrayList<>();
+            //iterate through the lines of the file and split them
             for(String s : lines){
                 split_lines.add(s.split("_"));
             }
+
+            // iterate through the lines of the file, and populate the bonusArray
+            // appropriately according to the contents of each line in the fle
             for(String[] s : split_lines){
+                // the x co-ordinate of the square whose bonus is stored on this line of the file
                 int y = Integer.parseInt(s[1].split(",")[0]);
+                // the y co-ordinate of the square whose bonus is stored on this line of the file
                 int x = Integer.parseInt(s[1].split(",")[1]);
+                // assign the stored bonus value from the file in the appropriate indices in the bonusArray
                 switch(s[0]){
                     case "DL":
                         bonusArray[y][x] = BonusType.DL;
@@ -280,6 +300,7 @@ public class Point {
                         break;
                 }
             }
+            // iterate through the bonusArray and set any un-set values to NB (no bonus)
             for(int y = 0; y < bonusArray.length; y++){
                 for(int x = 0; x < bonusArray[y].length; x++){
                     if(bonusArray[y][x] == null){
@@ -287,9 +308,11 @@ public class Point {
                     }
                 }
             }
-            Point.BONUS_TYPES = bonusArray;
+            // return the constructed bonusArray
+            return bonusArray;
         } catch(Exception ex){
             ex.printStackTrace();
+            return null;
         }
     }
 
