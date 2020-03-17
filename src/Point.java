@@ -21,13 +21,10 @@ public class Point {
         NB, // No Bonus - This point is not a bonus square
     }
 
-    public static BonusType[][] bonusTypes;
+    public static BonusType[][] BONUS_TYPES;
 
     // The tile placed on this Point
     private Tile tile;
-
-    // Stores the BonusType for this Point/Tile
-    private BonusType bonus;
 
     // Point coordinates on the Board
     private int x, y;
@@ -45,7 +42,6 @@ public class Point {
         this.x = x;
         this.y = y;
         this.formedWords = new ArrayList<>();
-        this.initBonusType();
     }
 
     /**
@@ -56,7 +52,6 @@ public class Point {
         this.y = y;
         this.board = board;
         this.formedWords = new ArrayList<>();
-        this.initBonusType();
     }
 
     /**
@@ -65,14 +60,6 @@ public class Point {
      */
     public int getScore(){
         return 0;
-    }
-
-    /**
-     * Init the bonus type of the Tile placed on this Point
-     */
-    public void initBonusType() {
-
-
     }
 
     /**
@@ -96,7 +83,7 @@ public class Point {
      * @return The bonus type of this point i.e Double Letter, Triple Letter, etc..
      */
     public BonusType getBonusType() {
-        return this.bonus;
+        return Point.BONUS_TYPES[this.y][this.x];
     }
 
     /**
@@ -300,7 +287,7 @@ public class Point {
                     }
                 }
             }
-            Point.bonusTypes = bonusArray;
+            Point.BONUS_TYPES = bonusArray;
         } catch(Exception ex){
             ex.printStackTrace();
         }

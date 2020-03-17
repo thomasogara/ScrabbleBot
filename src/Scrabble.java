@@ -27,7 +27,7 @@ public class Scrabble {
         Board board = new Board();
         Player[] players = new Player[Scrabble.PLAYER_COUNT];
         Point.readBonusFile();
-        for(Point.BonusType[] row : Point.bonusTypes){
+        for(Point.BonusType[] row : Point.BONUS_TYPES){
             System.out.print("[");
             for(Point.BonusType item : row){
                 if(item == Point.BonusType.NB){
