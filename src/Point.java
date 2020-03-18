@@ -21,6 +21,7 @@ public class Point {
         NB, // No Bonus - This point is not a bonus square
     }
 
+    // Initialise the static class variable BONUS_TYPES[][] according to the contents of the config file
     public static BonusType[][] BONUS_TYPES = readBonusFile();
 
     // The tile placed on this Point
@@ -55,11 +56,12 @@ public class Point {
     }
 
     /**
-     * A method allowing for the score associated with a given Point to be calculated.
-     * @return the score associated with this Point.
+     * A method allowing for the score associated with a given Point to be calculated (BEFORE ANY SCORE MODIFIERS ARE
+     * APPLIED).
+     * @return the score associated with this Point BEFORE ANY SCORE MODIFIERS ARE APPLIED.
      */
     public int getScore(){
-        return 0;
+        return Pool.tileValues.get(this.getTile().getValue());
     }
 
     /**

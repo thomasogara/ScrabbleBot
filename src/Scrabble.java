@@ -28,16 +28,42 @@ public class Scrabble {
     public static void main(String[] args){
         System.out.print(Scrabble.WELCOME_MESSAGE);
         initPlayers(Scrabble.PLAYERS);
+        PLAYERS[0].getFrame().setPool(Scrabble.POOL);
+        PLAYERS[1].getFrame().setPool(Scrabble.POOL);
         for(int i = 0; i < Scrabble.PLAYERS.length; i++){
             System.out.println("Welcome to scrabble, player " + (i + 1) + ", who has decided upon the username: " + Scrabble.PLAYERS[i].getUsername());
         }
         System.out.println();
         while(Scrabble.NUMBER_OF_SCORELESS_TURNS < 6 && !Scrabble.POOL.isEmpty()){
+            PLAYERS[0].getFrame().refill();
+            PLAYERS[1].getFrame().refill();
             for(int i = 0; i < Scrabble.PLAYER_COUNT; i++){
-                String command = Scrabble.STDIN.nextLine();
+                System.out.println(Scrabble.BOARD);
+                System.out.println(PLAYERS[0].getFrame());
+                System.out.println(PLAYERS[1].getFrame());
+                String input = Scrabble.STDIN.nextLine();
+
+                /* TEMPORARY SECTION*/
+                System.out.println(input);
+                String[] tokens = input.replaceAll("(^\\s+)|(\\s+$)", "").replaceAll("\\s+", " ").split(" ");
+                if(tokens[0].equals("PLACE")){
+                    Point location = new Point(Character.getNumericValue(tokens[2].charAt(0)), Character.getNumericValue(tokens[2].charAt(1)));
+                    String word = tokens[1];
+                    char dir = tokens[3].charAt(0);
+                    Board board = Scrabble.BOARD;
+                    Player player = PLAYERS[0];
+                    Point[] query = Board.createPointArrayFromQuery(word, location, dir, board);
+                    if( Scrabble.BOARD.isValid(query) ){
+                        Scrabble.BOARD.add(word, location, dir, player);
+                    }
+                }
+
+                /* END OF TEMPORARY SECTION*/
+
                 // TODO implement proper interaction with the UI interface once complete
                 // should approximately have a pattern as per below template
-                // UI.parseInput(command);
+                // UI.parseInput(input);
+
             }
         }
         Scrabble.STDIN.close();
@@ -67,7 +93,7 @@ public class Scrabble {
             }
             sum += score;
         }
-        return sum;
+        return sum * wordMultiplier;
     }
     /**
      * A simple method allowing for an array of Players to have its members initialised, and for all

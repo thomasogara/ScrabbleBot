@@ -17,20 +17,14 @@ public class Player {
 
     // default constructor for Player object
     public Player() {
-        this.username = username;
-        this.score = score;
         this.frame = new Frame();
     }
 
     // constructor with just name argtiles
     public Player(String name) {
         this.username = name;
-        this.score = score;
         this.frame = new Frame();
     }
-
-    // scanner object to take in username input
-    public static final Scanner users = new Scanner(System.in); // takes username input
 
     // reset player data method
     public void resetUser(){
