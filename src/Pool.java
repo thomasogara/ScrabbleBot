@@ -13,7 +13,7 @@ import java.util.Random;
 public class Pool {
 
     // Stores the value of the tiles (i.e the points garnered from each tile)
-    public static HashMap<Character, Integer> tileValues = new HashMap<>() {{
+    public static HashMap<Character, Integer> tileValues = new HashMap<Character, Integer>() {{
         put('A', 1);
         put('E', 1);
         put('I', 1);
