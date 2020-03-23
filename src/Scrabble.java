@@ -59,11 +59,7 @@ public class Scrabble {
 
                 // TODO implement proper interaction with the UI interface once complete
                 // should approximately have a pattern as per below template
-                // UI.parseInput(input);
-                Scrabble.PLAYERS[i].getFrame().removeAll(PLAYERS[i].getFrame().getLettersAsString());
-                Scrabble.PLAYERS[i].getFrame().addAll("ABCDEF0");
-                System.out.println("Your frame: " + PLAYERS[i].getFrame());
-                Scrabble.BOARD.add("ABCDEFG", new Point(6, 6), 'D', Scrabble.PLAYERS[i]);
+                // UI.parseInput(input);;
             }
         }
         System.out.println("The game has almost ended. Now, each player will be invited to challenge the plays");

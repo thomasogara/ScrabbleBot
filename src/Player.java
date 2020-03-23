@@ -5,12 +5,8 @@
   Daniel Nwabueze (17481174) (daniel.nwabueze@ucdconnect.ie)
  */
 
-import javax.print.DocFlavor;
-import javax.swing.*;
+
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Scanner;
 
 public class Player {
     // instance variables for username, score and player's frame (tiles)
