@@ -40,23 +40,6 @@ public class Frame{
     }
 
     /**
-     * A basic console rendering method. Outputs the current state of the Frame to the console.
-     */
-    public void consoleRender(){
-        System.out.println(Arrays.toString(this.getLetters().toArray()));
-    }
-
-    /**
-     * A placeholder method to be used in a future release, when javafx implementation is being written.
-     */
-    public void render(){
-        // TODO: Assignment 3, JavaFX / GUI implementation
-        /*
-             Some javafx code to render the Frame on screen
-         */
-    }
-
-    /**
      * An overloaded method which removes all elements of the argument from the 'letters' instance variable.
      * @see Frame#letters
      * @param tiles List<Tile> containing a list of Objects to be removed from the Frame
@@ -116,11 +99,23 @@ public class Frame{
      * @return boolean representing whether ALL letters are in the Frame.
      */
     public final boolean hasLetters(Tile[] letter_array){
+        int blank_required = 0; // how many blank tiles would be needed to compensate for missing letters in the Frame
         for(Tile letter : letter_array){
             if(!this.getLetters().contains(letter))
-                return false;
+                blank_required++;
         }
-        return true;
+        if(blank_required <= this.blank_count())
+            return true;
+        return false;
+    }
+
+    public final int blank_count(){
+        int count = 0;
+        for(Tile tile : this.getLetters()){
+            if(tile.getValue() == '0')
+                count++;
+        }
+        return count;
     }
 
     /**
@@ -129,7 +124,7 @@ public class Frame{
      * @return whether an equivalent Tile exists in the Frame for all elements of the input List
      */
     public final boolean hasLetters(List<Tile> tiles){
-        return this.getLetters().containsAll(tiles);
+        return this.hasLetters((Tile []) tiles.toArray());
     }
 
     /**
