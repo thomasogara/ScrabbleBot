@@ -6,6 +6,7 @@
  */
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 public class Board {
     private int occupiedTileCount;
@@ -61,7 +62,7 @@ public class Board {
                     - the point being in range
                     - the point on the board being available, OR the point on the board already having the same value as the one being placed there
              */
-            valid &= (isAvailable(p[i]) || isOnBoard(p[i])) && isInRange(p[i]);
+            valid &= isInRange(p[i]) && (isAvailable(p[i]) || isOnBoard(p[i]));
             /*
                 If at least one of the points in p[] has a neighbour, connecting will evaluate to true
              */
@@ -144,17 +145,30 @@ public class Board {
         if(!isValid(point_array)){
             return false;
         }
-
         /*
             ALL VALIDITY CHECKS COMPLETE, EXECUTE TURN
          */
 
         // Add each point to the board
-        for(Point point : point_array)
-            this.add(point);
+        for(int i = 0; i < point_array.length; i++) {
+            if (u.getFrame().hasLetter(point_array[i].getTile()))
+                this.add(point_array[i]);
+            else {
+                Point point = new Point(point_array[i].getX(), point_array[i].getY());
+                point.setTile(new Tile('0'));
+                point_array[i] = point;
+                this.add(point_array[i]);
+
+            }
+        }
+
+        Tile[] tiles = new Tile[point_array.length];
+        for(int i = 0; i < point_array.length; i++){
+            tiles[i] = point_array[i].getTile();
+        }
 
         // Remove all necessary tiles form the Player's Frame
-        removeTilesFromPLayerFrame(s, overlap, u);
+        u.getFrame().removeAll(Arrays.asList(tiles));
 
         // The turn has been executed successfully
         return true;

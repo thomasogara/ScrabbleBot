@@ -5,8 +5,11 @@
   Daniel Nwabueze (17481174) (daniel.nwabueze@ucdconnect.ie)
  */
 
+import javax.print.DocFlavor;
 import javax.swing.*;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Scanner;
 
 public class Player {
@@ -14,6 +17,8 @@ public class Player {
     private String username = "";
     private int score = 0; // holds score for user
     private Frame frame;
+    public ArrayList<String> played_words = new ArrayList<>(); // holds the words played successfully by a user
+    public ArrayList<Integer> scores_from_play = new ArrayList<>(); // holds the scores attained for each play by the user
 
     // default constructor for Player object
     public Player() {
