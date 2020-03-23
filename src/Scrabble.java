@@ -14,6 +14,10 @@ import java.util.HashSet;
 import java.util.Scanner;
 
 public class Scrabble {
+    public static class CommandReturnWrapper{
+        public boolean executed;
+        public int score;
+    }
     /*
         CLASS VARIABLES
      */
@@ -44,21 +48,26 @@ public class Scrabble {
         initPlayers(Scrabble.PLAYERS);
         PLAYERS[0].getFrame().setPool(Scrabble.POOL);
         PLAYERS[1].getFrame().setPool(Scrabble.POOL);
+        PLAYERS[0].getFrame().refill();
+        PLAYERS[1].getFrame().refill();
         for(int i = 0; i < Scrabble.PLAYERS.length; i++){
             System.out.println("Welcome to scrabble, player " + (i + 1) + ", who has decided upon the username: " + Scrabble.PLAYERS[i].getUsername());
         }
         System.out.println();
         while(NUMBER_OF_SCORELESS_TURNS < 6 && !POOL.isEmpty()){
-
             for(int i = 0; i < PLAYER_COUNT; i++){
                 System.out.println("It is now " + PLAYERS[i].getUsername() + "'s turn!");
+                System.out.println("Current scores: " + PLAYERS[0].getScore() + " " + PLAYERS[1].getScore());
                 System.out.println(BOARD);
                 System.out.println("Your frame: " + PLAYERS[i].getFrame());
                 String input = Scrabble.STDIN.nextLine();
-                BoardGUI.execute(input, PLAYERS[i]);
-                // TODO implement proper interaction with the UI interface once complete
-                // should approximately have a pattern as per below template
-                // UI.parseInput(input);;
+                CommandReturnWrapper returnValue = new CommandReturnWrapper();
+                while(!(returnValue = BoardGUI.execute(input, PLAYERS[i])).executed){
+                    System.out.println("Previous command failed to execute, please try again!");
+                    input = Scrabble.STDIN.nextLine();
+                }
+                // once a turn is successfully executed, refill the player's frame
+                PLAYERS[i].increaseScore(returnValue.score);
                 PLAYERS[i].getFrame().refill();
             }
         }
@@ -115,13 +124,10 @@ public class Scrabble {
 
     /**
      * calculateScore calculates the score to be awarded to a player for a given move
-     * @param s the word played
-     * @param p the point at which the first letter of the word was placed
-     * @param d the direction in which the word was placed
+     * @param required the array of points placed on the board
      * @return the score to be awarded to the player for this move
      */
-    private static int calculateScore(String s, Point p, char d){
-        Point[] required = Scrabble.BOARD.getRequiredTilesAsPointArray(s, p, d);
+    public static int calculateScore(Point[] required){
         int sum = 0;
         int wordMultiplier = 1;
         for(Point point : required){

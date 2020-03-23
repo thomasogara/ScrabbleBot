@@ -127,14 +127,15 @@ public class Board {
      * @param p Point encapsulating the x/y position where the first character of the String should be placed
      * @param d Character indicating the direction the word should be placed in ('D' => Down, 'R' => Right)
      */
-    public final boolean add(String s, Point p, char d, Player u){
+    public final Scrabble.CommandReturnWrapper add(String s, Point p, char d, Player u){
+        Scrabble.CommandReturnWrapper returnWrapper = new Scrabble.CommandReturnWrapper();
         // Construct a String containing all the overlapping tiles
         String overlap = this.getOverlap(s, p, d);
 
         // if the direction is not properly defined, or the player's Frame does not contain the necessary letters
         // to execute the turn (excluding the overlap tiles), then the turn cannot be executed
         if((d != 'R' && d != 'D' )|| !u.getFrame().hasLetters(stringDifference(s, overlap))){
-            return false;
+            return returnWrapper;
         }
 
         // Translate the input information into a more manageable form, a Point[] array
@@ -143,7 +144,7 @@ public class Board {
 
         // If this point array is invalid, quit
         if(!isValid(point_array)){
-            return false;
+            return returnWrapper;
         }
         /*
             ALL VALIDITY CHECKS COMPLETE, EXECUTE TURN
@@ -154,11 +155,10 @@ public class Board {
             if (u.getFrame().hasLetter(point_array[i].getTile()))
                 this.add(point_array[i]);
             else {
-                Point point = new Point(point_array[i].getX(), point_array[i].getY());
-                point.setTile(new Tile('0'));
-                point_array[i] = point;
-                this.add(point_array[i]);
-
+                Point point = point_array[i];
+                point_array[i] = new Point(point_array[i].getX(), point_array[i].getY());
+                point_array[i].setTile(new Tile('0'));
+                this.add(point);
             }
         }
 
@@ -169,9 +169,10 @@ public class Board {
 
         // Remove all necessary tiles form the Player's Frame
         u.getFrame().removeAll(Arrays.asList(tiles));
-
         // The turn has been executed successfully
-        return true;
+        returnWrapper.executed = true;
+        returnWrapper.score = Scrabble.calculateScore(point_array);
+        return returnWrapper;
     }
 
     /**
@@ -246,7 +247,7 @@ public class Board {
      * @return boolean representing whether the point is at the center of the board
      */
     public final boolean isCentered(Point p){
-        return p.getX() == 6 && p.getY() == 6;
+        return p.getX() == 7 && p.getY() == 7;
     }
 
     /**

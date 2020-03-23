@@ -4,12 +4,14 @@
  */
 
 public class CommandsContainer {
-    static boolean exchange(String[] tokens, Player p){
+    static Scrabble.CommandReturnWrapper exchange(String[] tokens, Player p){
+        Scrabble.CommandReturnWrapper returnWrapper = new Scrabble.CommandReturnWrapper();
+
         // 2 unique pieces of information are required to exchange tiles
         // the command itself (EXCHANGE)
         // the tiles to be exchanged
         // if either of these are missing, the command fails
-        if(tokens.length < 2) return false;
+        if(tokens.length < 2) return returnWrapper;
 
         // the second token of the command is the word which is to be discarded
         String toBeDiscared = tokens[1];
@@ -17,7 +19,7 @@ public class CommandsContainer {
         // if the player does not have all the tokens which they would like to
         // remove from their frame, the command fails.
         // no partial removals are completed
-        if(!p.getFrame().hasLetters(toBeDiscared)) return false;
+        if(!p.getFrame().hasLetters(toBeDiscared)) return returnWrapper;
 
         // if the command parameters are valid, execute the command
         // remove all the desired tiles from the player's frame
@@ -25,16 +27,18 @@ public class CommandsContainer {
         // refill the player's frame with random tiles from the Pool
         p.getFrame().refill();
         // at this point, the command has succeeded; return true
-        return true;
+        returnWrapper.executed = true;
+        return returnWrapper;
     }
 
-    static boolean place(String[] tokens, Player p){
+    static Scrabble.CommandReturnWrapper place(String[] tokens, Player p){
+        Scrabble.CommandReturnWrapper returnWrapper = new Scrabble.CommandReturnWrapper();
         // 3 unique pieces of information are required to place a tile:
         // a grid references
         // a direction
         // a word
         // if any of these are missing, the command fails
-        if(tokens.length < 3) return false;
+        if(tokens.length < 3) return returnWrapper;
 
         // the grid reference is always the first token of the command
         String gridref = tokens[0];
@@ -44,16 +48,18 @@ public class CommandsContainer {
         String word = tokens[2];
 
         // coOrdinates stores the string representation of the x/y co-ordinates
-        String[] coOrdinates;
+        String[] coOrdinates = new String[2];
         int x = 0, y = 0;
 
         // a grid reference must have two unique members:
         // a letter, indicating the x position (A-O inclusive)
         // a number, representing the y position (1-15 inclusive)
-        if((coOrdinates = gridref.toUpperCase().split("[A-O]")).length > 2) return false;
+        if(gridref.length() < 2) return returnWrapper;
+        coOrdinates[0] = gridref.substring(0,1);
+        coOrdinates[1] = gridref.substring(1);
 
         // the x co-ordinate must be a single letter in the range (A-O inclusive)
-        if(!coOrdinates[0].matches("[A-O]")) return false;
+        if(!coOrdinates[0].matches("[A-O]")) return returnWrapper;
 
         // x has now been thoroughly checked to ensure compliance
         // the Board has integer indices, so the x value must be mapped
@@ -63,15 +69,15 @@ public class CommandsContainer {
         try{
             y = Integer.parseInt(coOrdinates[1]);
         } catch (NumberFormatException e){
-            return false;
+            return returnWrapper;
         }
         // y co-ordinate must be between 1 and 15, else command fails
-        if(y < 1 || y > 15) return false;
+        if(y < 1 || y > 15) return returnWrapper;
         // count from zero, not one
         y--;
 
         // both 'A' and 'R' will be recognised as representing 'ACROSS' to ensure legacy support
-        if(!dir.matches("[ARD]")) return false;
+        if(!dir.matches("[ARD]")) return returnWrapper;
 
         // dir has now been amply checked and so the relevant information can be extracted
         char d = dir.charAt(0);
@@ -83,19 +89,25 @@ public class CommandsContainer {
         return Scrabble.BOARD.add(word, new Point(x, y), d, p);
     }
 
-    static boolean pass(String[] tokens, Player p){
+    static Scrabble.CommandReturnWrapper pass(String[] tokens, Player p){
         // a pass always succeeds, even if it is parameterised
-        return true;
+        Scrabble.CommandReturnWrapper returnWrapper = new Scrabble.CommandReturnWrapper();
+        returnWrapper.executed = true;
+        return returnWrapper;
     }
 
-    static boolean help(String[] tokens, Player p){
+    static Scrabble.CommandReturnWrapper help(String[] tokens, Player p){
         // help always succeeds
-        return true;
+        Scrabble.CommandReturnWrapper returnWrapper = new Scrabble.CommandReturnWrapper();
+        returnWrapper.executed = true;
+        return returnWrapper;
     }
 
-    static boolean quit(String[] tokens, Player p){
+    static Scrabble.CommandReturnWrapper quit(String[] tokens, Player p){
         // quit cannot fail, though there is no way to communicate
         // that back to the caller. the 'return true;' is really extraneous.
-        return true;
+        Scrabble.CommandReturnWrapper returnWrapper = new Scrabble.CommandReturnWrapper();
+        returnWrapper.executed = true;
+        return returnWrapper;
     }
 }

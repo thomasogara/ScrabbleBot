@@ -33,7 +33,7 @@ public class BoardGUI extends Application implements EventHandler<ActionEvent> {
      * @param p - Player executing the command
      * @return false if command not executed , or true if executed successfully
      */
-    public static boolean execute(String c, Player p) {
+    public static Scrabble.CommandReturnWrapper execute(String c, Player p) {
         // split the input string into individual tokens, using any whitespace character as a valid word separator
         // (the entire string is capitalised)
         // (all whitespace at the beginning or end of a line is removed entirely)
@@ -41,12 +41,12 @@ public class BoardGUI extends Application implements EventHandler<ActionEvent> {
         String[] tokens = c.toUpperCase().replaceAll("(^\\s+)|(\\s+$)", "").replaceAll("\\s+", " ").split(" ");
         String commandName = tokens[0];
         // if the first token of the command is a grid reference, set commandName to "PLACE"
-        if(commandName.matches("[a-oA-O]\\d{1,2}")) commandName = "PLACE";
+        if(commandName.matches("[A-O]\\d{1,2}")) commandName = "PLACE";
         // query the hashmap containing all known commands, if this command is not recognised then immediately quit
         if(COMMAND_MAP.containsKey(commandName))
             //if the command is recognised, attempt to run it
             return COMMAND_MAP.get(commandName).run(tokens, p);
-        return false;
+        return new Scrabble.CommandReturnWrapper();
     }
 
     public static void main(String[] args) throws Exception {
