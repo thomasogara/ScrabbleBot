@@ -11,26 +11,49 @@ import sun.plugin.javascript.navig.Anchor;
 
 import java.awt.*;
 import java.sql.SQLOutput;
+import java.util.HashMap;
 
 public class BoardGUI extends Application implements EventHandler<ActionEvent> {
     Button button;
     Button EndGameButton;
     Stage window;
     Scene scene;
+    /**COMMAND_MAP is a collection of all the recognised commands in the game, keyed by their canonical name in UPPERCASE*/
+    static HashMap<String, Command> COMMAND_MAP = new HashMap<String, Command>(){{
+        put("EXCHANGE", CommandsContainer::exchange);
+        put("PLACE", CommandsContainer::place);
+        put("PASS", CommandsContainer::pass);
+        put("HELP", CommandsContainer::help);
+        put("QUIT", CommandsContainer::quit);
+    }};
 
     /**
      * Execute command to execute a command from user input
      * @param c - Command to execute
+     * @param p - Player executing the command
      * @return false if command not executed , or true if executed successfully
      */
-    public static boolean execute(String c) {
-
-
-        return true;
+    public static boolean execute(String c, Player p) {
+        // split the input string into individual tokens, using any whitespace character as a valid word separator
+        // (the entire string is capitalised)
+        // (all whitespace at the beginning or end of a line is removed entirely)
+        // (all whitespace between words is replaced with a single <space> character to help ease the of splitting tokens)
+        String[] tokens = c.toUpperCase().replaceAll("(^\\s+)|(\\s+$)", "").replaceAll("\\s+", " ").split(" ");
+        String commandName = tokens[0];
+        // if the first token of the command is a grid reference, set commandName to "PLACE"
+        if(commandName.matches("[a-oA-O]\\d{1,2}")) commandName = "PLACE";
+        // query the hashmap containing all known commands, if this command is not recognised then immediately quit
+        if(COMMAND_MAP.containsKey(commandName))
+            //if the command is recognised, attempt to run it
+            return COMMAND_MAP.get(commandName).run(tokens, p);
+        return false;
     }
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws Exception {
+        Thread mainThread = new Thread(new ScrabbleMainThread());
+        mainThread.start();
         launch(args);
+        mainThread.join();
     }
 
     /**

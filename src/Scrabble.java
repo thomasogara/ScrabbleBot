@@ -48,18 +48,18 @@ public class Scrabble {
             System.out.println("Welcome to scrabble, player " + (i + 1) + ", who has decided upon the username: " + Scrabble.PLAYERS[i].getUsername());
         }
         System.out.println();
-        while(Scrabble.NUMBER_OF_SCORELESS_TURNS < 6 && !Scrabble.POOL.isEmpty()){
-            PLAYERS[0].getFrame().refill();
-            PLAYERS[1].getFrame().refill();
-            for(int i = 0; i < Scrabble.PLAYER_COUNT; i++){
-                System.out.println(Scrabble.PLAYERS[i].getUsername() + "'s turn!");
-                System.out.println(Scrabble.BOARD);
+        while(NUMBER_OF_SCORELESS_TURNS < 6 && !POOL.isEmpty()){
+
+            for(int i = 0; i < PLAYER_COUNT; i++){
+                System.out.println("It is now " + PLAYERS[i].getUsername() + "'s turn!");
+                System.out.println(BOARD);
                 System.out.println("Your frame: " + PLAYERS[i].getFrame());
                 String input = Scrabble.STDIN.nextLine();
-
+                BoardGUI.execute(input, PLAYERS[i]);
                 // TODO implement proper interaction with the UI interface once complete
                 // should approximately have a pattern as per below template
                 // UI.parseInput(input);;
+                PLAYERS[i].getFrame().refill();
             }
         }
         System.out.println("The game has almost ended. Now, each player will be invited to challenge the plays");
