@@ -1,4 +1,4 @@
-public class GameAction {
+public class BoardGUI {
 
 
 
