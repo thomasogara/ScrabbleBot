@@ -7,10 +7,8 @@ import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.*;
 import javafx.geometry.Insets;
-import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 
-import java.awt.*;
 import java.util.HashMap;
 
 public class BoardGUI extends Application implements EventHandler<ActionEvent> {
@@ -21,11 +19,16 @@ public class BoardGUI extends Application implements EventHandler<ActionEvent> {
 
     /** GUI layouts **/
     private BorderPane rootLayout;
+    private BorderPane boardContainer;
     private Pane boardGrid;
     private HBox topContainer;
     private HBox bottomContainer;
     private VBox sideContainer;
 
+    private Pane LetterContainerTop;
+    private Pane LetterContainerBottom;
+    private Pane NumberContainerRight;
+    private Pane NumberContainerLeft;
 
     /** GUI components **/
     private Button endGameBtn;
@@ -92,10 +95,24 @@ public class BoardGUI extends Application implements EventHandler<ActionEvent> {
         this.topContainer = new HBox();
         this.bottomContainer = new HBox();
         this.sideContainer = new VBox();
-        this.rootLayout.setCenter(this.boardGrid);
+        this.boardContainer = new BorderPane();
+        this.rootLayout.setCenter(boardContainer);
         this.rootLayout.setTop(this.topContainer);
         this.rootLayout.setBottom(this.bottomContainer);
         this.rootLayout.setRight(this.sideContainer);
+
+        this.LetterContainerTop = new Pane();
+        this.LetterContainerBottom = new Pane();
+        this.NumberContainerRight = new Pane();
+        this.NumberContainerLeft = new Pane();
+        this.boardContainer.setTop(LetterContainerTop);
+        this.boardContainer.setBottom(LetterContainerBottom);
+        this.boardContainer.setRight(NumberContainerRight);
+        this.boardContainer.setLeft(NumberContainerLeft);
+        this.boardContainer.setCenter(boardGrid);
+
+        this.NumberContainerRight.setStyle("-fx-background-color: #685eeb; -fx-text-fill: white;");
+        this.NumberContainerLeft.setStyle("-fx-background-color: #685eeb; -fx-text-fill: white;");
 
         // Set layout constraints & stylings
         this.boardGrid.setPrefSize(Scrabble.BOARD_WIDTH, Scrabble.BOARD_HEIGHT);
@@ -103,6 +120,10 @@ public class BoardGUI extends Application implements EventHandler<ActionEvent> {
         this.topContainer.setPadding(new Insets(15, 12, 15, 12));
         this.sideContainer.setStyle("-fx-background-color: #ebebeb; -fx-text-fill: white;");
         this.sideContainer.setPrefWidth(300);
+        this.LetterContainerTop.setPrefHeight(Scrabble.POINT_HEIGHT);
+        this.LetterContainerBottom.setPrefHeight(Scrabble.POINT_HEIGHT);
+        this.NumberContainerRight.setPrefHeight(3000);
+        this.NumberContainerLeft.setPrefWidth(Scrabble.POINT_WIDTH);
 
         // Initialize respective components, their EventListeners & add to layouts
         this.endGameBtn = new Button("End Game");
@@ -114,7 +135,21 @@ public class BoardGUI extends Application implements EventHandler<ActionEvent> {
         this.sideContainer.getChildren().add(this.gameInput);
         this.sideContainer.setAlignment(Pos.BOTTOM_CENTER);
 
-        // Initialize the boardGrid squares
+        // Initialize the boardContainer Letters & Numbers
+        for(int x = 1; x < 16; x++) {
+            this.LetterContainerTop.getChildren().add(Point.renderGridHeader("" + String.valueOf((char) (x + 64)), x, -1));
+        }
+        for(int x = 1; x < 16; x++) {
+            this.LetterContainerBottom.getChildren().add(Point.renderGridHeader("" + String.valueOf((char) (x + 64)), x, -1));
+        }
+        for(int y = 0; y < 15; y++) {
+            this.NumberContainerRight.getChildren().add(Point.renderGridHeader("" + (y + 1), -1, y));
+        }
+        for(int y = 0; y < 15; y++) {
+            this.NumberContainerLeft.getChildren().add(Point.renderGridHeader("" + (y + 1) , -1, y));
+        }
+
+        // Initialize the boardGrid Squares
         for(int x = 0; x < 15; x++) {
             for(int y = 0; y < 15; y++) {
                 this.boardGrid.getChildren().add(Scrabble.BOARD.points[x][y]);

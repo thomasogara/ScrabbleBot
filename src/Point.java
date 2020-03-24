@@ -52,7 +52,7 @@ public class Point extends StackPane {
         this.x = x;
         this.y = y;
         this.formedWords = new ArrayList<>();
-        this.draw();
+        this.renderGraphic();
     }
 
     /**
@@ -63,10 +63,10 @@ public class Point extends StackPane {
         this.y = y;
         this.board = board;
         this.formedWords = new ArrayList<>();
-        this.draw();
+        this.renderGraphic();
     }
 
-    public void draw() {
+    public void renderGraphic() {
         this.graphic = new Rectangle(Scrabble.POINT_WIDTH, Scrabble.POINT_HEIGHT);
         this.graphic.setStroke(Color.LIGHTGRAY);
         switch(this.getBonusType()) {
@@ -87,12 +87,12 @@ public class Point extends StackPane {
                 this.graphic.setFill(Color.web("#e8486b"));
                 break;
             case NB:
-                this.graphicText = new Text(" ");
+                this.graphicText = new Text("S");
                 this.graphic.setFill(Color.web("white"));
                 break;
         }
 
-        this.graphicText.setStyle("-fx-text-fill: white;-fx-fill: white;-fx-font-weight: bold");
+        this.graphicText.setStyle("-fx-text-fill: white;-fx-fill: white;");
 
 
         // If tile is the center tile place star
@@ -104,9 +104,38 @@ public class Point extends StackPane {
         getChildren().addAll(this.graphic, this.graphicText);
         setTranslateX(this.x * Scrabble.POINT_WIDTH);
         setTranslateY(this.y * Scrabble.POINT_HEIGHT);
+
+        this.refreshGraphic();
     }
 
-    public void refresh() {
+    /**
+     * Refresh the current state of this point (i.e placed tile, removed tile etc..), and update the points' graphic accordingly
+     */
+    public void refreshGraphic() {
+        if(this.tile != null) {
+            this.graphicText.setText("" + this.tile.getValue());
+            this.graphicText.setStyle("-fx-text-fill: black;-fx-fill: black;-fx-font-size: 200%;-fx-font-weight: bold");
+            this.graphic.setFill(Color.web("#e8e6e4"));
+        }
+    }
+
+    public static StackPane renderGridHeader(String letter, int x, int y) {
+
+        StackPane gridHeader = new StackPane();
+
+        Rectangle graphic  = new Rectangle(Scrabble.POINT_WIDTH, Scrabble.POINT_HEIGHT);
+        Text graphicText  = new Text(letter);
+        graphic.setStroke(Color.LIGHTGRAY);
+        graphic.setFill(Color.GRAY);
+        graphicText.setStyle("-fx-text-fill: black;-fx-fill: white;");
+        gridHeader.getChildren().addAll(graphic, graphicText);
+
+        if(x > -1)
+            gridHeader.setTranslateX(x * Scrabble.POINT_WIDTH);
+        if(y > 0)
+            gridHeader.setTranslateY(y * Scrabble.POINT_HEIGHT);
+
+        return gridHeader;
 
     }
 
@@ -133,6 +162,7 @@ public class Point extends StackPane {
      */
     public void setTile(Tile tile) {
         this.tile = tile;
+        this.refreshGraphic();
     }
 
     /**
