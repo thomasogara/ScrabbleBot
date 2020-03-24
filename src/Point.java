@@ -5,6 +5,7 @@
   Daniel Nwabueze (17481174) (daniel.nwabueze@ucdconnect.ie)
  */
 
+import javafx.scene.Node;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
@@ -113,9 +114,12 @@ public class Point extends StackPane {
      */
     public void refreshGraphic() {
         if(this.tile != null) {
-            this.graphicText.setText("" + this.tile.getValue());
-            this.graphicText.setStyle("-fx-text-fill: black;-fx-fill: black;-fx-font-size: 200%;-fx-font-weight: bold");
-            this.graphic.setFill(Color.web("#e8e6e4"));
+
+            Point pointInstance  = (Point) ( (Node) BoardGUI.boardGrid.getChildren().get( ( (this.x * 1) + (this.y * 15)) ) );
+            pointInstance.graphicText.setStyle("-fx-text-fill: black;-fx-fill: black;-fx-font-size: 200%;-fx-font-weight: bold");
+            pointInstance.graphicText.setText("" + this.tile.getValue());
+            pointInstance.graphic.setFill(Color.web("#e8e6e4"));
+
         }
     }
 

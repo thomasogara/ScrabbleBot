@@ -14,25 +14,25 @@ import java.util.HashMap;
 public class BoardGUI extends Application implements EventHandler<ActionEvent> {
 
     /** GUI wrappers **/
-    private Stage window;
-    private Scene scrabbleScene;
+    public static Stage window;
+    public static Scene scrabbleScene;
 
     /** GUI layouts **/
-    private BorderPane rootLayout;
-    private BorderPane boardContainer;
-    private Pane boardGrid;
-    private HBox topContainer;
-    private HBox bottomContainer;
-    private VBox sideContainer;
+    public static BorderPane rootLayout;
+    public static BorderPane boardContainer;
+    public static Pane boardGrid;
+    public static HBox topContainer;
+    public static HBox bottomContainer;
+    public static VBox sideContainer;
 
-    private Pane LetterContainerTop;
-    private Pane LetterContainerBottom;
-    private Pane NumberContainerRight;
-    private Pane NumberContainerLeft;
+    public static Pane LetterContainerTop;
+    public static Pane LetterContainerBottom;
+    public static Pane NumberContainerRight;
+    public static Pane NumberContainerLeft;
 
     /** GUI components **/
-    private Button endGameBtn;
-    private TextField gameInput;
+    public static Button endGameBtn;
+    public static TextField gameInput;
 
     /**COMMAND_MAP is a collection of all the recognised commands in the game, keyed by their canonical name in UPPERCASE*/
     static HashMap<String, Command> COMMAND_MAP = new HashMap<String, Command>(){{
@@ -62,6 +62,7 @@ public class BoardGUI extends Application implements EventHandler<ActionEvent> {
         if(COMMAND_MAP.containsKey(commandName))
             //if the command is recognised, attempt to run it
             return COMMAND_MAP.get(commandName).run(tokens, p);
+
         return new Scrabble.CommandReturnWrapper();
     }
 
@@ -82,87 +83,87 @@ public class BoardGUI extends Application implements EventHandler<ActionEvent> {
     public void start(Stage primaryStage) throws Exception {
 
         // Initialize the stage & title
-        this.window = primaryStage;
-        this.window.setTitle("Scrabble Game - Team Squash");
-        this.window.setOnCloseRequest(e -> {
+        window = primaryStage;
+        window.setTitle("Scrabble Game - Team Squash");
+        window.setOnCloseRequest(e -> {
             e.consume();
             endProgram();
         });
 
         // Initialize the GUI layouts
-        this.rootLayout = new BorderPane();
-        this.boardGrid = new Pane();
-        this.topContainer = new HBox();
-        this.bottomContainer = new HBox();
-        this.sideContainer = new VBox();
-        this.boardContainer = new BorderPane();
-        this.rootLayout.setCenter(boardContainer);
-        this.rootLayout.setTop(this.topContainer);
-        this.rootLayout.setBottom(this.bottomContainer);
-        this.rootLayout.setRight(this.sideContainer);
+        rootLayout = new BorderPane();
+        boardGrid = new Pane();
+        topContainer = new HBox();
+        bottomContainer = new HBox();
+        sideContainer = new VBox();
+        boardContainer = new BorderPane();
+        rootLayout.setCenter(boardContainer);
+        rootLayout.setTop(topContainer);
+        rootLayout.setBottom(bottomContainer);
+        rootLayout.setRight(sideContainer);
 
-        this.LetterContainerTop = new Pane();
-        this.LetterContainerBottom = new Pane();
-        this.NumberContainerRight = new Pane();
-        this.NumberContainerLeft = new Pane();
-        this.boardContainer.setTop(LetterContainerTop);
-        this.boardContainer.setBottom(LetterContainerBottom);
-        this.boardContainer.setRight(NumberContainerRight);
-        this.boardContainer.setLeft(NumberContainerLeft);
-        this.boardContainer.setCenter(boardGrid);
+        LetterContainerTop = new Pane();
+        LetterContainerBottom = new Pane();
+        NumberContainerRight = new Pane();
+        NumberContainerLeft = new Pane();
+        boardContainer.setTop(LetterContainerTop);
+        boardContainer.setBottom(LetterContainerBottom);
+        boardContainer.setRight(NumberContainerRight);
+        boardContainer.setLeft(NumberContainerLeft);
+        boardContainer.setCenter(boardGrid);
 
-        this.NumberContainerRight.setStyle("-fx-background-color: #685eeb; -fx-text-fill: white;");
-        this.NumberContainerLeft.setStyle("-fx-background-color: #685eeb; -fx-text-fill: white;");
+        NumberContainerRight.setStyle("-fx-background-color: #685eeb; -fx-text-fill: white;");
+        NumberContainerLeft.setStyle("-fx-background-color: #685eeb; -fx-text-fill: white;");
 
         // Set layout constraints & stylings
-        this.boardGrid.setPrefSize(Scrabble.BOARD_WIDTH, Scrabble.BOARD_HEIGHT);
-        this.boardGrid.setStyle("-fx-background-color: #303030; -fx-text-fill: white;");
-        this.topContainer.setPadding(new Insets(15, 12, 15, 12));
-        this.sideContainer.setStyle("-fx-background-color: #ebebeb; -fx-text-fill: white;");
-        this.sideContainer.setPrefWidth(300);
-        this.LetterContainerTop.setPrefHeight(Scrabble.POINT_HEIGHT);
-        this.LetterContainerBottom.setPrefHeight(Scrabble.POINT_HEIGHT);
-        this.NumberContainerRight.setPrefHeight(3000);
-        this.NumberContainerLeft.setPrefWidth(Scrabble.POINT_WIDTH);
+        boardGrid.setPrefSize(Scrabble.BOARD_WIDTH, Scrabble.BOARD_HEIGHT);
+        boardGrid.setStyle("-fx-background-color: #303030; -fx-text-fill: white;");
+        topContainer.setPadding(new Insets(15, 12, 15, 12));
+        sideContainer.setStyle("-fx-background-color: #ebebeb; -fx-text-fill: white;");
+        sideContainer.setPrefWidth(300);
+        LetterContainerTop.setPrefHeight(Scrabble.POINT_HEIGHT);
+        LetterContainerBottom.setPrefHeight(Scrabble.POINT_HEIGHT);
+        NumberContainerRight.setPrefHeight(3000);
+        NumberContainerLeft.setPrefWidth(Scrabble.POINT_WIDTH);
 
         // Initialize respective components, their EventListeners & add to layouts
-        this.endGameBtn = new Button("End Game");
-        this.endGameBtn.setStyle("-fx-background-color: linear-gradient(to top, #0f4db8, #10439c);-fx-text-fill:white;-fx-font-weight: bold");
-        this.endGameBtn.setOnAction(e -> endProgram());
-        this.topContainer.getChildren().addAll(this.endGameBtn);
-        this.gameInput = new TextField();
-        this.gameInput.setPromptText("Enter your command here");
-        this.sideContainer.getChildren().add(this.gameInput);
-        this.sideContainer.setAlignment(Pos.BOTTOM_CENTER);
+        endGameBtn = new Button("End Game");
+        endGameBtn.setStyle("-fx-background-color: linear-gradient(to top, #0f4db8, #10439c);-fx-text-fill:white;-fx-font-weight: bold");
+        endGameBtn.setOnAction(e -> endProgram());
+        topContainer.getChildren().addAll(endGameBtn);
+        gameInput = new TextField();
+        gameInput.setPromptText("Enter your command here");
+        sideContainer.getChildren().add(gameInput);
+        sideContainer.setAlignment(Pos.BOTTOM_CENTER);
 
         // Initialize the boardContainer Letters & Numbers
         for(int x = 1; x < 16; x++) {
-            this.LetterContainerTop.getChildren().add(Point.renderGridHeader("" + String.valueOf((char) (x + 64)), x, -1));
+            LetterContainerTop.getChildren().add(Point.renderGridHeader("" + String.valueOf((char) (x + 64)), x, -1));
         }
         for(int x = 1; x < 16; x++) {
-            this.LetterContainerBottom.getChildren().add(Point.renderGridHeader("" + String.valueOf((char) (x + 64)), x, -1));
+            LetterContainerBottom.getChildren().add(Point.renderGridHeader("" + String.valueOf((char) (x + 64)), x, -1));
         }
         for(int y = 0; y < 15; y++) {
-            this.NumberContainerRight.getChildren().add(Point.renderGridHeader("" + (y + 1), -1, y));
+            NumberContainerRight.getChildren().add(Point.renderGridHeader("" + (y + 1), -1, y));
         }
         for(int y = 0; y < 15; y++) {
-            this.NumberContainerLeft.getChildren().add(Point.renderGridHeader("" + (y + 1) , -1, y));
+            NumberContainerLeft.getChildren().add(Point.renderGridHeader("" + (y + 1) , -1, y));
         }
 
         // Initialize the boardGrid Squares
         for(int x = 0; x < 15; x++) {
             for(int y = 0; y < 15; y++) {
-                this.boardGrid.getChildren().add(Scrabble.BOARD.points[x][y]);
+                boardGrid.getChildren().add(Scrabble.BOARD.points[x][y]);
             }
         }
 
         // Initialize the scene with root (main) layout
-        this.scrabbleScene = new Scene(this.rootLayout, Scrabble.WINDOW_WIDTH, Scrabble.WINDOW_HEIGHT);
+        scrabbleScene = new Scene(rootLayout, Scrabble.WINDOW_WIDTH, Scrabble.WINDOW_HEIGHT);
 
         // Set the scene to the scrabble scene
-        this.window.setScene(this.scrabbleScene);
-        //this.window.setMaximized(true);
-        this.window.show();
+        window.setScene(scrabbleScene);
+        //window.setMaximized(true);
+        window.show();
     }
 
 

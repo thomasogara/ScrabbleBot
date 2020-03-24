@@ -32,6 +32,8 @@ public class CommandsContainer {
     }
 
     static Scrabble.CommandReturnWrapper place(String[] tokens, Player p){
+        System.out.println(BoardGUI.boardGrid.getChildren().size());
+
         Scrabble.CommandReturnWrapper returnWrapper = new Scrabble.CommandReturnWrapper();
         // 3 unique pieces of information are required to place a tile:
         // a grid references
