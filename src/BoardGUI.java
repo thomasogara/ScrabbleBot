@@ -7,16 +7,43 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.layout.*;
 import javafx.stage.Stage;
+import org.w3c.dom.ls.LSInput;
 import sun.plugin.javascript.navig.Anchor;
 
 import java.awt.*;
 import java.sql.SQLOutput;
+import java.util.Scanner;
 
 public class BoardGUI extends Application implements EventHandler<ActionEvent> {
     Button button;
     Button EndGameButton;
     Stage window;
     Scene scene;
+
+    public static String receiveInput(){
+        String input = "";
+        boolean invalidInput = true;
+        while(invalidInput) {
+            System.out.println("Enter your move");
+            Scanner in = new Scanner(System.in);
+
+        }
+        return input;
+    }
+
+    public static void help(){
+        System.out.println("");
+        System.out.println("QUIT:       (quit game)");
+        System.out.println("PASS:       (pass current move)");
+        System.out.println("EXCHANGE <letters>:     (swaps these letters for new letters)");
+        System.out.println("HELP:       (display this guide)");
+        System.out.println("");
+        System.out.println("How to place a word on the board:");
+        System.out.println("- Starting tile position");
+        System.out.println("- A or D for direction");
+        System.out.println("- WORD");
+        System.out.println("e.g. A3 D HELLO");
+    }
 
     /**
      * Execute command to execute a command from user input
@@ -30,7 +57,8 @@ public class BoardGUI extends Application implements EventHandler<ActionEvent> {
     }
 
     public static void main(String[] args) {
-        launch(args);
+       // launch(args);
+        help();
     }
 
     /**
