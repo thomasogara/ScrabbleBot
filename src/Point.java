@@ -5,12 +5,17 @@
   Daniel Nwabueze (17481174) (daniel.nwabueze@ucdconnect.ie)
  */
 
+import javafx.scene.layout.StackPane;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Rectangle;
+import javafx.scene.text.Text;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.util.ArrayList;
 
-public class Point {
+public class Point extends StackPane {
 
     // Enum values for bonus types
     public enum BonusType {
@@ -39,10 +44,15 @@ public class Point {
     // Stores an object reference of the games board
     private Board board;
 
+    // GUI variables
+    private Rectangle graphic;
+    private Text graphicText;
+
     public Point(int x, int y) {
         this.x = x;
         this.y = y;
         this.formedWords = new ArrayList<>();
+        this.renderGraphic();
     }
 
     /**
@@ -53,6 +63,80 @@ public class Point {
         this.y = y;
         this.board = board;
         this.formedWords = new ArrayList<>();
+        this.renderGraphic();
+    }
+
+    public void renderGraphic() {
+        this.graphic = new Rectangle(Scrabble.POINT_WIDTH, Scrabble.POINT_HEIGHT);
+        this.graphic.setStroke(Color.LIGHTGRAY);
+        switch(this.getBonusType()) {
+            case DL:
+                this.graphicText = new Text("2L");
+                this.graphic.setFill(Color.web("#ebca67"));
+                break;
+            case TL:
+                this.graphicText = new Text("3L");
+                this.graphic.setFill(Color.web("#4a9c3b"));
+                break;
+            case DW:
+                this.graphicText = new Text("2W");
+                this.graphic.setFill(Color.web("#6699e0"));
+                break;
+            case TW:
+                this.graphicText = new Text("3W");
+                this.graphic.setFill(Color.web("#e8486b"));
+                break;
+            case NB:
+                this.graphicText = new Text("S");
+                this.graphic.setFill(Color.web("white"));
+                break;
+        }
+
+        this.graphicText.setStyle("-fx-text-fill: white;-fx-fill: white;");
+
+
+        // If tile is the center tile place star
+        if(this.x == 7 && this.y == 7) {
+            this.graphicText = new Text("★");
+            this.graphicText.setStyle("-fx-text-fill: black;-fx-fill: black;-fx-font-size: 200%;-fx-font-weight: bold");
+        }
+
+        getChildren().addAll(this.graphic, this.graphicText);
+        setTranslateX(this.x * Scrabble.POINT_WIDTH);
+        setTranslateY(this.y * Scrabble.POINT_HEIGHT);
+
+        this.refreshGraphic();
+    }
+
+    /**
+     * Refresh the current state of this point (i.e placed tile, removed tile etc..), and update the points' graphic accordingly
+     */
+    public void refreshGraphic() {
+        if(this.tile != null) {
+            this.graphicText.setText("" + this.tile.getValue());
+            this.graphicText.setStyle("-fx-text-fill: black;-fx-fill: black;-fx-font-size: 200%;-fx-font-weight: bold");
+            this.graphic.setFill(Color.web("#e8e6e4"));
+        }
+    }
+
+    public static StackPane renderGridHeader(String letter, int x, int y) {
+
+        StackPane gridHeader = new StackPane();
+
+        Rectangle graphic  = new Rectangle(Scrabble.POINT_WIDTH, Scrabble.POINT_HEIGHT);
+        Text graphicText  = new Text(letter);
+        graphic.setStroke(Color.LIGHTGRAY);
+        graphic.setFill(Color.GRAY);
+        graphicText.setStyle("-fx-text-fill: black;-fx-fill: white;");
+        gridHeader.getChildren().addAll(graphic, graphicText);
+
+        if(x > -1)
+            gridHeader.setTranslateX(x * Scrabble.POINT_WIDTH);
+        if(y > 0)
+            gridHeader.setTranslateY(y * Scrabble.POINT_HEIGHT);
+
+        return gridHeader;
+
     }
 
     /**
@@ -78,6 +162,7 @@ public class Point {
      */
     public void setTile(Tile tile) {
         this.tile = tile;
+        this.refreshGraphic();
     }
 
     /**

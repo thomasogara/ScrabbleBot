@@ -1,96 +1,168 @@
 import javafx.application.*;
 import javafx.event.ActionEvent;
-import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.TextField;
 import javafx.scene.layout.*;
+import javafx.geometry.Insets;
 import javafx.stage.Stage;
-import org.w3c.dom.ls.LSInput;
-import sun.plugin.javascript.navig.Anchor;
 
-import java.awt.*;
-import java.sql.SQLOutput;
-import java.util.Scanner;
+import java.util.HashMap;
 
 public class BoardGUI extends Application implements EventHandler<ActionEvent> {
-    Button button;
-    Button EndGameButton;
-    Stage window;
-    Scene scene;
 
-    public static String receiveInput(){
-        String input = "";
-        boolean invalidInput = true;
-        while(invalidInput) {
-            System.out.println("Enter your move");
-            Scanner in = new Scanner(System.in);
+    /** GUI wrappers **/
+    private Stage window;
+    private Scene scrabbleScene;
 
-        }
-        return input;
-    }
+    /** GUI layouts **/
+    private BorderPane rootLayout;
+    private BorderPane boardContainer;
+    private Pane boardGrid;
+    private HBox topContainer;
+    private HBox bottomContainer;
+    private VBox sideContainer;
 
-    public static void help(){
-        System.out.println("");
-        System.out.println("QUIT:       (quit game)");
-        System.out.println("PASS:       (pass current move)");
-        System.out.println("EXCHANGE <letters>:     (swaps these letters for new letters)");
-        System.out.println("HELP:       (display this guide)");
-        System.out.println("");
-        System.out.println("How to place a word on the board:");
-        System.out.println("- Starting tile position");
-        System.out.println("- A or D for direction");
-        System.out.println("- WORD");
-        System.out.println("e.g. A3 D HELLO");
-    }
+    private Pane LetterContainerTop;
+    private Pane LetterContainerBottom;
+    private Pane NumberContainerRight;
+    private Pane NumberContainerLeft;
+
+    /** GUI components **/
+    private Button endGameBtn;
+    private TextField gameInput;
+
+    /**COMMAND_MAP is a collection of all the recognised commands in the game, keyed by their canonical name in UPPERCASE*/
+    static HashMap<String, Command> COMMAND_MAP = new HashMap<String, Command>(){{
+        put("EXCHANGE", CommandsContainer::exchange);
+        put("PLACE", CommandsContainer::place);
+        put("PASS", CommandsContainer::pass);
+        put("HELP", CommandsContainer::help);
+        put("QUIT", CommandsContainer::quit);
+    }};
 
     /**
      * Execute command to execute a command from user input
      * @param c - Command to execute
+     * @param p - Player executing the command
      * @return false if command not executed , or true if executed successfully
      */
-    public static boolean execute(String c) {
-
-
-        return true;
+    public static Scrabble.CommandReturnWrapper execute(String c, Player p) {
+        // split the input string into individual tokens, using any whitespace character as a valid word separator
+        // (the entire string is capitalised)
+        // (all whitespace at the beginning or end of a line is removed entirely)
+        // (all whitespace between words is replaced with a single <space> character to help ease the of splitting tokens)
+        String[] tokens = c.toUpperCase().replaceAll("(^\\s+)|(\\s+$)", "").replaceAll("\\s+", " ").split(" ");
+        String commandName = tokens[0];
+        // if the first token of the command is a grid reference, set commandName to "PLACE"
+        if(commandName.matches("[A-O]\\d{1,2}")) commandName = "PLACE";
+        // query the hashmap containing all known commands, if this command is not recognised then immediately quit
+        if(COMMAND_MAP.containsKey(commandName))
+            //if the command is recognised, attempt to run it
+            return COMMAND_MAP.get(commandName).run(tokens, p);
+        return new Scrabble.CommandReturnWrapper();
     }
 
-    public static void main(String[] args) {
-       // launch(args);
-        help();
+    public static void main(String[] args) throws Exception {
+        Thread mainThread = new Thread(new ScrabbleMainThread());
+        mainThread.start();
+        launch(args);
+        mainThread.join();
     }
 
     /**
      * Sets up primary window for game
+     * [ PS: This MAY be split into multiple classes in the END to reduce clutter of everything being in a single method ]
      * @param primaryStage
      * @throws Exception
      */
     @Override
     public void start(Stage primaryStage) throws Exception {
-        // main code for GUI goes here
-        window = primaryStage;
-        primaryStage.setTitle("Scrabble Game - Team Squash");
 
-        window.setOnCloseRequest(e -> {
+        // Initialize the stage & title
+        this.window = primaryStage;
+        this.window.setTitle("Scrabble Game - Team Squash");
+        this.window.setOnCloseRequest(e -> {
             e.consume();
             endProgram();
         });
 
-        GridPane layout = new GridPane();
-        layout.setStyle("-fx-background-color: #303030; -fx-text-fill: white;");
+        // Initialize the GUI layouts
+        this.rootLayout = new BorderPane();
+        this.boardGrid = new Pane();
+        this.topContainer = new HBox();
+        this.bottomContainer = new HBox();
+        this.sideContainer = new VBox();
+        this.boardContainer = new BorderPane();
+        this.rootLayout.setCenter(boardContainer);
+        this.rootLayout.setTop(this.topContainer);
+        this.rootLayout.setBottom(this.bottomContainer);
+        this.rootLayout.setRight(this.sideContainer);
 
-        EndGameButton = new Button();
-        EndGameButton.setText("Close Game");
-        EndGameButton.setOnAction(e -> endProgram());
-        EndGameButton.setStyle("-fx-background-color: #6b6b6b; -fx-text-fill: white;");
+        this.LetterContainerTop = new Pane();
+        this.LetterContainerBottom = new Pane();
+        this.NumberContainerRight = new Pane();
+        this.NumberContainerLeft = new Pane();
+        this.boardContainer.setTop(LetterContainerTop);
+        this.boardContainer.setBottom(LetterContainerBottom);
+        this.boardContainer.setRight(NumberContainerRight);
+        this.boardContainer.setLeft(NumberContainerLeft);
+        this.boardContainer.setCenter(boardGrid);
 
-        layout.getChildren().addAll(EndGameButton);
+        this.NumberContainerRight.setStyle("-fx-background-color: #685eeb; -fx-text-fill: white;");
+        this.NumberContainerLeft.setStyle("-fx-background-color: #685eeb; -fx-text-fill: white;");
 
-        final Scene scene = new Scene(layout, 300, 250);
-        primaryStage.setScene(scene);
-        primaryStage.setMaximized(true);
-        primaryStage.show();
+        // Set layout constraints & stylings
+        this.boardGrid.setPrefSize(Scrabble.BOARD_WIDTH, Scrabble.BOARD_HEIGHT);
+        this.boardGrid.setStyle("-fx-background-color: #303030; -fx-text-fill: white;");
+        this.topContainer.setPadding(new Insets(15, 12, 15, 12));
+        this.sideContainer.setStyle("-fx-background-color: #ebebeb; -fx-text-fill: white;");
+        this.sideContainer.setPrefWidth(300);
+        this.LetterContainerTop.setPrefHeight(Scrabble.POINT_HEIGHT);
+        this.LetterContainerBottom.setPrefHeight(Scrabble.POINT_HEIGHT);
+        this.NumberContainerRight.setPrefHeight(3000);
+        this.NumberContainerLeft.setPrefWidth(Scrabble.POINT_WIDTH);
+
+        // Initialize respective components, their EventListeners & add to layouts
+        this.endGameBtn = new Button("End Game");
+        this.endGameBtn.setStyle("-fx-background-color: linear-gradient(to top, #0f4db8, #10439c);-fx-text-fill:white;-fx-font-weight: bold");
+        this.endGameBtn.setOnAction(e -> endProgram());
+        this.topContainer.getChildren().addAll(this.endGameBtn);
+        this.gameInput = new TextField();
+        this.gameInput.setPromptText("Enter your command here");
+        this.sideContainer.getChildren().add(this.gameInput);
+        this.sideContainer.setAlignment(Pos.BOTTOM_CENTER);
+
+        // Initialize the boardContainer Letters & Numbers
+        for(int x = 1; x < 16; x++) {
+            this.LetterContainerTop.getChildren().add(Point.renderGridHeader("" + String.valueOf((char) (x + 64)), x, -1));
+        }
+        for(int x = 1; x < 16; x++) {
+            this.LetterContainerBottom.getChildren().add(Point.renderGridHeader("" + String.valueOf((char) (x + 64)), x, -1));
+        }
+        for(int y = 0; y < 15; y++) {
+            this.NumberContainerRight.getChildren().add(Point.renderGridHeader("" + (y + 1), -1, y));
+        }
+        for(int y = 0; y < 15; y++) {
+            this.NumberContainerLeft.getChildren().add(Point.renderGridHeader("" + (y + 1) , -1, y));
+        }
+
+        // Initialize the boardGrid Squares
+        for(int x = 0; x < 15; x++) {
+            for(int y = 0; y < 15; y++) {
+                this.boardGrid.getChildren().add(Scrabble.BOARD.points[x][y]);
+            }
+        }
+
+        // Initialize the scene with root (main) layout
+        this.scrabbleScene = new Scene(this.rootLayout, Scrabble.WINDOW_WIDTH, Scrabble.WINDOW_HEIGHT);
+
+        // Set the scene to the scrabble scene
+        this.window.setScene(this.scrabbleScene);
+        //this.window.setMaximized(true);
+        this.window.show();
     }
 
 
@@ -103,8 +175,9 @@ public class BoardGUI extends Application implements EventHandler<ActionEvent> {
      * gets user confirmation to end game and exit application
      */
     private void endProgram(){
-            boolean result = PopUp.confirmDisplay("Are you sure?", "Do you want to end the game and exit the application?", "Yes", "No");
-            if(result)
+           // boolean result = PopUp.confirmDisplay("Are you sure?", "Do you want to end the game and exit the application?", "Yes", "No");
+             boolean result = true;
+             if(result)
                 window.close();
     }
 }
