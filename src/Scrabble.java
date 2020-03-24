@@ -37,7 +37,15 @@ public class Scrabble {
     public static final String WELCOME_BANNER = createWelcomeBanner();
     /**The number of consecutive scoreless turns that have been played thus far*/
     public static int NUMBER_OF_SCORELESS_TURNS = 0;
-
+    /**The size of the scrabble Window*/
+    public static final int WINDOW_WIDTH = 976;
+    public static final int WINDOW_HEIGHT = 737;
+    /**The size of the scrabble Board [MAY SWITCH TO RELATIVE SIZING]*/
+    public static final int BOARD_WIDTH = 700;
+    public static final int BOARD_HEIGHT = 500;
+    /**The size of the scrabble Point*/
+    public static final int POINT_WIDTH = 45;
+    public static final int POINT_HEIGHT = 45;
     /**
      * Scrabble.main() is the entry-point of the game logic.
      * It controls the game progression for the lifetime of the game.
