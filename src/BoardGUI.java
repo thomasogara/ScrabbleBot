@@ -3,14 +3,15 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.layout.*;
 import javafx.geometry.Insets;
+import javafx.scene.paint.Paint;
+import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import sun.security.krb5.SCDynamicStoreConfig;
+import sun.security.pkcs11.wrapper.CK_SSL3_RANDOM_DATA;
 
 import java.net.SecureCacheResponse;
 import java.util.HashMap;
@@ -29,6 +30,8 @@ public class BoardGUI extends Application implements EventHandler<ActionEvent> {
     public static HBox bottomContainer;
     public static VBox sideContainer;
     public static HBox frameContainer;
+    public static ScrollPane terminalOutputScrollpane;
+    public static VBox terminalOutputContainer;
 
     private Pane LetterContainerTop;
     private Pane LetterContainerBottom;
@@ -38,7 +41,6 @@ public class BoardGUI extends Application implements EventHandler<ActionEvent> {
     /** GUI components **/
     private Button endGameBtn;
     private TextField gameInput;
-    private Text gameOutput;
     public static Label[] playerScores;
 
     /**COMMAND_MAP is a collection of all the recognised commands in the game, keyed by their canonical name in UPPERCASE*/
@@ -102,6 +104,8 @@ public class BoardGUI extends Application implements EventHandler<ActionEvent> {
         sideContainer = new VBox();
         frameContainer = new Frame();
         boardContainer = new BorderPane();
+        terminalOutputScrollpane = new ScrollPane();
+        terminalOutputContainer =  new VBox();
         playerScores = new Label[2];
         playerScores[0] = new Label();
         playerScores[1] = new Label();
@@ -142,17 +146,28 @@ public class BoardGUI extends Application implements EventHandler<ActionEvent> {
 
         // Initialize respective components, their EventListeners & add to layouts
         endGameBtn = new Button("End Game");
+        endGameBtn.setPrefHeight(10);
         endGameBtn.setStyle("-fx-background-color: linear-gradient(to top, #0f4db8, #10439c);-fx-text-fill:white;-fx-font-weight: bold");
         endGameBtn.setOnAction(e -> endProgram());
-        topContainer.getChildren().addAll(this.endGameBtn);
         gameInput = new TextField();
         gameInput.setPromptText("Enter your command here");
+        gameInput.setPrefHeight(25);
+        terminalOutputScrollpane.setFitToWidth(true);
+        terminalOutputScrollpane.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
+        terminalOutputScrollpane.vvalueProperty().bind(terminalOutputContainer.heightProperty());
+        terminalOutputContainer.setPrefWidth(300);
+        terminalOutputContainer.setMaxWidth(300);
+        terminalOutputScrollpane.setContent(terminalOutputContainer);
+        terminalOutputScrollpane.setPrefHeight(Scrabble.WINDOW_HEIGHT - gameInput.getPrefHeight() - endGameBtn.getPrefHeight());
+        terminalOutputScrollpane.setMaxHeight(Scrabble.WINDOW_HEIGHT - gameInput.getPrefHeight() - endGameBtn.getPrefHeight());
+        /*
         gameOutput = new Text();
         gameOutput.setLineSpacing(1.15);
         gameOutput.setWrappingWidth(sideContainer.getPrefWidth());
-        sideContainer.getChildren().add(this.gameOutput);
-        sideContainer.getChildren().add(this.gameInput);
+         */
 
+        sideContainer.getChildren().addAll(endGameBtn, terminalOutputScrollpane, gameInput);
+        sideContainer.setMaxHeight(Scrabble.WINDOW_HEIGHT);
         sideContainer.setAlignment(Pos.BOTTOM_CENTER);
 
         // Initialize the boardContainer Letters & Numbers
@@ -191,7 +206,7 @@ public class BoardGUI extends Application implements EventHandler<ActionEvent> {
         //window.setMaximized(true);
         Scrabble.BOARD_GUI = this;
 
-        print("Please enter the username you would like to set for player " + (Scrabble.CURRENT_PLAYER + 1) + " and then press the enter key");
+        print("Please enter the username you would like to set for player " + (Scrabble.CURRENT_PLAYER + 1) + " and then press the enter key", true);
         this.setInputHandler(Scrabble.Username_Reading_Handler);
     }
 
@@ -201,8 +216,12 @@ public class BoardGUI extends Application implements EventHandler<ActionEvent> {
 
     }
 
-    public void print(Object o){
-        this.gameOutput.setText(this.gameOutput.getText() + "\n" + o.toString());
+    public void print(Object o, boolean system){
+        Text text = new Text(o.toString());
+        text.setWrappingWidth(300);
+        if(system)
+            text.setFill(Paint.valueOf("GREEN"));
+        terminalOutputContainer.getChildren().add(text);
     }
 
     public String read(){

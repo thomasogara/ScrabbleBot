@@ -95,8 +95,8 @@ public class Scrabble {
     }
 
     public static void endGame(){
-        BOARD_GUI.print("Congratulations! You have completed a game of Scrabble!");
-        BOARD_GUI.print("The scoring process will now commence");
+        BOARD_GUI.print("Congratulations! You have completed a game of Scrabble!", true);
+        BOARD_GUI.print("The scoring process will now commence", true);
         int[] scores = new int[2];
         Point[][] tilesOnFrames = new Point[2][];
         tilesOnFrames[0] = new Point[PLAYERS[0].getFrame().getLetters().size()];
@@ -115,16 +115,16 @@ public class Scrabble {
         scores[0] = PLAYERS[0].getScore() + calculateScore(tilesOnFrames[1]);
         scores[1] = PLAYERS[1].getScore() + calculateScore(tilesOnFrames[0]);
 
-        BOARD_GUI.print(PLAYERS[0].getUsername() + "has received a score of: " + scores[0]);
-        BOARD_GUI.print(PLAYERS[0].getUsername() + "has received a score of: " + scores[0]);
+        BOARD_GUI.print(PLAYERS[0].getUsername() + "has received a score of: " + scores[0], true);
+        BOARD_GUI.print(PLAYERS[0].getUsername() + "has received a score of: " + scores[0], true);
 
         if(PLAYERS[0].getScore() == PLAYERS[1].getScore())
-            BOARD_GUI.print("This game was a tie");
+            BOARD_GUI.print("This game was a tie", true);
         else if(PLAYERS[0].getScore() > PLAYERS[1].getScore())
-            BOARD_GUI.print("Player 0 has won");
+            BOARD_GUI.print("Player 0 has won", true);
         else
-            BOARD_GUI.print("Player 1 has won");
-        BOARD_GUI.print("The game will end in 10 seconds");
+            BOARD_GUI.print("Player 1 has won", true);
+        BOARD_GUI.print("The game will end in 10 seconds", true);
         try {
             Thread.sleep(10 * 1000);
         }catch (Exception e){
@@ -157,19 +157,19 @@ public class Scrabble {
             /* Initialise the arraylist to be used to store the words which the players would like to challenge */
 
             String line = BOARD_GUI.read();
-            BOARD_GUI.print("> " + line);
+            BOARD_GUI.print("> " + line, false);
             ArrayList<String> challenged_words = new ArrayList<>(Arrays.asList(line.replaceAll("(^\\s+)|(\\s+$)", "").replaceAll("\\s+", " ").split(" ")));
 
-            BOARD_GUI.print("Outcome of " + Scrabble.PLAYERS[0].getUsername() + "'s challenges:");
+            BOARD_GUI.print("Outcome of " + Scrabble.PLAYERS[0].getUsername() + "'s challenges:", true);
             for (int i = 0; i < challenged_words.size(); i++) {
                 String s = challenged_words.get(i);
                 int index = -1;
                 if (!opponent.played_words.contains(s)) {
-                    BOARD_GUI.print(opponent.getUsername() + " did not play the word " + s);
+                    BOARD_GUI.print(opponent.getUsername() + " did not play the word " + s, true);
                 } else {
                     while ((index = opponent.played_words.indexOf(s)) != -1) {
                         int score = opponent.scores_from_play.get(index);
-                        BOARD_GUI.print(s + " was succesffully challenged, removing " + score + " points from " + opponent.getUsername());
+                        BOARD_GUI.print(s + " was succesffully challenged, removing " + score + " points from " + opponent.getUsername(), true);
                         opponent.increaseScore((-1) * score);
                         opponent.played_words.remove(index);
                         opponent.scores_from_play.remove(index);
@@ -192,24 +192,33 @@ public class Scrabble {
         @Override
         public void handle(ActionEvent event) {
             String text = BOARD_GUI.read();
-            BOARD_GUI.print("> " + text);
+            BOARD_GUI.print("> " + text, false);
             CommandReturnWrapper returnWrapper;
             if(!(returnWrapper = BoardGUI.execute(text, currentPlayer())).executed){
-                BOARD_GUI.print("Unfortunately that command failed, please try again :(");
+                BOARD_GUI.print("Unfortunately that command failed, please try again :(", true);
             }else{
                 currentPlayer().increaseScore(returnWrapper.score);
+                currentPlayer().getFrame().refill();
                 alternatePlayer();
-                BOARD_GUI.print("It is now " + currentPlayer().getUsername() + "'s turn.");
-                BOARD_GUI.print(currentPlayer().getUsername() + "'s frame: " + currentPlayer().getFrame());
+
+                // assess whether 6 consecutive scoreless turns have occured (this means the game is over)
+                if(returnWrapper.score == 0) NUMBER_OF_SCORELESS_TURNS++;
+                else NUMBER_OF_SCORELESS_TURNS = 0;
+
+                if(NUMBER_OF_SCORELESS_TURNS >= 6){
+                    BOARD_GUI.setInputHandler(null);
+                    endGame();
+                }
+                BOARD_GUI.print("It is now " + currentPlayer().getUsername() + "'s turn.", true);
+                BOARD_GUI.print(currentPlayer().getUsername() + "'s frame: " + currentPlayer().getFrame(), true);
             }
-            BOARD_GUI.print(BOARD);
         }
     };
 
     public static void printChallengeMessage() {
-        BOARD_GUI.print("Congratulations! The game has officially ended. Now, you will be invited to challenge the plays of your opponent.");
-        BOARD_GUI.print(currentPlayer().getUsername() + " please enter all the words that your opponent played which you would like to challenge");
-        BOARD_GUI.print("Place the words on a single line, with spaces between each word.\nHit enter once you have finished inputting words");
+        BOARD_GUI.print("Congratulations! The game has officially ended. Now, you will be invited to challenge the plays of your opponent.", true);
+        BOARD_GUI.print(currentPlayer().getUsername() + " please enter all the words that your opponent played which you would like to challenge", true);
+        BOARD_GUI.print("Place the words on a single line, with spaces between each word.\nHit enter once you have finished inputting words", true);
     }
 
     /**
@@ -266,21 +275,21 @@ public class Scrabble {
         @Override
         public void handle(ActionEvent event) {
             String text = BOARD_GUI.read();
-            BOARD_GUI.print("> " + text);
+            BOARD_GUI.print("> " + text, false);
             if (Scrabble.offerUsername(text)) {
-                BOARD_GUI.print("Player " + (CURRENT_PLAYER + 1) + " has been assigned the username: " + currentPlayer().getUsername());
+                BOARD_GUI.print("Player " + (CURRENT_PLAYER + 1) + " has been assigned the username: " + currentPlayer().getUsername(), true);
                 alternatePlayer();
                 if (CURRENT_PLAYER == 0) {
-                    BOARD_GUI.print("The game will now begin. " + currentPlayer().getUsername() + ", please feel free to input a command");
-                    BOARD_GUI.print("For assistance, type \"HELP\"");
-                    BOARD_GUI.print("It is now " + currentPlayer().getUsername() + "'s turn.");
-                    BOARD_GUI.print(currentPlayer().getUsername() + "'s frame: " + currentPlayer().getFrame());
+                    BOARD_GUI.print("The game will now begin. " + currentPlayer().getUsername() + ", please feel free to input a command", true);
+                    BOARD_GUI.print("For assistance, type \"HELP\"", true);
+                    BOARD_GUI.print("It is now " + currentPlayer().getUsername() + "'s turn.", true);
+                    BOARD_GUI.print(currentPlayer().getUsername() + "'s frame: " + currentPlayer().getFrame(), true);
                     BOARD_GUI.setInputHandler(GAME_HANDLER);
                 } else{
-                    BOARD_GUI.print("Please enter the username you would like to set for player " + (CURRENT_PLAYER + 1) + " and then press the enter key");
+                    BOARD_GUI.print("Please enter the username you would like to set for player " + (CURRENT_PLAYER + 1) + " and then press the enter key", true);
                 }
             } else {
-                BOARD_GUI.print("Unfortunately that didn't work, please try again : )");
+                BOARD_GUI.print("Unfortunately that didn't work, please try again : )", true);
             }
         }
     };
