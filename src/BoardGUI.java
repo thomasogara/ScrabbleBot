@@ -6,6 +6,8 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.*;
 import javafx.geometry.Insets;
 import javafx.stage.Stage;
@@ -147,6 +149,24 @@ public class BoardGUI extends Application implements EventHandler<ActionEvent> {
         topContainer.getChildren().addAll(endGameBtn, playerScores[0], playerScores[1]);
         gameInput = new TextField();
         gameInput.setPromptText("Enter your command here");
+        gameInput.setOnKeyPressed(e -> {
+            if (e.getCode() == KeyCode.ENTER) {
+
+                String input = gameInput.getText();
+
+
+                Scrabble.CommandReturnWrapper returnValue = new Scrabble.CommandReturnWrapper();
+                returnValue = BoardGUI.execute(input, Scrabble.PLAYERS[Scrabble.currentPlayer]);
+
+                 if(!returnValue.executed) {
+                    System.out.println("Previous command failed to execute, please try again!");
+                }
+
+                gameInput.setText("");
+
+            }
+        });
+
         playerScores[0].setText("");
         playerScores[1].setText("");
         topContainer.setSpacing(70);
