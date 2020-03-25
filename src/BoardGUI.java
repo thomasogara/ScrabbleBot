@@ -6,20 +6,20 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
-import javafx.scene.input.KeyCode;
-import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.*;
 import javafx.geometry.Insets;
+import javafx.scene.text.Text;
 import javafx.stage.Stage;
+import sun.security.krb5.SCDynamicStoreConfig;
 
-import javax.xml.soap.Text;
+import java.net.SecureCacheResponse;
 import java.util.HashMap;
 
 public class BoardGUI extends Application implements EventHandler<ActionEvent> {
 
     /** GUI wrappers **/
-    public static Stage window;
-    public static Scene scrabbleScene;
+    private Stage window;
+    private Scene scrabbleScene;
 
     /** GUI layouts **/
     public static BorderPane rootLayout;
@@ -30,14 +30,15 @@ public class BoardGUI extends Application implements EventHandler<ActionEvent> {
     public static VBox sideContainer;
     public static HBox frameContainer;
 
-    public static Pane LetterContainerTop;
-    public static Pane LetterContainerBottom;
-    public static Pane NumberContainerRight;
-    public static Pane NumberContainerLeft;
+    private Pane LetterContainerTop;
+    private Pane LetterContainerBottom;
+    private Pane NumberContainerRight;
+    private Pane NumberContainerLeft;
 
     /** GUI components **/
-    public static Button endGameBtn;
-    public static TextField gameInput;
+    private Button endGameBtn;
+    private TextField gameInput;
+    private Text gameOutput;
     public static Label[] playerScores;
 
     /**COMMAND_MAP is a collection of all the recognised commands in the game, keyed by their canonical name in UPPERCASE*/
@@ -68,15 +69,12 @@ public class BoardGUI extends Application implements EventHandler<ActionEvent> {
         if(COMMAND_MAP.containsKey(commandName))
             //if the command is recognised, attempt to run it
             return COMMAND_MAP.get(commandName).run(tokens, p);
-
         return new Scrabble.CommandReturnWrapper();
     }
 
     public static void main(String[] args) throws Exception {
-        Thread mainThread = new Thread(new ScrabbleMainThread());
-        mainThread.start();
+        Scrabble.setup();
         launch(args);
-        mainThread.join();
     }
 
     /**
@@ -89,9 +87,9 @@ public class BoardGUI extends Application implements EventHandler<ActionEvent> {
     public void start(Stage primaryStage) throws Exception {
 
         // Initialize the stage & title
-        window = primaryStage;
-        window.setTitle("Scrabble Game - Team Squash");
-        window.setOnCloseRequest(e -> {
+        this.window = primaryStage;
+        this.window.setTitle("Scrabble Game - Team Squash");
+        this.window.setOnCloseRequest(e -> {
             e.consume();
             endProgram();
         });
@@ -146,33 +144,16 @@ public class BoardGUI extends Application implements EventHandler<ActionEvent> {
         endGameBtn = new Button("End Game");
         endGameBtn.setStyle("-fx-background-color: linear-gradient(to top, #0f4db8, #10439c);-fx-text-fill:white;-fx-font-weight: bold");
         endGameBtn.setOnAction(e -> endProgram());
-        topContainer.getChildren().addAll(endGameBtn, playerScores[0], playerScores[1]);
+        topContainer.getChildren().addAll(this.endGameBtn);
         gameInput = new TextField();
         gameInput.setPromptText("Enter your command here");
-        gameInput.setOnKeyPressed(e -> {
-            if (e.getCode() == KeyCode.ENTER) {
+        gameOutput = new Text();
+        gameOutput.setLineSpacing(1.15);
+        gameOutput.setWrappingWidth(sideContainer.getPrefWidth());
+        sideContainer.getChildren().add(this.gameOutput);
+        sideContainer.getChildren().add(this.gameInput);
 
-                String input = gameInput.getText();
-
-
-                Scrabble.CommandReturnWrapper returnValue = new Scrabble.CommandReturnWrapper();
-                returnValue = BoardGUI.execute(input, Scrabble.PLAYERS[Scrabble.currentPlayer]);
-
-                 if(!returnValue.executed) {
-                    System.out.println("Previous command failed to execute, please try again!");
-                }
-
-                gameInput.setText("");
-
-            }
-        });
-
-        playerScores[0].setText("");
-        playerScores[1].setText("");
-        topContainer.setSpacing(70);
-        sideContainer.getChildren().add(gameInput);
         sideContainer.setAlignment(Pos.BOTTOM_CENTER);
-        bottomContainer.getChildren().add(frameContainer);
 
         // Initialize the boardContainer Letters & Numbers
         for(int x = 1; x < 16; x++) {
@@ -188,6 +169,12 @@ public class BoardGUI extends Application implements EventHandler<ActionEvent> {
             NumberContainerLeft.getChildren().add(Point.renderGridHeader("" + (y + 1) , -1, y));
         }
 
+        for(Point[] row : Scrabble.BOARD.points){
+            for(Point p : row){
+                p.renderGraphic();
+            }
+        }
+
         // Initialize the boardGrid Squares
         for(int x = 0; x < 15; x++) {
             for(int y = 0; y < 15; y++) {
@@ -200,14 +187,32 @@ public class BoardGUI extends Application implements EventHandler<ActionEvent> {
 
         // Set the scene to the scrabble scene
         window.setScene(scrabbleScene);
-        //window.setMaximized(true);
         window.show();
+        //window.setMaximized(true);
+        Scrabble.BOARD_GUI = this;
+
+        print("Please enter the username you would like to set for player " + (Scrabble.CURRENT_PLAYER + 1) + " and then press the enter key");
+        this.setInputHandler(Scrabble.Username_Reading_Handler);
     }
 
 
     @Override
     public void handle(ActionEvent event) {
 
+    }
+
+    public void print(Object o){
+        this.gameOutput.setText(this.gameOutput.getText() + "\n" + o.toString());
+    }
+
+    public String read(){
+        String text = this.gameInput.getText();
+        this.gameInput.clear();
+        return text;
+    }
+
+    public void setInputHandler(EventHandler<ActionEvent> eventHandler){
+        this.gameInput.setOnAction(eventHandler);
     }
 
     /**

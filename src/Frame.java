@@ -76,12 +76,12 @@ public class Frame extends HBox {
 
         if(f == null) return;
         if(Scrabble.PLAYERS == null ||
-                Scrabble.PLAYERS[Scrabble.currentPlayer] == null ||
-                Scrabble.PLAYERS[Scrabble.currentPlayer].getFrame() == null) return;
+                Scrabble.PLAYERS[Scrabble.CURRENT_PLAYER] == null ||
+                Scrabble.PLAYERS[Scrabble.CURRENT_PLAYER].getFrame() == null) return;
 
         int i = 0;
 
-        for(Tile t : Scrabble.PLAYERS[Scrabble.currentPlayer].getFrame().letters) {
+        for(Tile t : Scrabble.PLAYERS[Scrabble.CURRENT_PLAYER].getFrame().letters) {
 
             StackPane frameItem = (StackPane)((Node) f.getChildren().get(i));
             Rectangle graphic = (Rectangle)((Node)frameItem.getChildren().get(0));
@@ -169,9 +169,12 @@ public class Frame extends HBox {
      */
     public final boolean hasLetters(Tile[] letter_array){
         int blank_required = 0; // how many blank tiles would be needed to compensate for missing letters in the Frame
+        ArrayList<Tile> lettersCopy = new ArrayList<>(this.getLetters());
         for(Tile letter : letter_array){
-            if(!this.getLetters().contains(letter))
+            if(!lettersCopy.contains(letter))
                 blank_required++;
+            else
+                lettersCopy.remove(letter);
         }
         if(blank_required <= this.blank_count())
             return true;
@@ -292,7 +295,6 @@ public class Frame extends HBox {
      */
     public final void add(char letter){
         this.add(new Tile(letter));
-        this.refreshGraphic();
     }
 
     /**
@@ -304,7 +306,6 @@ public class Frame extends HBox {
         for (Tile tile : tiles) {
             this.add(tile);
         }
-        this.refreshGraphic();
     }
 
     /**
@@ -312,7 +313,6 @@ public class Frame extends HBox {
      */
     public final void addAll(String s){
         this.addAll(Tile.tileArrayFromCharArray(s.toCharArray()));
-        this.refreshGraphic();
     }
 
     /**

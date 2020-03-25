@@ -53,7 +53,6 @@ public class Point extends StackPane {
         this.x = x;
         this.y = y;
         this.formedWords = new ArrayList<>();
-        this.renderGraphic();
     }
 
     /**
@@ -64,7 +63,6 @@ public class Point extends StackPane {
         this.y = y;
         this.board = board;
         this.formedWords = new ArrayList<>();
-        this.renderGraphic();
     }
 
     public void renderGraphic() {
@@ -121,7 +119,7 @@ public class Point extends StackPane {
          Get the point instance from the boardGrids children using it's index value.
          This index value is found by multiple the X coord by 1 & the Y coord by 15.
          */
-        Point pointInstance = (Point) ((Node) BoardGUI.boardGrid.getChildren().get(((this.x * 1) + (this.y * 15))));
+        Point pointInstance = (Point) BoardGUI.boardGrid.getChildren().get(((this.x) + (this.y * 15)));
 
         if(pointInstance == null)
             return;
@@ -180,7 +178,6 @@ public class Point extends StackPane {
      */
     public void setTile(Tile tile) {
         this.tile = tile;
-        this.refreshGraphic();
     }
 
     /**
