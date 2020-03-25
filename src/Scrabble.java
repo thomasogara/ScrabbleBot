@@ -169,7 +169,7 @@ public class Scrabble {
                 } else {
                     while ((index = opponent.played_words.indexOf(s)) != -1) {
                         int score = opponent.scores_from_play.get(index);
-                        BOARD_GUI.print(s + " was succesffully challenged, removing " + score + " points from " + opponent.getUsername(), true);
+                        BOARD_GUI.print(s + " was successfully challenged, removing " + score + " points from " + opponent.getUsername(), true);
                         opponent.increaseScore((-1) * score);
                         opponent.played_words.remove(index);
                         opponent.scores_from_play.remove(index);
