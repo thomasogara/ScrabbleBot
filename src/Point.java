@@ -5,6 +5,7 @@
   Daniel Nwabueze (17481174) (daniel.nwabueze@ucdconnect.ie)
  */
 
+import javafx.scene.Node;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
@@ -52,7 +53,6 @@ public class Point extends StackPane {
         this.x = x;
         this.y = y;
         this.formedWords = new ArrayList<>();
-        this.renderGraphic();
     }
 
     /**
@@ -63,7 +63,6 @@ public class Point extends StackPane {
         this.y = y;
         this.board = board;
         this.formedWords = new ArrayList<>();
-        this.renderGraphic();
     }
 
     public void renderGraphic() {
@@ -112,10 +111,27 @@ public class Point extends StackPane {
      * Refresh the current state of this point (i.e placed tile, removed tile etc..), and update the points' graphic accordingly
      */
     public void refreshGraphic() {
+
+        if(BoardGUI.boardGrid == null || BoardGUI.boardGrid.getChildren() == null || BoardGUI.boardGrid.getChildren().size() <= 0)
+            return;
+
+        /**
+         Get the point instance from the boardGrids children using it's index value.
+         This index value is found by multiple the X coord by 1 & the Y coord by 15.
+         */
+        Point pointInstance = (Point) BoardGUI.boardGrid.getChildren().get(((this.x) + (this.y * 15)));
+
+        if(pointInstance == null)
+            return;
+
         if(this.tile != null) {
-            this.graphicText.setText("" + this.tile.getValue());
-            this.graphicText.setStyle("-fx-text-fill: black;-fx-fill: black;-fx-font-size: 200%;-fx-font-weight: bold");
-            this.graphic.setFill(Color.web("#e8e6e4"));
+            pointInstance.graphicText.setStyle("-fx-text-fill: black;-fx-fill: black;-fx-font-size: 200%;-fx-font-weight: bold");
+            pointInstance.graphicText.setText("" + this.tile.getValue()); // Set the tiles new text to the Tile's character letter
+            pointInstance.graphic.setFill(Color.web("#e8e6e4"));
+        } else {
+            pointInstance.graphicText.setStyle("-fx-text-fill: black;-fx-fill: black;-fx-font-size: 200%;-fx-font-weight: bold");
+            pointInstance.graphicText.setText("");
+            pointInstance.graphic.setFill(Color.web("#e8e6e4"));
         }
     }
 
@@ -162,7 +178,6 @@ public class Point extends StackPane {
      */
     public void setTile(Tile tile) {
         this.tile = tile;
-        this.refreshGraphic();
     }
 
     /**

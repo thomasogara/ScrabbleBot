@@ -5,11 +5,19 @@
   Daniel Nwabueze (17481174) (daniel.nwabueze@ucdconnect.ie)
  */
 
+import javafx.scene.Node;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.Pane;
+import javafx.scene.layout.StackPane;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Rectangle;
+import javafx.scene.text.Text;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class Frame{
+public class Frame extends HBox {
     /*
         Instance variables
      */
@@ -24,12 +32,71 @@ public class Frame{
     /** An integer constant of the Frame class, representing the maximum number of Tile's which can be placed on a Frame*/
     public static final int FRAME_CAPACITY = 7;
 
+    // GUI variables
+    private StackPane frameItems[];
+    private Rectangle graphic;
+    private Text graphicText;
+
     /**
      * The default constructor, initialises the 'letters' instance variable, and fills it from the Pool
      * @see Frame#letters
      */
-    public Frame(){
+    public Frame() {
         this.letters = new ArrayList<>();
+        this.frameItems = new StackPane[7];
+        this.renderGraphic();
+    }
+
+    /**
+     * Render frame graphic
+     */
+    public void renderGraphic() {
+
+        this.setSpacing(5);
+
+        for(int i = 0; i < 7; i++) {
+            this.frameItems[i] = new StackPane();
+            Rectangle graphic  = new Rectangle(Scrabble.POINT_WIDTH, Scrabble.POINT_HEIGHT);
+            Text graphicText  = new Text("");
+            graphic.setStroke(Color.LIGHTGRAY);
+            graphic.setFill(Color.WHITE);
+            graphicText.setStyle("-fx-text-fill: black;-fx-fill: white;");
+            this.frameItems[i].getChildren().addAll(graphic, graphicText);
+            getChildren().add(this.frameItems[i]);
+        }
+
+    }
+
+    /**
+     * Refresh frame graphic & update the main games frame with the current players' letters
+     */
+    public void refreshGraphic() {
+
+        Frame f = (Frame) BoardGUI.frameContainer;
+
+        if(f == null) return;
+        if(Scrabble.PLAYERS == null ||
+                Scrabble.PLAYERS[Scrabble.CURRENT_PLAYER] == null ||
+                Scrabble.PLAYERS[Scrabble.CURRENT_PLAYER].getFrame() == null) return;
+
+        int i = 0;
+
+        for(Tile t : Scrabble.PLAYERS[Scrabble.CURRENT_PLAYER].getFrame().letters) {
+
+            StackPane frameItem = (StackPane)((Node) f.getChildren().get(i));
+            Rectangle graphic = (Rectangle)((Node)frameItem.getChildren().get(0));
+            Text graphicText = (Text)((Node)frameItem.getChildren().get(1));
+            graphicText.setStyle("-fx-text-fill: black;-fx-fill: black;-fx-font-size: 200%;-fx-font-weight: bold");
+
+            if(t == null)
+                graphicText.setText("");
+            else
+                graphicText.setText("" + t.getValue());
+
+            i++;
+
+        }
+
     }
 
     /**
@@ -37,6 +104,7 @@ public class Frame{
      */
     public void refill(){
         this.letters.addAll(this.pool.drawRandTiles(FRAME_CAPACITY - this.letters.size()));
+        this.refreshGraphic();
     }
 
     /**
@@ -48,6 +116,7 @@ public class Frame{
         for(Tile tile : tiles){
             this.getLetters().remove(tile);
         }
+        this.refreshGraphic();
     }
 
     /**
@@ -100,9 +169,12 @@ public class Frame{
      */
     public final boolean hasLetters(Tile[] letter_array){
         int blank_required = 0; // how many blank tiles would be needed to compensate for missing letters in the Frame
+        ArrayList<Tile> lettersCopy = new ArrayList<>(this.getLetters());
         for(Tile letter : letter_array){
-            if(!this.getLetters().contains(letter))
+            if(!lettersCopy.contains(letter))
                 blank_required++;
+            else
+                lettersCopy.remove(letter);
         }
         if(blank_required <= this.blank_count())
             return true;
@@ -214,6 +286,7 @@ public class Frame{
             throw new IllegalArgumentException("Frame is at capacity. Additional Tile cannot be placed");
         }
         this.getLetters().add(tile);
+        this.refreshGraphic();
     }
 
     /**

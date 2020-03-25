@@ -129,21 +129,20 @@ public class Board {
      */
     public final Scrabble.CommandReturnWrapper add(String s, Point p, char d, Player u){
         Scrabble.CommandReturnWrapper returnWrapper = new Scrabble.CommandReturnWrapper();
-        // Construct a String containing all the overlapping tiles
-        String overlap = this.getOverlap(s, p, d);
-
+        Point[] query = createPointArrayFromQuery(s, p, d, this);
+        Point[] required = getRequiredTilesAsPointArray(s, p, d);
+        Tile[] requiredTiles = new Tile[required.length];
+        for(int i = 0; i < required.length; i++){
+            requiredTiles[i] = required[i].getTile();
+        }
         // if the direction is not properly defined, or the player's Frame does not contain the necessary letters
         // to execute the turn (excluding the overlap tiles), then the turn cannot be executed
-        if((d != 'R' && d != 'D' )|| !u.getFrame().hasLetters(stringDifference(s, overlap))){
+        if((d != 'R' && d != 'D' )|| !u.getFrame().hasLetters(requiredTiles)){
             return returnWrapper;
         }
 
-        // Translate the input information into a more manageable form, a Point[] array
-        // This array can then be checked for validity, and placed onto the Board
-        Point[] point_array = Board.createPointArrayFromQuery(s, p, d, this);
-
         // If this point array is invalid, quit
-        if(!isValid(point_array)){
+        if(!isValid(query)){
             return returnWrapper;
         }
         /*
@@ -151,39 +150,33 @@ public class Board {
          */
 
         // Add each point to the board
-        for(int i = 0; i < point_array.length; i++) {
-            if (u.getFrame().hasLetter(point_array[i].getTile()))
-                this.add(point_array[i]);
-            else {
-                Point point = point_array[i];
-                point_array[i] = new Point(point_array[i].getX(), point_array[i].getY());
-                point_array[i].setTile(new Tile('0'));
-                this.add(point);
+        for(int i = 0; i < required.length; i++) {
+            if (required[i].getTile() != null) {
+                required[i].refreshGraphic();
+                if (u.getFrame().hasLetter(required[i].getTile()))
+                    this.add(required[i]);
+                else {
+                    Point point = required[i];
+                    required[i] = new Point(required[i].getX(), required[i].getY());
+                    required[i].setTile(new Tile('0'));
+                    this.add(point);
+                }
             }
         }
 
-        Tile[] tiles = new Tile[point_array.length];
-        for(int i = 0; i < point_array.length; i++){
-            tiles[i] = point_array[i].getTile();
+        //update required tiles to account for blanks
+        for(int i = 0; i < required.length; i++){
+            requiredTiles[i] = required[i].getTile();
         }
 
         // Remove all necessary tiles form the Player's Frame
-        u.getFrame().removeAll(Arrays.asList(tiles));
+        u.getFrame().removeAll(Arrays.asList(requiredTiles));
+
         // The turn has been executed successfully
         returnWrapper.executed = true;
-        returnWrapper.score = Scrabble.calculateScore(point_array);
+        returnWrapper.score = Scrabble.calculateScore(required);
+        u.increaseScore(returnWrapper.score);
         return returnWrapper;
-    }
-
-    /**
-     * A utility method to allow all necessary tiles for a given turn to be removed from the Player's Frame
-     * @param s String representing thr word being played
-     * @param overlap String representing the characters which are already on the board in the path of this turn
-     * @param u the Player who's Frame is to be altered
-     */
-    public static void removeTilesFromPLayerFrame(String s, String overlap, Player u){
-        // Remove all the letters from the player's frame which they would have to use in order to execute this turn
-        u.getFrame().removeAll(Board.stringDifference(s, overlap));
     }
 
     /**
