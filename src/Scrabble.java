@@ -29,6 +29,8 @@ public class Scrabble {
     public static final Pool POOL = new Pool();
     /**The players participating in this game*/
     public static final Player[] PLAYERS = new Player[Scrabble.PLAYER_COUNT];
+    /**Current player who's turn it is*/
+    public static int currentPlayer = 0;
     /**The Scanner to be used throughout the program to read from stdin for the duration of the game*/
     public static final Scanner STDIN = new Scanner(System.in);
     /**The dictionary to be used for the game (not yet a requirement)*/
@@ -39,7 +41,7 @@ public class Scrabble {
     public static int NUMBER_OF_SCORELESS_TURNS = 0;
     /**The size of the scrabble Window*/
     public static final int WINDOW_WIDTH = 1066;
-    public static final int WINDOW_HEIGHT = 826;
+    public static final int WINDOW_HEIGHT = 894;
     /**The size of the scrabble Board [MAY SWITCH TO RELATIVE SIZING]*/
     public static final int BOARD_WIDTH = 900;
     public static final int BOARD_HEIGHT = 600;
@@ -77,6 +79,7 @@ public class Scrabble {
                 // once a turn is successfully executed, refill the player's frame
                 PLAYERS[i].increaseScore(returnValue.score);
                 PLAYERS[i].getFrame().refill();
+                Scrabble.currentPlayer = i;
             }
         }
         System.out.println("The game has almost ended. Now, each player will be invited to challenge the plays");

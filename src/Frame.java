@@ -5,11 +5,17 @@
   Daniel Nwabueze (17481174) (daniel.nwabueze@ucdconnect.ie)
  */
 
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.Pane;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Rectangle;
+import javafx.scene.text.Text;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class Frame{
+public class Frame extends HBox {
     /*
         Instance variables
      */
@@ -24,19 +30,73 @@ public class Frame{
     /** An integer constant of the Frame class, representing the maximum number of Tile's which can be placed on a Frame*/
     public static final int FRAME_CAPACITY = 7;
 
+    // GUI variables
+    private Pane frameItems[];
+    private Rectangle graphic;
+    private Text graphicText;
+
     /**
      * The default constructor, initialises the 'letters' instance variable, and fills it from the Pool
      * @see Frame#letters
      */
-    public Frame(){
+    public Frame() {
         this.letters = new ArrayList<>();
+        this.frameItems = new Pane[7];
+        this.renderGraphic();
     }
+
+    public void renderGraphic() {
+
+        this.setSpacing(5);
+
+        for(int i = 0; i < 7; i++) {
+            this.frameItems[i] = new Pane();
+            Rectangle graphic  = new Rectangle(Scrabble.POINT_WIDTH, Scrabble.POINT_HEIGHT);
+            Text graphicText  = new Text("");
+            graphic.setStroke(Color.LIGHTGRAY);
+            graphic.setFill(Color.WHITE);
+            graphicText.setStyle("-fx-text-fill: black;-fx-fill: white;");
+            this.frameItems[i].getChildren().addAll(graphic, graphicText);
+            getChildren().add(this.frameItems[i]);
+        }
+
+    }
+
+    public void refreshGraphic() {
+
+        Frame f = (Frame) BoardGUI.frameContainer;
+        for(int i = 0; i < 7; i++) {
+            Pane frameItem = f.frameItems[i];
+            ((Text) frameItem.getChildren().get(1)).setText("T");
+        }
+    }
+
+    public static HBox renderEmptyFrame() {
+
+        HBox emptyFrame = new HBox();
+        emptyFrame.setSpacing(5);
+        for(int i = 0; i < 7; i++) {
+            Pane frameItem = new Pane();
+            Rectangle graphic  = new Rectangle(Scrabble.POINT_WIDTH, Scrabble.POINT_HEIGHT);
+            Text graphicText  = new Text("");
+            graphic.setStroke(Color.LIGHTGRAY);
+            graphic.setFill(Color.WHITE);
+            graphicText.setStyle("-fx-text-fill: black;-fx-fill: white;");
+            frameItem.getChildren().addAll(graphic, graphicText);
+            emptyFrame.getChildren().add(frameItem);
+        }
+
+        return emptyFrame;
+
+    }
+
 
     /**
      * A method which allows the Frame to be refilled via the Pool class's API.
      */
     public void refill(){
         this.letters.addAll(this.pool.drawRandTiles(FRAME_CAPACITY - this.letters.size()));
+        this.refreshGraphic();
     }
 
     /**
@@ -48,6 +108,7 @@ public class Frame{
         for(Tile tile : tiles){
             this.getLetters().remove(tile);
         }
+        this.refreshGraphic();
     }
 
     /**
@@ -214,6 +275,7 @@ public class Frame{
             throw new IllegalArgumentException("Frame is at capacity. Additional Tile cannot be placed");
         }
         this.getLetters().add(tile);
+        this.refreshGraphic();
     }
 
     /**
@@ -222,6 +284,7 @@ public class Frame{
      */
     public final void add(char letter){
         this.add(new Tile(letter));
+        this.refreshGraphic();
     }
 
     /**
@@ -233,6 +296,7 @@ public class Frame{
         for (Tile tile : tiles) {
             this.add(tile);
         }
+        this.refreshGraphic();
     }
 
     /**
@@ -240,6 +304,7 @@ public class Frame{
      */
     public final void addAll(String s){
         this.addAll(Tile.tileArrayFromCharArray(s.toCharArray()));
+        this.refreshGraphic();
     }
 
     /**

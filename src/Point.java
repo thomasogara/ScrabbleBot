@@ -113,13 +113,27 @@ public class Point extends StackPane {
      * Refresh the current state of this point (i.e placed tile, removed tile etc..), and update the points' graphic accordingly
      */
     public void refreshGraphic() {
+
+        if(BoardGUI.boardGrid == null || BoardGUI.boardGrid.getChildren() == null || BoardGUI.boardGrid.getChildren().size() <= 0)
+            return;
+
+        /**
+         Get the point instance from the boardGrids children using it's index value.
+         This index value is found by multiple the X coord by 1 & the Y coord by 15.
+         */
+        Point pointInstance = (Point) ((Node) BoardGUI.boardGrid.getChildren().get(((this.x * 1) + (this.y * 15))));
+
+        if(pointInstance == null)
+            return;
+
         if(this.tile != null) {
-
-            Point pointInstance  = (Point) ( (Node) BoardGUI.boardGrid.getChildren().get( ( (this.x * 1) + (this.y * 15)) ) );
             pointInstance.graphicText.setStyle("-fx-text-fill: black;-fx-fill: black;-fx-font-size: 200%;-fx-font-weight: bold");
-            pointInstance.graphicText.setText("" + this.tile.getValue());
+            pointInstance.graphicText.setText("" + this.tile.getValue()); // Set the tiles new text to the Tile's character letter
             pointInstance.graphic.setFill(Color.web("#e8e6e4"));
-
+        } else {
+            pointInstance.graphicText.setStyle("-fx-text-fill: black;-fx-fill: black;-fx-font-size: 200%;-fx-font-weight: bold");
+            pointInstance.graphicText.setText("");
+            pointInstance.graphic.setFill(Color.web("#e8e6e4"));
         }
     }
 

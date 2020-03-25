@@ -24,6 +24,7 @@ public class BoardGUI extends Application implements EventHandler<ActionEvent> {
     public static HBox topContainer;
     public static HBox bottomContainer;
     public static VBox sideContainer;
+    public static HBox frameContainer;
 
     public static Pane LetterContainerTop;
     public static Pane LetterContainerBottom;
@@ -96,6 +97,7 @@ public class BoardGUI extends Application implements EventHandler<ActionEvent> {
         topContainer = new HBox();
         bottomContainer = new HBox();
         sideContainer = new VBox();
+        frameContainer = new Frame();
         boardContainer = new BorderPane();
         rootLayout.setCenter(boardContainer);
         rootLayout.setTop(topContainer);
@@ -119,11 +121,15 @@ public class BoardGUI extends Application implements EventHandler<ActionEvent> {
         boardGrid.setPrefSize(Scrabble.BOARD_WIDTH, Scrabble.BOARD_HEIGHT);
         boardGrid.setStyle("-fx-background-color: #303030; -fx-text-fill: white;");
         topContainer.setPadding(new Insets(15, 12, 15, 12));
+        bottomContainer.setPadding(new Insets(15, 12, 15, 12));
+        bottomContainer.setPrefHeight(Scrabble.POINT_HEIGHT * 1.5);
+        bottomContainer.setAlignment(Pos.CENTER);
+        frameContainer.setStyle("-fx-text-fill: black;");
         sideContainer.setStyle("-fx-background-color: #ebebeb; -fx-text-fill: white;");
         sideContainer.setPrefWidth(300);
         LetterContainerTop.setPrefHeight(Scrabble.POINT_HEIGHT);
         LetterContainerBottom.setPrefHeight(Scrabble.POINT_HEIGHT);
-        NumberContainerRight.setPrefHeight(3000);
+        NumberContainerRight.setPrefHeight(Scrabble.POINT_WIDTH);
         NumberContainerLeft.setPrefWidth(Scrabble.POINT_WIDTH);
 
         // Initialize respective components, their EventListeners & add to layouts
@@ -135,6 +141,7 @@ public class BoardGUI extends Application implements EventHandler<ActionEvent> {
         gameInput.setPromptText("Enter your command here");
         sideContainer.getChildren().add(gameInput);
         sideContainer.setAlignment(Pos.BOTTOM_CENTER);
+        bottomContainer.getChildren().add(frameContainer);
 
         // Initialize the boardContainer Letters & Numbers
         for(int x = 1; x < 16; x++) {
