@@ -66,6 +66,11 @@ public class Scrabble {
         System.out.println();
         while(NUMBER_OF_SCORELESS_TURNS < 6 && !POOL.isEmpty()){
             for(int i = 0; i < PLAYER_COUNT; i++){
+
+                Scrabble.currentPlayer = i;
+                PLAYERS[i].getFrame().refreshGraphic();
+
+                System.out.println("CurrentPlayer=" + Scrabble.currentPlayer);
                 System.out.println("It is now " + PLAYERS[i].getUsername() + "'s turn!");
                 System.out.println("Current scores: " + PLAYERS[0].getScore() + " " + PLAYERS[1].getScore());
                 System.out.println(BOARD);
@@ -79,7 +84,7 @@ public class Scrabble {
                 // once a turn is successfully executed, refill the player's frame
                 PLAYERS[i].increaseScore(returnValue.score);
                 PLAYERS[i].getFrame().refill();
-                Scrabble.currentPlayer = i;
+
             }
         }
         System.out.println("The game has almost ended. Now, each player will be invited to challenge the plays");

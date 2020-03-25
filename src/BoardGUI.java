@@ -4,11 +4,13 @@ import javafx.event.EventHandler;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.*;
 import javafx.geometry.Insets;
 import javafx.stage.Stage;
 
+import javax.xml.soap.Text;
 import java.util.HashMap;
 
 public class BoardGUI extends Application implements EventHandler<ActionEvent> {
@@ -34,6 +36,7 @@ public class BoardGUI extends Application implements EventHandler<ActionEvent> {
     /** GUI components **/
     public static Button endGameBtn;
     public static TextField gameInput;
+    public static Label[] playerScores;
 
     /**COMMAND_MAP is a collection of all the recognised commands in the game, keyed by their canonical name in UPPERCASE*/
     static HashMap<String, Command> COMMAND_MAP = new HashMap<String, Command>(){{
@@ -99,6 +102,9 @@ public class BoardGUI extends Application implements EventHandler<ActionEvent> {
         sideContainer = new VBox();
         frameContainer = new Frame();
         boardContainer = new BorderPane();
+        playerScores = new Label[2];
+        playerScores[0] = new Label();
+        playerScores[1] = new Label();
         rootLayout.setCenter(boardContainer);
         rootLayout.setTop(topContainer);
         rootLayout.setBottom(bottomContainer);
@@ -126,6 +132,8 @@ public class BoardGUI extends Application implements EventHandler<ActionEvent> {
         bottomContainer.setAlignment(Pos.CENTER);
         frameContainer.setStyle("-fx-text-fill: black;");
         sideContainer.setStyle("-fx-background-color: #ebebeb; -fx-text-fill: white;");
+        playerScores[0].setStyle("-fx-text-fill: black;-fx-fill: black;-fx-font-size: 100%;-fx-font-weight: bold");
+        playerScores[1].setStyle("-fx-text-fill: black;-fx-fill: black;-fx-font-size: 100%;-fx-font-weight: bold");
         sideContainer.setPrefWidth(300);
         LetterContainerTop.setPrefHeight(Scrabble.POINT_HEIGHT);
         LetterContainerBottom.setPrefHeight(Scrabble.POINT_HEIGHT);
@@ -136,9 +144,12 @@ public class BoardGUI extends Application implements EventHandler<ActionEvent> {
         endGameBtn = new Button("End Game");
         endGameBtn.setStyle("-fx-background-color: linear-gradient(to top, #0f4db8, #10439c);-fx-text-fill:white;-fx-font-weight: bold");
         endGameBtn.setOnAction(e -> endProgram());
-        topContainer.getChildren().addAll(endGameBtn);
+        topContainer.getChildren().addAll(endGameBtn, playerScores[0], playerScores[1]);
         gameInput = new TextField();
         gameInput.setPromptText("Enter your command here");
+        playerScores[0].setText("");
+        playerScores[1].setText("");
+        topContainer.setSpacing(70);
         sideContainer.getChildren().add(gameInput);
         sideContainer.setAlignment(Pos.BOTTOM_CENTER);
         bottomContainer.getChildren().add(frameContainer);

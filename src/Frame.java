@@ -5,8 +5,10 @@
   Daniel Nwabueze (17481174) (daniel.nwabueze@ucdconnect.ie)
  */
 
+import javafx.scene.Node;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
@@ -31,7 +33,7 @@ public class Frame extends HBox {
     public static final int FRAME_CAPACITY = 7;
 
     // GUI variables
-    private Pane frameItems[];
+    private StackPane frameItems[];
     private Rectangle graphic;
     private Text graphicText;
 
@@ -41,16 +43,19 @@ public class Frame extends HBox {
      */
     public Frame() {
         this.letters = new ArrayList<>();
-        this.frameItems = new Pane[7];
+        this.frameItems = new StackPane[7];
         this.renderGraphic();
     }
 
+    /**
+     * Render frame graphic
+     */
     public void renderGraphic() {
 
         this.setSpacing(5);
 
         for(int i = 0; i < 7; i++) {
-            this.frameItems[i] = new Pane();
+            this.frameItems[i] = new StackPane();
             Rectangle graphic  = new Rectangle(Scrabble.POINT_WIDTH, Scrabble.POINT_HEIGHT);
             Text graphicText  = new Text("");
             graphic.setStroke(Color.LIGHTGRAY);
@@ -62,34 +67,37 @@ public class Frame extends HBox {
 
     }
 
+    /**
+     * Refresh frame graphic & update the main games frame with the current players' letters
+     */
     public void refreshGraphic() {
 
         Frame f = (Frame) BoardGUI.frameContainer;
-        for(int i = 0; i < 7; i++) {
-            Pane frameItem = f.frameItems[i];
-            ((Text) frameItem.getChildren().get(1)).setText("T");
+
+        if(f == null) return;
+        if(Scrabble.PLAYERS == null ||
+                Scrabble.PLAYERS[Scrabble.currentPlayer] == null ||
+                Scrabble.PLAYERS[Scrabble.currentPlayer].getFrame() == null) return;
+
+        int i = 0;
+
+        for(Tile t : Scrabble.PLAYERS[Scrabble.currentPlayer].getFrame().letters) {
+
+            StackPane frameItem = (StackPane)((Node) f.getChildren().get(i));
+            Rectangle graphic = (Rectangle)((Node)frameItem.getChildren().get(0));
+            Text graphicText = (Text)((Node)frameItem.getChildren().get(1));
+            graphicText.setStyle("-fx-text-fill: black;-fx-fill: black;-fx-font-size: 200%;-fx-font-weight: bold");
+
+            if(t == null)
+                graphicText.setText("");
+            else
+                graphicText.setText("" + t.getValue());
+
+            i++;
+
         }
-    }
-
-    public static HBox renderEmptyFrame() {
-
-        HBox emptyFrame = new HBox();
-        emptyFrame.setSpacing(5);
-        for(int i = 0; i < 7; i++) {
-            Pane frameItem = new Pane();
-            Rectangle graphic  = new Rectangle(Scrabble.POINT_WIDTH, Scrabble.POINT_HEIGHT);
-            Text graphicText  = new Text("");
-            graphic.setStroke(Color.LIGHTGRAY);
-            graphic.setFill(Color.WHITE);
-            graphicText.setStyle("-fx-text-fill: black;-fx-fill: white;");
-            frameItem.getChildren().addAll(graphic, graphicText);
-            emptyFrame.getChildren().add(frameItem);
-        }
-
-        return emptyFrame;
 
     }
-
 
     /**
      * A method which allows the Frame to be refilled via the Pool class's API.
