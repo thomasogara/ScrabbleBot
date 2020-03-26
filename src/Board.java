@@ -152,20 +152,23 @@ public class Board {
         // Add each point to the board
         for(int i = 0; i < required.length; i++) {
             if (required[i].getTile() != null) {
-                required[i].refreshGraphic();
                 if (u.getFrame().hasLetter(required[i].getTile()))
                     this.add(required[i]);
                 else {
                     Point point = required[i];
+                    Point displayPoint = new Point(required[i].getX(), required[i].getY());
+                    displayPoint.setTile(new Tile('0'));
+                    displayPoint.getTile().setValue(point.getTile().getValue());
                     required[i] = new Point(required[i].getX(), required[i].getY());
                     required[i].setTile(new Tile('0'));
-                    this.add(point);
+                    this.add(displayPoint);
                 }
             }
         }
 
         //update required tiles to account for blanks
         for(int i = 0; i < required.length; i++){
+            required[i].refreshGraphic();
             requiredTiles[i] = required[i].getTile();
         }
 

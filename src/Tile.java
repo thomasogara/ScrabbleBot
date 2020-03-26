@@ -19,6 +19,8 @@ public class Tile{
 	/**The value of the given tile, stored as a Character object*/
 	private Character value;
 
+	private  Character displayValue;
+
 	/*
 		CLASS VARIABLES
 	 */
@@ -38,6 +40,7 @@ public class Tile{
 			throw new IllegalArgumentException(String.format("char %c not valid with current character validity constraints", value));
 		}
 		this.value = value;
+		this.displayValue = value;
 	}
 
 	/**
@@ -47,6 +50,10 @@ public class Tile{
 	public Character getValue(){
 		return this.value;
 	}
+
+	public Character getDisplayValue() {return this.displayValue; }
+
+	public void setValue(Character value) { this.value = value; }
 
 	/**
 	 * Getter method for the class variable 'validCharacters'

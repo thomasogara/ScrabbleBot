@@ -5,7 +5,6 @@
   Daniel Nwabueze (17481174) (daniel.nwabueze@ucdconnect.ie)
  */
 
-import javafx.scene.Node;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
@@ -126,7 +125,11 @@ public class Point extends StackPane {
 
         if(this.tile != null) {
             pointInstance.graphicText.setStyle("-fx-text-fill: black;-fx-fill: black;-fx-font-size: 200%;-fx-font-weight: bold");
-            pointInstance.graphicText.setText("" + this.tile.getValue()); // Set the tiles new text to the Tile's character letter
+            if(this.tile.getDisplayValue() == '0'){
+                pointInstance.graphicText.setText(""); // Set the tiles new text to the Tile's character letter
+            }else {
+                pointInstance.graphicText.setText("" + this.tile.getDisplayValue()); // Set the tiles new text to the Tile's character letter
+            }
             pointInstance.graphic.setFill(Color.web("#e8e6e4"));
         } else {
             pointInstance.graphicText.setStyle("-fx-text-fill: black;-fx-fill: black;-fx-font-size: 200%;-fx-font-weight: bold");

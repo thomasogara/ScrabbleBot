@@ -7,7 +7,6 @@
 
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
-import org.w3c.dom.events.EventException;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -79,10 +78,6 @@ public class Scrabble {
      */
     public static final int POINT_WIDTH = 45;
     public static final int POINT_HEIGHT = 45;
-    /**
-     * The thread to be used to execute the game logic
-     */
-    public static final Thread MAIN_THREAD = new Thread(new ScrabbleMainThread());
 
     /**
      * Scrabble.setup() is used to initialise any necessary variables.
@@ -99,17 +94,15 @@ public class Scrabble {
         BOARD_GUI.print("The scoring process will now commence", true);
         int[] scores = new int[2];
         Point[][] tilesOnFrames = new Point[2][];
-        tilesOnFrames[0] = new Point[PLAYERS[0].getFrame().getLetters().size()];
-        tilesOnFrames[1] = new Point[PLAYERS[1].getFrame().getLetters().size()];
+        tilesOnFrames[0] = new Point[PLAYERS[1].getFrame().getLetters().size()];
+        tilesOnFrames[1] = new Point[PLAYERS[0].getFrame().getLetters().size()];
         for(int i = 0; i < PLAYERS[0].getFrame().getLetters().size(); i++){
-            tilesOnFrames[0] = new Point[PLAYERS[0].getFrame().getLetters().size()];
             tilesOnFrames[0][i] = new Point(0, 0);
-            tilesOnFrames[0][i].setTile(PLAYERS[0].getFrame().getLetters().get(i));
+            tilesOnFrames[0][i].setTile(PLAYERS[1].getFrame().getLetters().get(i));
         }
         for(int i = 0; i < PLAYERS[1].getFrame().getLetters().size(); i++){
-            tilesOnFrames[1] = new Point[PLAYERS[1].getFrame().getLetters().size()];
             tilesOnFrames[1][i] = new Point(0, 0);
-            tilesOnFrames[1][i].setTile(PLAYERS[1].getFrame().getLetters().get(i));
+            tilesOnFrames[1][i].setTile(PLAYERS[0].getFrame().getLetters().get(i));
         }
 
         scores[0] = PLAYERS[0].getScore() + calculateScore(tilesOnFrames[1]);
@@ -124,13 +117,7 @@ public class Scrabble {
             BOARD_GUI.print("Player 0 has won", true);
         else
             BOARD_GUI.print("Player 1 has won", true);
-        BOARD_GUI.print("The game will end in 10 seconds", true);
-        try {
-            Thread.sleep(10 * 1000);
-        }catch (Exception e){
-            e.printStackTrace();
-        }
-        System.exit(0);
+        BOARD_GUI.print("Feel free to close this window now :)", true);
     }
 
     public static Player currentPlayer() {
@@ -147,7 +134,7 @@ public class Scrabble {
      *
      * @param player the index of the player who is to be invited to challenge the plays of their opponent.
      */
-    public static EventHandler<ActionEvent> Player_Challenge_Handler = new EventHandler<ActionEvent>() {
+    public static EventHandler<ActionEvent> CHALLENGE_HANDLER = new EventHandler<ActionEvent>() {
         @Override
         public void handle(ActionEvent event) {
             alternatePlayer();
@@ -160,11 +147,11 @@ public class Scrabble {
             BOARD_GUI.print("> " + line, false);
             ArrayList<String> challenged_words = new ArrayList<>(Arrays.asList(line.replaceAll("(^\\s+)|(\\s+$)", "").replaceAll("\\s+", " ").split(" ")));
 
-            BOARD_GUI.print("Outcome of " + Scrabble.PLAYERS[0].getUsername() + "'s challenges:", true);
+            BOARD_GUI.print("Outcome of " + currentPlayer().getUsername() + "'s challenges:", true);
             for (int i = 0; i < challenged_words.size(); i++) {
                 String s = challenged_words.get(i);
                 int index = -1;
-                if (!opponent.played_words.contains(s)) {
+                if (!opponent.played_words.contains(s) && !s.equals("")) {
                     BOARD_GUI.print(opponent.getUsername() + " did not play the word " + s, true);
                 } else {
                     while ((index = opponent.played_words.indexOf(s)) != -1) {
@@ -182,9 +169,17 @@ public class Scrabble {
                 Scrabble.endGame();
                 return;
             }
+
             CHALLENGE_COUNT++;
-            printChallengeMessage();
             alternatePlayer();
+            printChallengeMessage();
+        }
+    };
+
+    public static final EventHandler<ActionEvent> HISTORY_HANDLER = new EventHandler<ActionEvent>() {
+        @Override
+        public void handle(ActionEvent event) {
+
         }
     };
 
@@ -206,11 +201,13 @@ public class Scrabble {
                 else NUMBER_OF_SCORELESS_TURNS = 0;
 
                 if(NUMBER_OF_SCORELESS_TURNS >= 6){
-                    BOARD_GUI.setInputHandler(null);
-                    endGame();
+                    alternatePlayer();
+                    printChallengeMessage();
+                    BOARD_GUI.setInputHandler(CHALLENGE_HANDLER);
+                }else{
+                    BOARD_GUI.print("It is now " + currentPlayer().getUsername() + "'s turn.", true);
+                    BOARD_GUI.print(currentPlayer().getUsername() + "'s frame: " + currentPlayer().getFrame(), true);
                 }
-                BOARD_GUI.print("It is now " + currentPlayer().getUsername() + "'s turn.", true);
-                BOARD_GUI.print(currentPlayer().getUsername() + "'s frame: " + currentPlayer().getFrame(), true);
             }
         }
     };
@@ -263,7 +260,7 @@ public class Scrabble {
         for (int i = 0; i < Scrabble.PLAYER_COUNT; i++) {
             players[i] = new Player();
         }
-        BOARD_GUI.setInputHandler(Username_Reading_Handler);
+        BOARD_GUI.setInputHandler(USERNAME_HANDLER);
     }
 
     /**
@@ -271,7 +268,7 @@ public class Scrabble {
      * returns this valid username.
      * @return String representing the valid username entered on stdin.
      */
-    public static EventHandler<ActionEvent> Username_Reading_Handler  = new EventHandler<ActionEvent>(){
+    public static EventHandler<ActionEvent> USERNAME_HANDLER = new EventHandler<ActionEvent>(){
         @Override
         public void handle(ActionEvent event) {
             String text = BOARD_GUI.read();

@@ -7,13 +7,9 @@ import javafx.scene.control.*;
 import javafx.scene.layout.*;
 import javafx.geometry.Insets;
 import javafx.scene.paint.Paint;
-import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
-import sun.security.krb5.SCDynamicStoreConfig;
-import sun.security.pkcs11.wrapper.CK_SSL3_RANDOM_DATA;
 
-import java.net.SecureCacheResponse;
 import java.util.HashMap;
 
 public class BoardGUI extends Application implements EventHandler<ActionEvent> {
@@ -145,7 +141,6 @@ public class BoardGUI extends Application implements EventHandler<ActionEvent> {
         sideContainer.setStyle("-fx-background-color: #ebebeb; -fx-text-fill: white;");
         playerScores[0].setStyle("-fx-text-fill: black;-fx-fill: black;-fx-font-size: 100%;-fx-font-weight: bold");
         playerScores[1].setStyle("-fx-text-fill: black;-fx-fill: black;-fx-font-size: 100%;-fx-font-weight: bold");
-        sideContainer.setPrefWidth(300);
         LetterContainerTop.setPrefHeight(Scrabble.POINT_HEIGHT);
         LetterContainerBottom.setPrefHeight(Scrabble.POINT_HEIGHT);
         NumberContainerRight.setPrefHeight(Scrabble.POINT_WIDTH);
@@ -159,12 +154,13 @@ public class BoardGUI extends Application implements EventHandler<ActionEvent> {
         gameInput = new TextField();
         gameInput.setPromptText("Enter your command here");
         gameInput.setPrefHeight(25);
-        terminalOutputScrollpane.setFitToWidth(true);
         terminalOutputScrollpane.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
         terminalOutputScrollpane.vvalueProperty().bind(terminalOutputContainer.heightProperty());
         terminalOutputContainer.setPrefWidth(300);
         terminalOutputContainer.setMaxWidth(300);
         terminalOutputScrollpane.setContent(terminalOutputContainer);
+        terminalOutputScrollpane.setPrefWidth(300);
+        terminalOutputScrollpane.setMaxWidth(300);
         terminalOutputScrollpane.setPrefHeight(Scrabble.WINDOW_HEIGHT - gameInput.getPrefHeight() - endGameBtn.getPrefHeight());
         terminalOutputScrollpane.setMaxHeight(Scrabble.WINDOW_HEIGHT - gameInput.getPrefHeight() - endGameBtn.getPrefHeight());
         /*
@@ -173,8 +169,9 @@ public class BoardGUI extends Application implements EventHandler<ActionEvent> {
         gameOutput.setWrappingWidth(sideContainer.getPrefWidth());
          */
 
+        sideContainer.setPrefWidth(300);
         sideContainer.getChildren().addAll(endGameBtn, terminalOutputScrollpane, gameInput);
-        sideContainer.setMaxHeight(Scrabble.WINDOW_HEIGHT);
+        sideContainer.setMaxHeight(Scrabble.WINDOW_HEIGHT - 50);
         sideContainer.setAlignment(Pos.BOTTOM_CENTER);
 
         // Initialize the boardContainer Letters & Numbers
@@ -205,7 +202,7 @@ public class BoardGUI extends Application implements EventHandler<ActionEvent> {
         }
 
         // Initialize the scene with root (main) layout
-        scrabbleScene = new Scene(rootLayout, Scrabble.WINDOW_WIDTH, Scrabble.WINDOW_HEIGHT);
+        scrabbleScene = new Scene(rootLayout, Scrabble.WINDOW_WIDTH, Scrabble.WINDOW_HEIGHT - 30);
 
         // Set the scene to the scrabble scene
         window.setScene(scrabbleScene);
@@ -214,7 +211,7 @@ public class BoardGUI extends Application implements EventHandler<ActionEvent> {
         Scrabble.BOARD_GUI = this;
 
         print("Please enter the username you would like to set for player " + (Scrabble.CURRENT_PLAYER + 1) + " and then press the enter key", true);
-        this.setInputHandler(Scrabble.Username_Reading_Handler);
+        this.setInputHandler(Scrabble.USERNAME_HANDLER);
     }
 
 
@@ -225,7 +222,7 @@ public class BoardGUI extends Application implements EventHandler<ActionEvent> {
 
     public void print(Object o, boolean system){
         Text text = new Text(o.toString());
-        text.setWrappingWidth(300);
+        text.setWrappingWidth(275);
         if(system)
             text.setFill(Paint.valueOf("GREEN"));
         terminalOutputContainer.getChildren().add(text);
