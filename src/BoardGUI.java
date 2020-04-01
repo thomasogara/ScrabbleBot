@@ -44,7 +44,7 @@ public class BoardGUI extends Application implements EventHandler<ActionEvent> {
         put("EXCHANGE", CommandsContainer::exchange);
         put("PLACE", CommandsContainer::place);
         put("PASS", CommandsContainer::pass);
-      //  put("HELP", CommandsContainer::help);
+        put("HELP", CommandsContainer::help);
         put("QUIT", CommandsContainer::quit);
     }};
 
@@ -63,13 +63,6 @@ public class BoardGUI extends Application implements EventHandler<ActionEvent> {
         String commandName = tokens[0];
         // if the first token of the command is a grid reference, set commandName to "PLACE"
         if(commandName.matches("[A-O]\\d{1,2}")) commandName = "PLACE";
-
-        if(commandName.toUpperCase().equalsIgnoreCase("HELP")) printHelpGuide();
-
-        if(commandName.toUpperCase().equalsIgnoreCase("QUIT")){
-            Scrabble.BOARD_GUI.print("Ending Game... exiting now", true);
-            System.exit(0);
-        }
         // query the hashmap containing all known commands, if this command is not recognised then immediately quit
         if(COMMAND_MAP.containsKey(commandName))
             //if the command is recognised, attempt to run it
@@ -246,19 +239,6 @@ public class BoardGUI extends Application implements EventHandler<ActionEvent> {
              boolean result = true;
              if(result)
                 window.close();
-    }
-
-    public static void printHelpGuide(){
-        Scrabble.BOARD_GUI.print("QUIT:       (quit game)", true);
-        Scrabble.BOARD_GUI.print("PASS:       (pass current move)", true);
-        Scrabble.BOARD_GUI.print("EXCHANGE <letters>:     (swaps these letters for new letters)", true);
-        Scrabble.BOARD_GUI.print("HELP:       (display this guide)", true);
-        Scrabble.BOARD_GUI.print("", true);
-        Scrabble.BOARD_GUI.print("How to place a word on the board:", true);
-        Scrabble.BOARD_GUI.print("- Starting tile position", true);
-        Scrabble.BOARD_GUI.print("- A or D for direction", true);
-        Scrabble.BOARD_GUI.print("- WORD", true);
-        Scrabble.BOARD_GUI.print("e.g. A3 D HELLO", true);
     }
 }
 

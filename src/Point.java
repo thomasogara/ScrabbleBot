@@ -114,7 +114,7 @@ public class Point extends StackPane {
         if(BoardGUI.boardGrid == null || BoardGUI.boardGrid.getChildren() == null || BoardGUI.boardGrid.getChildren().size() <= 0)
             return;
 
-        /**
+        /*
          Get the point instance from the boardGrids children using it's index value.
          This index value is found by multiple the X coord by 1 & the Y coord by 15.
          */

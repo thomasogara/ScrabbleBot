@@ -4,6 +4,12 @@
  */
 
 public class CommandsContainer {
+    /**
+     * exchange() models the behaviour of the EXCHANGE command
+     * @param tokens the tokens received from the game input
+     * @param p the player making the move
+     * @return the success/failure of the command as well as the score attributed with the move
+     */
     static Scrabble.CommandReturnWrapper exchange(String[] tokens, Player p){
         Scrabble.CommandReturnWrapper returnWrapper = new Scrabble.CommandReturnWrapper();
 
@@ -31,6 +37,12 @@ public class CommandsContainer {
         return returnWrapper;
     }
 
+    /**
+     * place() models the behaviour of the PLACE command
+     * @param tokens the tokens received from the game input
+     * @param p the player making the move
+     * @return the success/failure of the command as well as the score attributed with the move
+     */
     static Scrabble.CommandReturnWrapper place(String[] tokens, Player p){
         Scrabble.CommandReturnWrapper returnWrapper = new Scrabble.CommandReturnWrapper();
         // 3 unique pieces of information are required to place a tile:
@@ -89,6 +101,12 @@ public class CommandsContainer {
         return Scrabble.BOARD.add(word, new Point(x, y), d, p);
     }
 
+    /**
+     * pass() models the behaviour of PASS command
+     * @param tokens the tokens received from the game input
+     * @param p the player making the move
+     * @return the success/failure of the command as well as the score attributed with the move
+     */
     static Scrabble.CommandReturnWrapper pass(String[] tokens, Player p){
         // a pass always succeeds, even if it is parameterised
         Scrabble.CommandReturnWrapper returnWrapper = new Scrabble.CommandReturnWrapper();
@@ -96,18 +114,43 @@ public class CommandsContainer {
         return returnWrapper;
     }
 
+    /**
+     * help() models the behaviour of the HELP command
+     * @param tokens the tokens received from the game input
+     * @param p the player making the move
+     * @return the success/failure of the command as well as the score attributed with the move
+     */
     static Scrabble.CommandReturnWrapper help(String[] tokens, Player p){
         // help always succeeds
         Scrabble.CommandReturnWrapper returnWrapper = new Scrabble.CommandReturnWrapper();
         returnWrapper.executed = true;
+        returnWrapper.score = -1;
+        Scrabble.BOARD_GUI.print("QUIT:       (quit game)", true);
+        Scrabble.BOARD_GUI.print("PASS:       (pass current move)", true);
+        Scrabble.BOARD_GUI.print("EXCHANGE <letters>:     (swaps these letters for new letters)", true);
+        Scrabble.BOARD_GUI.print("HELP:       (display this guide)", true);
+        Scrabble.BOARD_GUI.print("", true);
+        Scrabble.BOARD_GUI.print("How to place a word on the board:", true);
+        Scrabble.BOARD_GUI.print("- Starting tile position", true);
+        Scrabble.BOARD_GUI.print("- A or D for direction", true);
+        Scrabble.BOARD_GUI.print("- WORD", true);
+        Scrabble.BOARD_GUI.print("e.g. A3 D HELLO", true);
         return returnWrapper;
     }
 
+    /**
+     * quit() models the behaviour of the QUIT command
+     * @param tokens the tokens received from the game input
+     * @param p the player making the move
+     * @return the success/failure of the command as well as the score attributed with the move
+     */
     static Scrabble.CommandReturnWrapper quit(String[] tokens, Player p){
         // quit cannot fail, though there is no way to communicate
         // that back to the caller. the 'return true;' is really extraneous.
         Scrabble.CommandReturnWrapper returnWrapper = new Scrabble.CommandReturnWrapper();
         returnWrapper.executed = true;
+        Scrabble.BOARD_GUI.print("Ending Game... exiting now", true);
+        System.exit(0);
         return returnWrapper;
     }
 }

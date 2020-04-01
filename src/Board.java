@@ -178,7 +178,6 @@ public class Board {
         // The turn has been executed successfully
         returnWrapper.executed = true;
         returnWrapper.score = Scrabble.calculateScore(required);
-        u.increaseScore(returnWrapper.score);
         return returnWrapper;
     }
 

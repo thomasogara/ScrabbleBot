@@ -19,7 +19,6 @@ public class Scrabble {
         public int score;
     }
 
-    public static BoardGUI BOARD_GUI;
     /*
         CLASS VARIABLES
      */
@@ -48,11 +47,7 @@ public class Scrabble {
      */
     public static int CHALLENGE_COUNT = 0;
     /**
-     * The Scanner to be used throughout the program to read from stdin for the duration of the game
-     */
-    public static final Scanner STDIN = new Scanner(System.in);
-    /**
-     * The dictionary to be used for the game (not yet a requirement)
+     * The dictionary to be used for the game [NOT YET A REQUIREMENT]
      */
     public static final HashSet<String> DICTIONARY = null;
     /**
@@ -78,9 +73,13 @@ public class Scrabble {
      */
     public static final int POINT_WIDTH = 45;
     public static final int POINT_HEIGHT = 45;
+    /**
+     * A reference to the main Application class running so that communication can be achieved
+     */
+    public static BoardGUI BOARD_GUI;
 
     /**
-     * Scrabble.setup() is used to initialise any necessary variables.
+     * setup() is used to initialise any necessary variables for the game, it is called prior to the GUI build process
      */
     public static void setup(){
         PLAYERS[0].getFrame().setPool(Scrabble.POOL);
@@ -89,6 +88,9 @@ public class Scrabble {
         PLAYERS[1].getFrame().refill();
     }
 
+    /**
+     * endGame() is used to end the game and commence scoring.
+     */
     public static void endGame(){
         BOARD_GUI.print("Congratulations! You have completed a game of Scrabble!", true);
         BOARD_GUI.print("The scoring process will now commence", true);
@@ -108,31 +110,37 @@ public class Scrabble {
         scores[0] = PLAYERS[0].getScore() + calculateScore(tilesOnFrames[1]);
         scores[1] = PLAYERS[1].getScore() + calculateScore(tilesOnFrames[0]);
 
-        BOARD_GUI.print(PLAYERS[0].getUsername() + "has received a score of: " + scores[0], true);
-        BOARD_GUI.print(PLAYERS[0].getUsername() + "has received a score of: " + scores[0], true);
+        BOARD_GUI.print(PLAYERS[0].getUsername() + " has received a score of: " + scores[0], true);
+        BOARD_GUI.print(PLAYERS[1].getUsername() + " has received a score of: " + scores[1], true);
 
         if(PLAYERS[0].getScore() == PLAYERS[1].getScore())
             BOARD_GUI.print("This game was a tie", true);
         else if(PLAYERS[0].getScore() > PLAYERS[1].getScore())
-            BOARD_GUI.print("Player 0 has won", true);
+            BOARD_GUI.print(PLAYERS[0].getUsername() + " has won", true);
         else
-            BOARD_GUI.print("Player 1 has won", true);
+            BOARD_GUI.print(PLAYERS[1].getUsername() + " has won", true);
         BOARD_GUI.print("Feel free to close this window now :)", true);
     }
 
+    /**
+     * currentPlayer() is a utility method used to obtain a reference to the active player.
+     * @return a reference to the player who is currently taking their turn.
+     */
     public static Player currentPlayer() {
         return PLAYERS[CURRENT_PLAYER];
     }
 
+    /**
+     * alternatePlayer() is a utility method for alternating the current active player after a move has been made.
+     */
     public static void alternatePlayer() {
         CURRENT_PLAYER = (CURRENT_PLAYER == 0 ? 1 : 0);
     }
 
     /**
-     * Invite a player to challenge the words placed by their opponent. Since checks are manual at the moment,
+     * CHALLENGE_HANDLER is an EventHandler which is assigned to the game input once the point has been reached where the
+     * game will invite a player to challenge the words placed by their opponent. Since checks are manual at the moment,
      * the program will assume that all challenged words which have been played are invalid.
-     *
-     * @param player the index of the player who is to be invited to challenge the plays of their opponent.
      */
     public static EventHandler<ActionEvent> CHALLENGE_HANDLER = new EventHandler<ActionEvent>() {
         @Override
@@ -176,13 +184,11 @@ public class Scrabble {
         }
     };
 
-    public static final EventHandler<ActionEvent> HISTORY_HANDLER = new EventHandler<ActionEvent>() {
-        @Override
-        public void handle(ActionEvent event) {
-
-        }
-    };
-
+    /**
+     * GAME_HANDLER is an EventHandler which is assigned to the game input during the normal course of the game.
+     * It will monitor the game input, and once a player has issued a command, it will attempt to run it.
+     * Should the command fail, the user is invited to retry.
+     */
     public static final EventHandler<ActionEvent> GAME_HANDLER = new EventHandler<ActionEvent>() {
         @Override
         public void handle(ActionEvent event) {
@@ -192,12 +198,8 @@ public class Scrabble {
             if(!(returnWrapper = BoardGUI.execute(text, currentPlayer())).executed){
                 BOARD_GUI.print("Unfortunately that command failed, please try again :(", true);
             }else{
-                currentPlayer().increaseScore(returnWrapper.score);
-                currentPlayer().getFrame().refill();
-                alternatePlayer();
-
                 // assess whether 6 consecutive scoreless turns have occured (this means the game is over)
-                if(returnWrapper.score == 0) NUMBER_OF_SCORELESS_TURNS++;
+                if(returnWrapper.score <= 0) NUMBER_OF_SCORELESS_TURNS++;
                 else NUMBER_OF_SCORELESS_TURNS = 0;
 
                 if(NUMBER_OF_SCORELESS_TURNS >= 6){
@@ -205,6 +207,17 @@ public class Scrabble {
                     printChallengeMessage();
                     BOARD_GUI.setInputHandler(CHALLENGE_HANDLER);
                 }else{
+                    // if the help command was called, offer another turn
+                    if(returnWrapper.score == -1){
+                        BOARD_GUI.print("It is now " + currentPlayer().getUsername() + "'s turn.", true);
+                        BOARD_GUI.print(currentPlayer().getUsername() + "'s frame: " + currentPlayer().getFrame(), true);
+                        return;
+                    }
+
+                    currentPlayer().increaseScore(returnWrapper.score);
+                    currentPlayer().getFrame().refill();
+                    alternatePlayer();
+
                     BOARD_GUI.print("It is now " + currentPlayer().getUsername() + "'s turn.", true);
                     BOARD_GUI.print(currentPlayer().getUsername() + "'s frame: " + currentPlayer().getFrame(), true);
                 }
@@ -212,6 +225,10 @@ public class Scrabble {
         }
     };
 
+    /**
+     * printChallengeMessage() is a simple method used to print a pre-defined String which is used as the indication of completion of the game
+     * and the commencement of the challenge and scoring processes.
+     */
     public static void printChallengeMessage() {
         BOARD_GUI.print("Congratulations! The game has officially ended. Now, you will be invited to challenge the plays of your opponent.", true);
         BOARD_GUI.print(currentPlayer().getUsername() + " please enter all the words that your opponent played which you would like to challenge", true);
@@ -292,6 +309,12 @@ public class Scrabble {
     };
 
 
+    /**
+     * offerUsername() will attempt to assign the provided username to the current active player. if the username is
+     * invalid, it fails. if the username is valid, it succeeds, and the user is assigned with the username provided.
+     * @param s the username to be assigned to the current active player
+     * @return success/failure of the command.
+     */
     public static boolean offerUsername(String s) {
         if (!s.replaceAll("(^\\s+)|(\\s+$)", "").replaceAll("\\s+", " ").equals("")) {
             currentPlayer().setUsername(s);
@@ -303,6 +326,7 @@ public class Scrabble {
     /**
      * Method to create a HashSet containing all valid words as per the contents of a text file
      * (text file should be located in /assets/words.txt)
+     * [NOT YET A REQUIREMENT]
      * @return HashSet<String> representing all valid words
      */
     public static HashSet<String> createDictionary() {
