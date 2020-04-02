@@ -1,6 +1,6 @@
 /**
  * CommandsContainer is a wrapper class for all the methods associated with the recognised commands in the game
- * All members have a signature matching that of the run() method in the Command interface
+ * All members have a signature matching the run() method in the Command interface
  */
 
 public class CommandsContainer {
@@ -115,6 +115,38 @@ public class CommandsContainer {
     }
 
     /**
+     * name() models the behaviour of the NAME command
+     * @param tokens the tokens received from the game input
+     * @param p the player making the move
+     * @return the success/failure of the command as well as the score attributed with the move
+     */
+    static Scrabble.CommandReturnWrapper name(String[] tokens, Player p){
+        Scrabble.CommandReturnWrapper returnWrapper = new Scrabble.CommandReturnWrapper();
+        // name succeeds if and only if a name is provided, i.e. tokens.length >= 2
+        if(tokens.length < 2) return returnWrapper;
+
+        // if a name has been provided, the name command will assume that all tokens
+        // in positions 1 -> tokens.length constitute the name to be set
+        // e.g. NAME Onika Tanya Maraj-Petty => name = "Onika Tonya Maraj-Petty"
+        StringBuilder sb = new StringBuilder();
+        for(int i = 1; i < tokens.length; i++){
+            // append all tokens in positions 1 -> tokens.length to the
+            // String, followed by a space to separate words
+            sb.append(tokens[i]).append(' ');
+        }
+        // Extract the name of the player from the StringBuilder
+        String name = sb.toString();
+
+        // set the player's username
+        p.setUsername(name);
+        // set the score to -1, this means the player does not lose their turn
+        returnWrapper.score = -1;
+        // set executed to true, as the turn was in fact executed
+        returnWrapper.executed = true;
+        return returnWrapper;
+    }
+
+    /**
      * help() models the behaviour of the HELP command
      * @param tokens the tokens received from the game input
      * @param p the player making the move
@@ -123,8 +155,11 @@ public class CommandsContainer {
     static Scrabble.CommandReturnWrapper help(String[] tokens, Player p){
         // help always succeeds
         Scrabble.CommandReturnWrapper returnWrapper = new Scrabble.CommandReturnWrapper();
+        // help is always executed
         returnWrapper.executed = true;
+        // set score to -1 so that the player does not lose their turn
         returnWrapper.score = -1;
+        // print help messages to the output
         Scrabble.BOARD_GUI.print("QUIT:       (quit game)", true);
         Scrabble.BOARD_GUI.print("PASS:       (pass current move)", true);
         Scrabble.BOARD_GUI.print("EXCHANGE <letters>:     (swaps these letters for new letters)", true);
@@ -146,7 +181,7 @@ public class CommandsContainer {
      */
     static Scrabble.CommandReturnWrapper quit(String[] tokens, Player p){
         // quit cannot fail, though there is no way to communicate
-        // that back to the caller. the 'return true;' is really extraneous.
+        // that back to the caller. the 'return returnWrapper;' is really extraneous.
         Scrabble.CommandReturnWrapper returnWrapper = new Scrabble.CommandReturnWrapper();
         returnWrapper.executed = true;
         Scrabble.BOARD_GUI.print("Ending Game... exiting now", true);

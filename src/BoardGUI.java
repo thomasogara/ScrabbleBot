@@ -42,6 +42,7 @@ public class BoardGUI extends Application implements EventHandler<ActionEvent> {
     /**COMMAND_MAP is a collection of all the recognised commands in the game, keyed by their canonical name in UPPERCASE*/
     static HashMap<String, Command> COMMAND_MAP = new HashMap<String, Command>(){{
         put("EXCHANGE", CommandsContainer::exchange);
+        put("NAME", CommandsContainer::name);
         put("PLACE", CommandsContainer::place);
         put("PASS", CommandsContainer::pass);
         put("HELP", CommandsContainer::help);
@@ -56,10 +57,12 @@ public class BoardGUI extends Application implements EventHandler<ActionEvent> {
      */
     public static Scrabble.CommandReturnWrapper execute(String c, Player p) {
         // split the input string into individual tokens, using any whitespace character as a valid word separator
-        // (the entire string is capitalised)
         // (all whitespace at the beginning or end of a line is removed entirely)
         // (all whitespace between words is replaced with a single <space> character to help ease the of splitting tokens)
-        String[] tokens = c.toUpperCase().replaceAll("(^\\s+)|(\\s+$)", "").replaceAll("\\s+", " ").split(" ");
+        String[] tokens = c.replaceAll("(^\\s+)|(\\s+$)", "").replaceAll("\\s+", " ").split(" ");
+        // capitalise the first token, which should be the command name
+        tokens[0] = tokens[0].toUpperCase();
+        // extract the command name from the tokens array
         String commandName = tokens[0];
         // if the first token of the command is a grid reference, set commandName to "PLACE"
         if(commandName.matches("[A-O]\\d{1,2}")) commandName = "PLACE";
@@ -67,7 +70,12 @@ public class BoardGUI extends Application implements EventHandler<ActionEvent> {
         if(COMMAND_MAP.containsKey(commandName))
             //if the command is recognised, attempt to run it
             return COMMAND_MAP.get(commandName).run(tokens, p);
-        return new Scrabble.CommandReturnWrapper();
+
+        // if the command cannot be identified, allow for the user to play again
+        Scrabble.CommandReturnWrapper returnWrapper = new Scrabble.CommandReturnWrapper();
+        // set score to -1 so that the player does not lose their turn
+        returnWrapper.score = -1;
+        return returnWrapper;
     }
 
     public static void main(String[] args) throws Exception {

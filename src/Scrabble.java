@@ -47,13 +47,9 @@ public class Scrabble {
      */
     public static int CHALLENGE_COUNT = 0;
     /**
-     * The dictionary to be used for the game [NOT YET A REQUIREMENT]
+     * The dictionary to be used for the game
      */
-    public static final HashSet<String> DICTIONARY = null;
-    /**
-     * The banner presented on program startup
-     */
-    public static final String WELCOME_BANNER = createWelcomeBanner();
+    public static final HashSet<String> DICTIONARY = createDictionary();
     /**
      * The number of consecutive scoreless turns that have been played thus far
      */
@@ -113,9 +109,9 @@ public class Scrabble {
         BOARD_GUI.print(PLAYERS[0].getUsername() + " has received a score of: " + scores[0], true);
         BOARD_GUI.print(PLAYERS[1].getUsername() + " has received a score of: " + scores[1], true);
 
-        if(PLAYERS[0].getScore() == PLAYERS[1].getScore())
+        if(scores[0] == scores[1])
             BOARD_GUI.print("This game was a tie", true);
-        else if(PLAYERS[0].getScore() > PLAYERS[1].getScore())
+        else if(scores[0] > scores[1])
             BOARD_GUI.print(PLAYERS[0].getUsername() + " has won", true);
         else
             BOARD_GUI.print(PLAYERS[1].getUsername() + " has won", true);
@@ -343,26 +339,6 @@ public class Scrabble {
             ex.printStackTrace();
         }
         return legalWords;
-    }
-
-    /**
-     * Create the static class variable WELCOME_MESSAGE which is contained in the file banner.txt
-     * @return String representing the message to be printed to stdout on start-up
-     */
-    public static String createWelcomeBanner() {
-        StringBuilder sb = new StringBuilder();
-        try {
-            File file = new File("assets/banner.txt");
-            FileReader fr = new FileReader(file);
-            BufferedReader br = new BufferedReader(fr);
-            String line;
-            while ((line = br.readLine()) != null) {
-                sb.append(line).append("\n");
-            }
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
-        return sb.toString();
     }
 
     /**
