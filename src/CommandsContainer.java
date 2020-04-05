@@ -114,6 +114,12 @@ public class CommandsContainer {
         return returnWrapper;
     }
 
+    /**
+     * challenge() models the behaviour of the CHALLENGE command
+     * @param tokens the tokens received from the game input
+     * @param p the player making the move
+     * @return the success/failure of the command as well as the score attributed with that move
+     */
     static Scrabble.CommandReturnWrapper challenge(String[] tokens, Player p){
         Scrabble.CommandReturnWrapper returnWrapper = new Scrabble.CommandReturnWrapper();
         //if the call to challenge is invalid, quit execution
@@ -127,21 +133,32 @@ public class CommandsContainer {
         returnWrapper.executed = true;
         returnWrapper.score = -1;
 
+        // the last player to have placed a word on the board is always the last element of PLAYER_TURNS
         int last_player_idx = Scrabble.PLAYER_TURNS.get(Scrabble.PLAYER_TURNS.size() - 1);
+        // store reference to the last player to have made a move
         Player last_player = Scrabble.PLAYERS[last_player_idx];
+        // get the last played word by the last player to make a move
+        // i.e. get the last word placed on the board
         String last_played_word = last_player.played_words.get(last_player.played_words.size() - 1);
+        // if the last word placed on the board was valid, ignore the challenge request
         if(Scrabble.isValidWord(last_played_word)){
             Scrabble.BOARD_GUI.print("The last placed word was valid, challenge failed", true);
             return returnWrapper;
         }
+        //if the last word placed on the board was invalid, remove the word from the board,
+        // and reduce the score of the player accordingly
         int score = last_player.scores_from_play.get(last_player.scores_from_play.size() - 1);
         Scrabble.BOARD_GUI.print("The last played word was invalid, challenge succeeded", true);
         Scrabble.BOARD_GUI.print("Now removing " + score + " points from " + last_player.getUsername(), true);
+        // remove the word from the Board
         Scrabble.BOARD.remove(last_player.played_points.get(last_player.played_points.size() - 1));
+        // reduce the player's score
         last_player.increaseScore(-score);
 
+        // remove the word from the history of words placed by this player
         last_player.played_words.remove(last_player.played_words.size() - 1);
         last_player.scores_from_play.remove(last_player.scores_from_play.size() - 1);
+        // remove the score gained for placing this word from the history of points gained by this player
         last_player.played_points.remove(last_player.played_points.size() - 1);
 
         return returnWrapper;
