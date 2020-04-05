@@ -200,13 +200,13 @@ public class Scrabble {
                 BOARD_GUI.print("Unfortunately that command failed, please try again :(", true);
             }else{
                 // assess whether 6 consecutive scoreless turns have occured (this means the game is over)
-                if(returnWrapper.score <= 0) NUMBER_OF_SCORELESS_TURNS++;
-                else NUMBER_OF_SCORELESS_TURNS = 0;
+                if(returnWrapper.score == 0) NUMBER_OF_SCORELESS_TURNS++;
+                else if(returnWrapper.score > 0) NUMBER_OF_SCORELESS_TURNS = 0;
 
                 if(NUMBER_OF_SCORELESS_TURNS >= 6){
                     alternatePlayer();
-                    printChallengeMessage();
-                    BOARD_GUI.setInputHandler(CHALLENGE_HANDLER);
+                    BOARD_GUI.setInputHandler(null);
+                    endGame();
                 }else{
                     // if the help, name, or challenge command was called, offer another turn
                     if(returnWrapper.score == -1){

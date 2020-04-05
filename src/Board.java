@@ -113,8 +113,7 @@ public class Board {
      * @return boolean indicating the success/failure of the placement.
      */
     protected boolean add(Point p){
-        p.setBoard(this);
-        this.points[p.getY()][p.getX()] = p;
+        this.points[p.getY()][p.getX()].setTile(p.getTile());
         this.incrementOccupiedTileCount();
         return true;
 
@@ -197,8 +196,8 @@ public class Board {
     }
 
     protected final void remove(Point p){
-
-        this.points[p.getY()][p.getX()] = null;
+        this.points[p.getY()][p.getX()].setTile(null);
+        this.points[p.getY()][p.getX()].renderGraphic();
     }
 
     /**

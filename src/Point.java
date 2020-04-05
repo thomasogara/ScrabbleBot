@@ -99,6 +99,7 @@ public class Point extends StackPane {
             this.graphicText.setStyle("-fx-text-fill: black;-fx-fill: black;-fx-font-size: 200%;-fx-font-weight: bold");
         }
 
+        getChildren().clear();
         getChildren().addAll(this.graphic, this.graphicText);
         setTranslateX(this.x * Scrabble.POINT_WIDTH);
         setTranslateY(this.y * Scrabble.POINT_HEIGHT);
@@ -130,10 +131,6 @@ public class Point extends StackPane {
             }else {
                 pointInstance.graphicText.setText("" + this.tile.getDisplayValue()); // Set the tiles new text to the Tile's character letter
             }
-            pointInstance.graphic.setFill(Color.web("#e8e6e4"));
-        } else {
-            pointInstance.graphicText.setStyle("-fx-text-fill: black;-fx-fill: black;-fx-font-size: 200%;-fx-font-weight: bold");
-            pointInstance.graphicText.setText("");
             pointInstance.graphic.setFill(Color.web("#e8e6e4"));
         }
     }

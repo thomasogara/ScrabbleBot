@@ -98,7 +98,14 @@ public class CommandsContainer {
 
         // if the command parameters are valid, execute the command
         // return the result of attempting to add the word to the board
-        return Scrabble.BOARD.add(word, new Point(x, y), d, p);
+        returnWrapper =  Scrabble.BOARD.add(word, new Point(x, y), d, p);
+
+        // PLACE is the only command which, if not executed, can still count
+        // as a scoreless turn, so long as the command was formulated correctly
+        // and this point of the method was reached
+        if(!returnWrapper.executed) Scrabble.NUMBER_OF_SCORELESS_TURNS++;
+
+        return returnWrapper;
     }
 
     /**
@@ -131,7 +138,6 @@ public class CommandsContainer {
 
         // if the call to challenge is valid, execute the call
         returnWrapper.executed = true;
-        returnWrapper.score = -1;
 
         // the last player to have placed a word on the board is always the last element of PLAYER_TURNS
         int last_player_idx = Scrabble.PLAYER_TURNS.get(Scrabble.PLAYER_TURNS.size() - 1);
@@ -161,6 +167,7 @@ public class CommandsContainer {
         // remove the score gained for placing this word from the history of points gained by this player
         last_player.played_points.remove(last_player.played_points.size() - 1);
 
+        returnWrapper.score = -1;
         return returnWrapper;
     }
 
