@@ -13,8 +13,9 @@ public class Player {
     private String username = "";
     private int score = 0; // holds score for user
     private Frame frame;
-    public ArrayList<String> played_words = new ArrayList<>(); // holds the words played successfully by a user
-    public ArrayList<Integer> scores_from_play = new ArrayList<>(); // holds the scores attained for each play by the user
+    public ArrayList<String> played_words = new ArrayList<>(); // holds the words played successfully by this player
+    public ArrayList<Point[]> played_points = new ArrayList<>(); // holds the points played successfully by this player
+    public ArrayList<Integer> scores_from_play = new ArrayList<>(); // holds the scores attained for each play by this player
 
     // default constructor for Player object
     public Player() {

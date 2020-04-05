@@ -114,6 +114,39 @@ public class CommandsContainer {
         return returnWrapper;
     }
 
+    static Scrabble.CommandReturnWrapper challenge(String[] tokens, Player p){
+        Scrabble.CommandReturnWrapper returnWrapper = new Scrabble.CommandReturnWrapper();
+        //if the call to challenge is invalid, quit execution
+        if(Scrabble.PLAYER_TURNS.size() <= 0){
+            returnWrapper.executed = false;
+            Scrabble.BOARD_GUI.print("Challenge cannot be invoked before any placements have been made", true);
+            return returnWrapper;
+        }
+
+        // if the call to challenge is valid, execute the call
+        returnWrapper.executed = true;
+        returnWrapper.score = -1;
+
+        int last_player_idx = Scrabble.PLAYER_TURNS.get(Scrabble.PLAYER_TURNS.size() - 1);
+        Player last_player = Scrabble.PLAYERS[last_player_idx];
+        String last_played_word = last_player.played_words.get(last_player.played_words.size() - 1);
+        if(Scrabble.isValidWord(last_played_word)){
+            Scrabble.BOARD_GUI.print("The last placed word was valid, challenge failed", true);
+            return returnWrapper;
+        }
+        int score = last_player.scores_from_play.get(last_player.scores_from_play.size() - 1);
+        Scrabble.BOARD_GUI.print("The last played word was invalid, challenge succeeded", true);
+        Scrabble.BOARD_GUI.print("Now removing " + score + " points from " + last_player.getUsername(), true);
+        Scrabble.BOARD.remove(last_player.played_points.get(last_player.played_points.size() - 1));
+        last_player.increaseScore(-score);
+
+        last_player.played_words.remove(last_player.played_words.size() - 1);
+        last_player.scores_from_play.remove(last_player.scores_from_play.size() - 1);
+        last_player.played_points.remove(last_player.played_points.size() - 1);
+
+        return returnWrapper;
+    }
+
     /**
      * name() models the behaviour of the NAME command
      * @param tokens the tokens received from the game input

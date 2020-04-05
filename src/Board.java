@@ -178,35 +178,36 @@ public class Board {
         // The turn has been executed successfully
         returnWrapper.executed = true;
         returnWrapper.score = Scrabble.calculateScore(required);
+
+        u.played_words.add(s);
+        u.played_points.add(required);
+        u.scores_from_play.add(returnWrapper.score);
+
         return returnWrapper;
     }
 
-    /**
-     * Construct a String representing the values of the Points which already exist on the board, in the path of the turn
-     * @param s the String to be placed on the Board
-     * @param p the Point representing the origin of the move
-     * @param d the direction of the move ('R' => Right, 'D' => Down)
-     * @return String representing the overlap
-     */
-    public final String getOverlap(String s, Point p, char d){
-        StringBuilder sb = new StringBuilder();
-        for(int i = 0; i < s.length(); i++){
-            Tile t;
-            if(d == 'R'){
-                t = points[p.getY()][p.getX() + i].getTile();
-                if(t != null && t.getValue() != null){
-                    sb.append(t.getValue());
-                }
-            }else{
-                t = points[p.getY() + i][p.getX()].getTile();
-                if(t != null && t.getValue() != null){
-                    sb.append(t.getValue());
-                }
-            }
+    protected final Scrabble.CommandReturnWrapper remove(Point[] points){
+        Scrabble.CommandReturnWrapper returnWrapper = new Scrabble.CommandReturnWrapper();
+        for(Point p : points){
+            this.remove(p);
         }
-        return sb.toString();
+        returnWrapper.executed = true;
+        returnWrapper.score = -1;
+        return returnWrapper;
     }
 
+    protected final void remove(Point p){
+
+        this.points[p.getY()][p.getX()] = null;
+    }
+
+    /**
+     * Get the tiles needed to make a play, as a Point array
+     * @param s the word to be placed
+     * @param p the origin of the placements
+     * @param d the direction of the placement
+     * @return the Point[] array representing the move to be made
+     */
     public final Point[] getRequiredTilesAsPointArray(String s, Point p, char d){
         ArrayList<Point> required = new ArrayList<>();
         Point[] query = Board.createPointArrayFromQuery(s, p, d, this);
@@ -326,30 +327,5 @@ public class Board {
      */
     private void incrementOccupiedTileCount(){
         this.occupiedTileCount++;
-    }
-
-    /**
-     * A utility function for calculating the difference between two Strings
-     * Anything that is common between the strings is removed
-     * @param src the String to be altered
-     * @param rmv the String whose elements should be removed from src
-     * @return String representation of src - rmv
-     */
-    public static String stringDifference(String src, String rmv){
-        ArrayList<Tile> s_list = new ArrayList<>();
-        for(char c : src.toCharArray()){
-            s_list.add(new Tile(c));
-        }
-
-        for(char c : rmv.toCharArray()){
-            s_list.remove(new Tile(c));
-        }
-
-        StringBuilder sb = new StringBuilder();
-        for(Tile t : s_list){
-            sb.append(t.getValue());
-        }
-
-        return sb.toString();
     }
 }

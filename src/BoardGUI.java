@@ -43,6 +43,7 @@ public class BoardGUI extends Application implements EventHandler<ActionEvent> {
     static HashMap<String, Command> COMMAND_MAP = new HashMap<String, Command>(){{
         put("EXCHANGE", CommandsContainer::exchange);
         put("NAME", CommandsContainer::name);
+        put("CHALLENGE", CommandsContainer::challenge);
         put("PLACE", CommandsContainer::place);
         put("PASS", CommandsContainer::pass);
         put("HELP", CommandsContainer::help);

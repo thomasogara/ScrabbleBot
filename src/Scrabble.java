@@ -48,8 +48,13 @@ public class Scrabble {
     public static int CHALLENGE_COUNT = 0;
     /**
      * The dictionary to be used for the game
+     * NOTE: THe dictionary is immutable after creation.
      */
-    public static final HashSet<String> DICTIONARY = createDictionary();
+    public static final Set<String> DICTIONARY = Collections.unmodifiableSet(createDictionary());
+    /**
+     * The player number of the player who placed each word on the BOARD
+     */
+    public static final ArrayList<Integer> PLAYER_TURNS = new ArrayList<>();
     /**
      * The number of consecutive scoreless turns that have been played thus far
      */
@@ -203,7 +208,7 @@ public class Scrabble {
                     printChallengeMessage();
                     BOARD_GUI.setInputHandler(CHALLENGE_HANDLER);
                 }else{
-                    // if the help command was called, offer another turn
+                    // if the help, name, or challenge command was called, offer another turn
                     if(returnWrapper.score == -1){
                         BOARD_GUI.print("It is now " + currentPlayer().getUsername() + "'s turn.", true);
                         BOARD_GUI.print(currentPlayer().getUsername() + "'s frame: " + currentPlayer().getFrame(), true);
@@ -212,6 +217,7 @@ public class Scrabble {
 
                     currentPlayer().increaseScore(returnWrapper.score);
                     currentPlayer().getFrame().refill();
+                    PLAYER_TURNS.add(CURRENT_PLAYER);
                     alternatePlayer();
 
                     BOARD_GUI.print("It is now " + currentPlayer().getUsername() + "'s turn.", true);
@@ -241,23 +247,21 @@ public class Scrabble {
         int wordMultiplier = 1;
         for (Point point : required) {
             int score = point.getScore();
-            if(point.getX() != 0 && point.getY() != 0) {
-                switch (point.getBonusType()) {
-                    case DW:
-                        wordMultiplier *= 2;
-                        break;
-                    case TW:
-                        wordMultiplier *= 3;
-                        break;
-                    case DL:
-                        score *= 2;
-                        break;
-                    case TL:
-                        score *= 3;
-                        break;
-                    default:
-                        break;
-                }
+            switch (point.getBonusType()) {
+                case DW:
+                    wordMultiplier *= 2;
+                    break;
+                case TW:
+                    wordMultiplier *= 3;
+                    break;
+                case DL:
+                    score *= 2;
+                    break;
+                case TL:
+                    score *= 3;
+                    break;
+                default:
+                    break;
             }
             sum += score;
         }
