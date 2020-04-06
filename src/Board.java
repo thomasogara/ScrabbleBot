@@ -7,6 +7,7 @@
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Queue;
 
 public class Board {
     private int occupiedTileCount;
@@ -135,10 +136,7 @@ public class Board {
         Point[] required = getRequiredTilesAsPointArray(s, p, d);
         Tile[] requiredTiles = new Tile[required.length];
         ArrayList<String> formed_words = new ArrayList<>();
-        for(Point point : required){
-            point.refreshFormedWords();
-            formed_words.addAll(point.getFormedWords());
-        }
+
         for(int i = 0; i < required.length; i++){
             requiredTiles[i] = required[i].getTile();
         }
@@ -177,6 +175,11 @@ public class Board {
         for(int i = 0; i < required.length; i++){
             required[i].refreshGraphic();
             requiredTiles[i] = required[i].getTile();
+        }
+
+        for(Point point : query){
+            point.refreshFormedWords();
+            formed_words.addAll(point.getFormedWords());
         }
 
         // Remove all necessary tiles form the Player's Frame
