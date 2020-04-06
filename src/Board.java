@@ -7,6 +7,7 @@
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.Queue;
 
 public class Board {
@@ -177,9 +178,14 @@ public class Board {
             requiredTiles[i] = required[i].getTile();
         }
 
+        ArrayList<Point[]> formed_words_req = new ArrayList<>();
         for(Point point : query){
             point.refreshFormedWords();
             formed_words.addAll(point.getFormedWords());
+        }
+        HashSet<String> formed_words_nodup = new HashSet<String>(formed_words);
+        for(String word : formed_words_nodup){
+            formed_words_req.add(createPointArrayFromQuery(word, p, d, this));
         }
 
         // Remove all necessary tiles form the Player's Frame
@@ -187,7 +193,7 @@ public class Board {
 
         // The turn has been executed successfully
         returnWrapper.executed = true;
-        returnWrapper.score = Scrabble.calculateScore(required, formed_words);
+        returnWrapper.score = Scrabble.calculateScore(required, formed_words_req);
 
         u.played_words.add(s);
         u.played_points.add(required);

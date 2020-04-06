@@ -243,29 +243,32 @@ public class Scrabble {
      * @param required the array of points placed on the board
      * @return the score to be awarded to the player for this move
      */
-    public static int calculateScore(Point[] required, ArrayList<String> formed_words) {
+    public static int calculateScore(Point[] required_points, ArrayList<Point[]> formed_words) {
         int sum = 0;
         int wordMultiplier = 1;
         System.out.println(formed_words);
-        for (Point point : required) {
-            int score = point.getScore();
-            switch (point.getBonusType()) {
-                case DW:
-                    wordMultiplier *= 2;
-                    break;
-                case TW:
-                    wordMultiplier *= 3;
-                    break;
-                case DL:
-                    score *= 2;
-                    break;
-                case TL:
-                    score *= 3;
-                    break;
-                default:
-                    break;
+        formed_words.add(required_points);
+        for(Point[] required : formed_words) {
+            for (Point point : required) {
+                int score = point.getScore();
+                switch (point.getBonusType()) {
+                    case DW:
+                        wordMultiplier *= 2;
+                        break;
+                    case TW:
+                        wordMultiplier *= 3;
+                        break;
+                    case DL:
+                        score *= 2;
+                        break;
+                    case TL:
+                        score *= 3;
+                        break;
+                    default:
+                        break;
+                }
+                sum += score;
             }
-            sum += score;
         }
         return sum * wordMultiplier;
     }
