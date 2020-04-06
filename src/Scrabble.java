@@ -11,6 +11,7 @@ import javafx.event.EventHandler;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
+import java.lang.reflect.Array;
 import java.util.*;
 
 public class Scrabble {
@@ -108,8 +109,8 @@ public class Scrabble {
             tilesOnFrames[1][i].setTile(PLAYERS[0].getFrame().getLetters().get(i));
         }
 
-        scores[0] = PLAYERS[0].getScore() + calculateScore(tilesOnFrames[1]);
-        scores[1] = PLAYERS[1].getScore() + calculateScore(tilesOnFrames[0]);
+        scores[0] = PLAYERS[0].getScore() + calculateScore(tilesOnFrames[1], null);
+        scores[1] = PLAYERS[1].getScore() + calculateScore(tilesOnFrames[0], null);
 
         BOARD_GUI.print(PLAYERS[0].getUsername() + " has received a score of: " + scores[0], true);
         BOARD_GUI.print(PLAYERS[1].getUsername() + " has received a score of: " + scores[1], true);
@@ -242,9 +243,10 @@ public class Scrabble {
      * @param required the array of points placed on the board
      * @return the score to be awarded to the player for this move
      */
-    public static int calculateScore(Point[] required) {
+    public static int calculateScore(Point[] required, ArrayList<String> formed_words) {
         int sum = 0;
         int wordMultiplier = 1;
+        System.out.println(formed_words);
         for (Point point : required) {
             int score = point.getScore();
             switch (point.getBonusType()) {

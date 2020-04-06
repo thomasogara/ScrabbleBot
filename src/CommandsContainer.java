@@ -1,3 +1,6 @@
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 /**
  * CommandsContainer is a wrapper class for all the methods associated with the recognised commands in the game
  * All members have a signature matching the run() method in the Command interface
@@ -20,7 +23,7 @@ public class CommandsContainer {
         if(tokens.length < 2) return returnWrapper;
 
         // the second token of the command is the word which is to be discarded
-        String toBeDiscared = tokens[1];
+        String toBeDiscared = tokens[1].toUpperCase();
 
         // if the player does not have all the tokens which they would like to
         // remove from their frame, the command fails.
@@ -53,11 +56,11 @@ public class CommandsContainer {
         if(tokens.length < 3) return returnWrapper;
 
         // the grid reference is always the first token of the command
-        String gridref = tokens[0];
+        String gridref = tokens[0].toUpperCase();
         // the direction is the fist character of the second token of the command
-        String dir = tokens[1];
+        String dir = tokens[1].toUpperCase();
         // the word is the third token of the command
-        String word = tokens[2];
+        String word = tokens[2].toUpperCase();
 
         // coOrdinates stores the string representation of the x/y co-ordinates
         String[] coOrdinates = new String[2];
@@ -88,12 +91,16 @@ public class CommandsContainer {
         // count from zero, not one
         y--;
 
+        // assert that the word contains at least two letters
+        if(word.length() < 2) return returnWrapper;
+
+        // assert that the direction is valid
         // both 'A' and 'R' will be recognised as representing 'ACROSS' to ensure legacy support
         if(!dir.matches("[ARD]")) return returnWrapper;
 
         // dir has now been amply checked and so the relevant information can be extracted
         char d = dir.charAt(0);
-        // 'A' and 'D' are interpreted as both being synonymous and meaning 'ACROSS'
+        // 'A' and 'R' are interpreted as both being synonymous and meaning 'ACROSS'
         if(d == 'A') d = 'R';
 
         // if the command parameters are valid, execute the command
@@ -102,7 +109,7 @@ public class CommandsContainer {
 
         // PLACE is the only command which, if not executed, can still count
         // as a scoreless turn, so long as the command was formulated correctly
-        // and this point of the method was reached
+        // and this point of the place() method was reached
         if(!returnWrapper.executed) Scrabble.NUMBER_OF_SCORELESS_TURNS++;
 
         return returnWrapper;

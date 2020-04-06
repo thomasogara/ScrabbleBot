@@ -217,7 +217,6 @@ public class Point extends StackPane {
      * Run traversing algorithm to get a list of formed Words by this Point's Tiles' placement
      */
     public void refreshFormedWords() {
-
         // Clear the formed words ArrayList and regenerate it again
         if(!this.formedWords.isEmpty())
             this.formedWords.clear();
@@ -229,10 +228,6 @@ public class Point extends StackPane {
             rightWord.append(right.getTile().getValue()); // Append this points' tiles' letter onto the word formed @ the right hand side
             right = right.getRight(); // Go to the next point beside it
         }
-        if(rightWord.length() >= 1) { // If there are 1 or more letters adjacent to this point then a new word exists
-            rightWord.insert(0, this.getTile().getValue());
-            this.formedWords.add(rightWord.toString());
-        }
 
         // ** Same explanation as above for traversal follows in the other traversing directions; left, up & down
 
@@ -243,10 +238,6 @@ public class Point extends StackPane {
             leftWord.append(left.getTile().getValue());
             left = left.getLeft();
         }
-        if(leftWord.length() >= 1) {
-            leftWord.insert(0, this.getTile().getValue());
-            this.formedWords.add(leftWord.reverse().toString());
-        }
 
         // Traverse UP
         Point up = this.getUp();
@@ -254,10 +245,6 @@ public class Point extends StackPane {
         while(up != null && up.isFilled()) {
             upWord.append(up.getTile().getValue());
             up = up.getUp();
-        }
-        if(upWord.length() >= 1) {
-            upWord.insert(0, this.getTile().getValue());
-            this.formedWords.add(upWord.reverse().toString());
         }
 
         // Traverse Down
@@ -267,7 +254,26 @@ public class Point extends StackPane {
             downWord.append(down.getTile().getValue());
             down = down.getDown();
         }
-        if(downWord.length() >= 1) {
+
+        if(rightWord.length() >= 1 && leftWord.length() >= 1){
+            rightWord.insert(0, this.getTile().getValue());
+            this.formedWords.add(leftWord.reverse().append(rightWord.toString()).toString());
+        }
+        else if(rightWord.length() >= 1){
+            rightWord.insert(0, this.getTile().getValue());
+            this.formedWords.add(rightWord.toString());
+        }else if(leftWord.length() >= 1){
+            leftWord.insert(0, this.getTile().getValue());
+            this.formedWords.add(leftWord.reverse().toString());
+        }
+
+        if(upWord.length() >= 1 && leftWord.length() >= 1){
+            downWord.insert(0, this.getTile().getValue());
+            this.formedWords.add(upWord.reverse().append(downWord.toString()).toString());
+        }else if(upWord.length() >= 1){
+            upWord.insert(0, this.getTile().getValue());
+            this.formedWords.add(upWord.reverse().toString());
+        }else if(downWord.length() >= 1){
             downWord.insert(0, this.getTile().getValue());
             this.formedWords.add(downWord.toString());
         }

@@ -44,10 +44,10 @@ public class Board {
      * @param p the Point to be queried
      * @return boolean representing whether the placement of the given Point p would be valid
      */
-    public final boolean isValid(Point[] p){
-        boolean connecting = false; // initialised to false to allow for boolean algebra hackz
-        boolean centred = false; // initialised to false to allow for boolean algebra hackz
-        boolean valid = true; // initialised to true to allow for boolean algebra hackz
+    public final boolean isValid(Point[] p, char d){
+        boolean connecting = false; // initialised to false since it is used in a boolean combination using OR
+        boolean centred = false; // initialised to false since it is used in a boolean combination using OR
+        boolean valid = true; // initialised to true since it is used in a boolean combination using AND
 
         // Iterate over the Point[] array p, and combine the result of calling the validity checks on each element
         for(int i = 0; i < p.length; i++){
@@ -67,6 +67,9 @@ public class Board {
                 If at least one of the points in p[] has a neighbour, connecting will evaluate to true
              */
             connecting |= isConnecting(p[i]);
+            /*
+                Ensure that all words that are formed as connections to this word are valid dictionary words
+             */
         }
 
         // The first move must only be valid and pass through the centre
@@ -131,6 +134,11 @@ public class Board {
         Point[] query = createPointArrayFromQuery(s, p, d, this);
         Point[] required = getRequiredTilesAsPointArray(s, p, d);
         Tile[] requiredTiles = new Tile[required.length];
+        ArrayList<String> formed_words = new ArrayList<>();
+        for(Point point : required){
+            point.refreshFormedWords();
+            formed_words.addAll(point.getFormedWords());
+        }
         for(int i = 0; i < required.length; i++){
             requiredTiles[i] = required[i].getTile();
         }
@@ -141,7 +149,7 @@ public class Board {
         }
 
         // If this point array is invalid, quit
-        if(!isValid(query)){
+        if(!isValid(query, d)){
             return returnWrapper;
         }
         /*
@@ -176,7 +184,7 @@ public class Board {
 
         // The turn has been executed successfully
         returnWrapper.executed = true;
-        returnWrapper.score = Scrabble.calculateScore(required);
+        returnWrapper.score = Scrabble.calculateScore(required, formed_words);
 
         u.played_words.add(s);
         u.played_points.add(required);
