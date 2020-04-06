@@ -155,6 +155,13 @@ public class Point extends StackPane {
 
     }
 
+    public String toString() {
+        if(this.getTile() == null)
+            return "";
+
+        return this.getTile().getValue().toString();
+    }
+
     /**
      * A method allowing for the score associated with a given Point to be calculated (BEFORE ANY SCORE MODIFIERS ARE
      * APPLIED).

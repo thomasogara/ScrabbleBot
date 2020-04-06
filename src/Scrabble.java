@@ -246,7 +246,15 @@ public class Scrabble {
     public static int calculateScore(Point[] required_points, ArrayList<Point[]> formed_words) {
         int sum = 0;
         int wordMultiplier = 1;
-        System.out.println(formed_words);
+
+        for(Point[] points: formed_words) {
+            System.out.print("[");
+            for(Point p : points) {
+                System.out.print(p.getTile().getValue() + ",");
+            }
+            System.out.println("]");
+        }
+
         formed_words.add(required_points);
         for(Point[] required : formed_words) {
             for (Point point : required) {

@@ -179,9 +179,13 @@ public class Board {
         }
 
         ArrayList<Point[]> formed_words_req = new ArrayList<>();
+        int j = 0;
         for(Point point : query){
-            point.refreshFormedWords();
-            formed_words.addAll(point.getFormedWords());
+            if(j == query.length - 1) {
+                point.refreshFormedWords();
+                formed_words.addAll(point.getFormedWords());
+            }
+            j++;
         }
         HashSet<String> formed_words_nodup = new HashSet<String>(formed_words);
         for(String word : formed_words_nodup){
