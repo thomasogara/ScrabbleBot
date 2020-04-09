@@ -1,4 +1,4 @@
-/*
+package old_game;/*
   Code Authors:
   Thomas O'Gara (18379576) (thomas.ogara@ucdconnect.ie)
   Jarrett Pierse (18375813 (jarrett.pierse@ucdconnect.ie)
@@ -43,7 +43,7 @@ public class Pool {
         put('0', 0);
     }};
 
-    // Stores the tiles on the pool currently - MAY be changed to HashMap<Tile, Integer> once Tile class is integrated.
+    // Stores the tiles on the pool currently - MAY be changed to HashMap<old_game.Tile, Integer> once old_game.Tile class is integrated.
     private HashMap<Tile, Integer> poolTiles;
 
     public Pool(){

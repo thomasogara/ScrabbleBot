@@ -1,4 +1,4 @@
-/*
+package old_game;/*
   Code Authors:
   Thomas O'Gara (18379576) (thomas.ogara@ucdconnect.ie)
   Jarrett Pierse (18375813 (jarrett.pierse@ucdconnect.ie)
@@ -17,7 +17,7 @@ public class Player {
     public ArrayList<Point[]> played_points = new ArrayList<>(); // holds the points played successfully by this player
     public ArrayList<Integer> scores_from_play = new ArrayList<>(); // holds the scores attained for each play by this player
 
-    // default constructor for Player object
+    // default constructor for old_game.Player object
     public Player() {
         this.frame = new Frame();
     }

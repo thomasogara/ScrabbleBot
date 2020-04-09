@@ -1,4 +1,4 @@
-/*
+package old_game;/*
   Code Authors:
   Thomas O'Gara (18379576) (thomas.ogara@ucdconnect.ie)
   Jarrett Pierse (18375813 (jarrett.pierse@ucdconnect.ie)
@@ -29,16 +29,16 @@ public class Point extends StackPane {
     // Initialise the static class variable BONUS_TYPES[][] according to the contents of the config file
     public static BonusType[][] BONUS_TYPES = readBonusFile();
 
-    // The tile placed on this Point
+    // The tile placed on this old_game.Point
     private Tile tile;
 
-    // Point coordinates on the Board
+    // old_game.Point coordinates on the old_game.Board
     private int x, y;
 
-    // List of words formed by this Point/Tile on the Board
+    // List of words formed by this old_game.Point/old_game.Tile on the old_game.Board
     private ArrayList<String> formedWords;
 
-    // The original/first word formed by this Point/Tile on the Board
+    // The original/first word formed by this old_game.Point/old_game.Tile on the old_game.Board
     private String originWord;
 
     // Stores an object reference of the games board
@@ -55,7 +55,7 @@ public class Point extends StackPane {
     }
 
     /**
-     * Alternative constructor for Point class to set the Board instance too
+     * Alternative constructor for old_game.Point class to set the old_game.Board instance too
      */
     public Point(int x, int y, Board board) {
         this.x = x;
@@ -127,9 +127,9 @@ public class Point extends StackPane {
         if(this.tile != null) {
             pointInstance.graphicText.setStyle("-fx-text-fill: black;-fx-fill: black;-fx-font-size: 200%;-fx-font-weight: bold");
             if(this.tile.getDisplayValue() == '0'){
-                pointInstance.graphicText.setText(""); // Set the tiles new text to the Tile's character letter
+                pointInstance.graphicText.setText(""); // Set the tiles new text to the old_game.Tile's character letter
             }else {
-                pointInstance.graphicText.setText("" + this.tile.getDisplayValue()); // Set the tiles new text to the Tile's character letter
+                pointInstance.graphicText.setText("" + this.tile.getDisplayValue()); // Set the tiles new text to the old_game.Tile's character letter
             }
             pointInstance.graphic.setFill(Color.web("#e8e6e4"));
         }
@@ -163,9 +163,9 @@ public class Point extends StackPane {
     }
 
     /**
-     * A method allowing for the score associated with a given Point to be calculated (BEFORE ANY SCORE MODIFIERS ARE
+     * A method allowing for the score associated with a given old_game.Point to be calculated (BEFORE ANY SCORE MODIFIERS ARE
      * APPLIED).
-     * @return the score associated with this Point BEFORE ANY SCORE MODIFIERS ARE APPLIED.
+     * @return the score associated with this old_game.Point BEFORE ANY SCORE MODIFIERS ARE APPLIED.
      */
     public int getScore(){
         return Pool.tileValues.get(this.getTile().getValue());
@@ -196,7 +196,7 @@ public class Point extends StackPane {
     }
 
     /**
-     * Get the X coordinate of this Point
+     * Get the X coordinate of this old_game.Point
      * @return The integer value X coordinate of this point
      */
     public int getX() {
@@ -221,7 +221,7 @@ public class Point extends StackPane {
     }
 
     /**
-     * Run traversing algorithm to get a list of formed Words by this Point's Tiles' placement
+     * Run traversing algorithm to get a list of formed Words by this old_game.Point's Tiles' placement
      */
     public void refreshFormedWords() {
         // Clear the formed words ArrayList and regenerate it again
@@ -231,7 +231,7 @@ public class Point extends StackPane {
         // Traverse right
         Point right = this.getRight(); // Get the point beside this current point
         StringBuilder rightWord = new StringBuilder();
-        while(right != null && right.isFilled()) { // Make sure that point isn't null & actually has a Tile/Letter on it
+        while(right != null && right.isFilled()) { // Make sure that point isn't null & actually has a old_game.Tile/Letter on it
             rightWord.append(right.getTile().getValue()); // Append this points' tiles' letter onto the word formed @ the right hand side
             right = right.getRight(); // Go to the next point beside it
         }

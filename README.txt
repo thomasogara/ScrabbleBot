@@ -1,4 +1,4 @@
-Team-Squash Scrabble Game
+Team-Squash old_game.Scrabble Game
 
 How to run:
 - open the terminal/command prompt

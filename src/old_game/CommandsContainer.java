@@ -1,9 +1,8 @@
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+package old_game;
 
 /**
- * CommandsContainer is a wrapper class for all the methods associated with the recognised commands in the game
- * All members have a signature matching the run() method in the Command interface
+ * old_game.CommandsContainer is a wrapper class for all the methods associated with the recognised commands in the game
+ * All members have a signature matching the run() method in the old_game.Command interface
  */
 
 public class CommandsContainer {
@@ -33,7 +32,7 @@ public class CommandsContainer {
         // if the command parameters are valid, execute the command
         // remove all the desired tiles from the player's frame
         p.getFrame().removeAll(toBeDiscared);
-        // refill the player's frame with random tiles from the Pool
+        // refill the player's frame with random tiles from the old_game.Pool
         p.getFrame().refill();
         // at this point, the command has succeeded; return true
         returnWrapper.executed = true;
@@ -77,7 +76,7 @@ public class CommandsContainer {
         if(!coOrdinates[0].matches("[A-O]")) return returnWrapper;
 
         // x has now been thoroughly checked to ensure compliance
-        // the Board has integer indices, so the x value must be mapped
+        // the old_game.Board has integer indices, so the x value must be mapped
         // from its character representation to an integer representation
         x = (int)coOrdinates[0].charAt(0) - 'A';
         // attempt conversion of the y co-ordinate, if it fails, the command fails
@@ -163,7 +162,7 @@ public class CommandsContainer {
         int score = last_player.scores_from_play.get(last_player.scores_from_play.size() - 1);
         Scrabble.BOARD_GUI.print("The last played word was invalid, challenge succeeded", true);
         Scrabble.BOARD_GUI.print("Now removing " + score + " points from " + last_player.getUsername(), true);
-        // remove the word from the Board
+        // remove the word from the old_game.Board
         Scrabble.BOARD.remove(last_player.played_points.get(last_player.played_points.size() - 1));
         // reduce the player's score
         last_player.increaseScore(-score);
@@ -228,6 +227,7 @@ public class CommandsContainer {
         Scrabble.BOARD_GUI.print("PASS:       (pass current move)", true);
         Scrabble.BOARD_GUI.print("EXCHANGE <letters>:     (swaps these letters for new letters)", true);
         Scrabble.BOARD_GUI.print("HELP:       (display this guide)", true);
+        Scrabble.BOARD_GUI.print("CHALLENGE:       (challenge the last word placed on the board)", true);
         Scrabble.BOARD_GUI.print("", true);
         Scrabble.BOARD_GUI.print("How to place a word on the board:", true);
         Scrabble.BOARD_GUI.print("- Starting tile position", true);

@@ -1,4 +1,4 @@
-/*
+package old_game;/*
   Code Authors:
   Thomas O'Gara (18379576) (thomas.ogara@ucdconnect.ie)
   Jarrett Pierse (18375813 (jarrett.pierse@ucdconnect.ie)
@@ -8,7 +8,6 @@
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
-import java.util.Queue;
 
 public class Board {
     private int occupiedTileCount;
@@ -33,8 +32,8 @@ public class Board {
 
     /**
      * Ensure that the selected square is empty
-     * @param p the Point to be queried
-     * @return boolean representing emptiness of the Point p
+     * @param p the old_game.Point to be queried
+     * @return boolean representing emptiness of the old_game.Point p
      */
     public final boolean isAvailable(Point p){
         return !this.points[p.getY()][p.getX()].isFilled();
@@ -43,15 +42,15 @@ public class Board {
     /**
      * Ensure that a move is valid, according to all constraints (essentially a boolean combination of all
      *  validity-checking methods)
-     * @param p the Point to be queried
-     * @return boolean representing whether the placement of the given Point p would be valid
+     * @param p the old_game.Point to be queried
+     * @return boolean representing whether the placement of the given old_game.Point p would be valid
      */
     public final boolean isValid(Point[] p, char d){
         boolean connecting = false; // initialised to false since it is used in a boolean combination using OR
         boolean centred = false; // initialised to false since it is used in a boolean combination using OR
         boolean valid = true; // initialised to true since it is used in a boolean combination using AND
 
-        // Iterate over the Point[] array p, and combine the result of calling the validity checks on each element
+        // Iterate over the old_game.Point[] array p, and combine the result of calling the validity checks on each element
         for(int i = 0; i < p.length; i++){
             if(this.isFirst()){
                 /*
@@ -83,9 +82,9 @@ public class Board {
     }
 
     /**
-     * Confirm that a given Point p already has an equal counterpart at its x and y co-ords on the Board
-     * @param p the Point to be tested
-     * @return boolean representing the Point p's presence/absence on the Board
+     * Confirm that a given old_game.Point p already has an equal counterpart at its x and y co-ords on the old_game.Board
+     * @param p the old_game.Point to be tested
+     * @return boolean representing the old_game.Point p's presence/absence on the old_game.Board
      */
     public final boolean isOnBoard(Point p){
         return points[p.getY()][p.getX()].isFilled() && points[p.getY()][p.getX()].getTile().getValue().equals(p.getTile().getValue());
@@ -96,10 +95,10 @@ public class Board {
     }
 
     /**
-     * An alternative to placePoint() which instead accepts a Tile as a parameter, as well as two integers x and y
-     * representing the chosen square on the board. It attempts to place a given Tile onto this board at the given
+     * An alternative to placePoint() which instead accepts a old_game.Tile as a parameter, as well as two integers x and y
+     * representing the chosen square on the board. It attempts to place a given old_game.Tile onto this board at the given
      * position and returns a boolean indicating success/failure.
-     * @param t The Tile to be placed on this board
+     * @param t The old_game.Tile to be placed on this board
      * @param x The x co-ordinate of the chosen square of the board
      * @param y The y co-ordinate of the chosen square of the board
      * @return
@@ -114,7 +113,7 @@ public class Board {
     /**
      * The method which acts as the main interface for the class. It attempts to place a given point onto this board,
      * and returns a boolean indicating success/failure.
-     * @param p The Point to be placed onto this board
+     * @param p The old_game.Point to be placed onto this board
      * @return boolean indicating the success/failure of the placement.
      */
     protected boolean add(Point p){
@@ -125,10 +124,10 @@ public class Board {
     }
 
     /**
-     * The method which acts as another primary interface for the class. It attempts to place Tile representations of
+     * The method which acts as another primary interface for the class. It attempts to place old_game.Tile representations of
      * each character of the argument String onto this board, and returns a boolean indicating success/failure.
      * @param s String to be placed on the board
-     * @param p Point encapsulating the x/y position where the first character of the String should be placed
+     * @param p old_game.Point encapsulating the x/y position where the first character of the String should be placed
      * @param d Character indicating the direction the word should be placed in ('D' => Down, 'R' => Right)
      */
     public final Scrabble.CommandReturnWrapper add(String s, Point p, char d, Player u){
@@ -141,7 +140,7 @@ public class Board {
         for(int i = 0; i < required.length; i++){
             requiredTiles[i] = required[i].getTile();
         }
-        // if the direction is not properly defined, or the player's Frame does not contain the necessary letters
+        // if the direction is not properly defined, or the player's old_game.Frame does not contain the necessary letters
         // to execute the turn (excluding the overlap tiles), then the turn cannot be executed
         if((d != 'R' && d != 'D' )|| !u.getFrame().hasLetters(requiredTiles)){
             return returnWrapper;
@@ -192,7 +191,7 @@ public class Board {
             formed_words_req.add(createPointArrayFromQuery(word, p, d, this));
         }
 
-        // Remove all necessary tiles form the Player's Frame
+        // Remove all necessary tiles form the old_game.Player's old_game.Frame
         u.getFrame().removeAll(Arrays.asList(requiredTiles));
 
         // The turn has been executed successfully
@@ -222,11 +221,11 @@ public class Board {
     }
 
     /**
-     * Get the tiles needed to make a play, as a Point array
+     * Get the tiles needed to make a play, as a old_game.Point array
      * @param s the word to be placed
      * @param p the origin of the placements
      * @param d the direction of the placement
-     * @return the Point[] array representing the move to be made
+     * @return the old_game.Point[] array representing the move to be made
      */
     public final Point[] getRequiredTilesAsPointArray(String s, Point p, char d){
         ArrayList<Point> required = new ArrayList<>();
@@ -243,10 +242,10 @@ public class Board {
     }
 
     /**
-     * Ensure that placing a Tile at a given Point p will result in it being connected to at least one square already
-     * on this Board
-     * @param p the Point at which the Tile is to be placed
-     * @return boolean representing whether this Point has any neighbours on this Board
+     * Ensure that placing a old_game.Tile at a given old_game.Point p will result in it being connected to at least one square already
+     * on this old_game.Board
+     * @param p the old_game.Point at which the old_game.Tile is to be placed
+     * @return boolean representing whether this old_game.Point has any neighbours on this old_game.Board
      */
     public final boolean isConnecting(Point p){
         return points[p.getY()][p.getX()].isFilled() ||
@@ -259,7 +258,7 @@ public class Board {
 
     /**
      * Confirm that a point is located at the center of the board
-     * @param p the Point to be tested
+     * @param p the old_game.Point to be tested
      * @return boolean representing whether the point is at the center of the board
      */
     public final boolean isCentered(Point p){
@@ -267,7 +266,7 @@ public class Board {
     }
 
     /**
-     * Confirm that the board contains no other points, .i.e. that this is the first placement on the Board
+     * Confirm that the board contains no other points, .i.e. that this is the first placement on the old_game.Board
      * @return boolean representing whether the board is empty
      */
     public final boolean isFirst(){
@@ -275,15 +274,15 @@ public class Board {
     }
 
     /**
-     * Utility method for translating a query into an alternative form, as a Point[] array
+     * Utility method for translating a query into an alternative form, as a old_game.Point[] array
      * @param s the String from the parent query
-     * @param p the Point of the origin of the parent query
+     * @param p the old_game.Point of the origin of the parent query
      * @param d the direction of the parent query
-     * @return Point[] array representing the Points to be placed on the board
+     * @return old_game.Point[] array representing the Points to be placed on the board
      */
     public static Point[] createPointArrayFromQuery(String s, Point p, char d, Board b){
         /*
-            Construct a point array to represent the Point's being placed onto the Board
+            Construct a point array to represent the old_game.Point's being placed onto the old_game.Board
             this point array is used to check the validity of the move
          */
         Point[] point_array = new Point[s.length()];
@@ -310,8 +309,8 @@ public class Board {
     }
 
     /**
-     * temporary toString() method until Board.render() is complete <3
-     * @return String representation of the Board
+     * temporary toString() method until old_game.Board.render() is complete <3
+     * @return String representation of the old_game.Board
      */
     @Override
     public String toString() {
@@ -335,15 +334,15 @@ public class Board {
     }
 
     /**
-     * return the number of Points on the Board which are occupied by a Tile
-     * @return int representing the count of occupied Point's on this Board
+     * return the number of Points on the old_game.Board which are occupied by a old_game.Tile
+     * @return int representing the count of occupied old_game.Point's on this old_game.Board
      */
     public final int getOccupiedTileCount(){
         return this.occupiedTileCount;
     }
 
     /**
-     * increment the count of occupied Point's on this board, in the event of a successful placement
+     * increment the count of occupied old_game.Point's on this board, in the event of a successful placement
      */
     private void incrementOccupiedTileCount(){
         this.occupiedTileCount++;

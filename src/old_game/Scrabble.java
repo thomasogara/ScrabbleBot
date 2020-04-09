@@ -1,4 +1,4 @@
-/*
+package old_game;/*
   Code Authors:
   Thomas O'Gara (18379576) (thomas.ogara@ucdconnect.ie)
   Jarrett Pierse (18375813 (jarrett.pierse@ucdconnect.ie)
@@ -11,7 +11,6 @@ import javafx.event.EventHandler;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
-import java.lang.reflect.Array;
 import java.util.*;
 
 public class Scrabble {
@@ -24,7 +23,7 @@ public class Scrabble {
         CLASS VARIABLES
      */
     /**
-     * The default number of players for a game of Scrabble
+     * The default number of players for a game of old_game.Scrabble
      */
     public static final int PLAYER_COUNT = 2;
     /**
@@ -66,12 +65,12 @@ public class Scrabble {
     public static final int WINDOW_WIDTH = 1066;
     public static final int WINDOW_HEIGHT = 894;
     /**
-     * The size of the scrabble Board [MAY SWITCH TO RELATIVE SIZING]
+     * The size of the scrabble old_game.Board [MAY SWITCH TO RELATIVE SIZING]
      */
     public static final int BOARD_WIDTH = 900;
     public static final int BOARD_HEIGHT = 600;
     /**
-     * The size of the scrabble Point
+     * The size of the scrabble old_game.Point
      */
     public static final int POINT_WIDTH = 45;
     public static final int POINT_HEIGHT = 45;
@@ -94,7 +93,7 @@ public class Scrabble {
      * endGame() is used to end the game and commence scoring.
      */
     public static void endGame(){
-        BOARD_GUI.print("Congratulations! You have completed a game of Scrabble!", true);
+        BOARD_GUI.print("Congratulations! You have completed a game of old_game.Scrabble!", true);
         BOARD_GUI.print("The scoring process will now commence", true);
         int[] scores = new int[2];
         Point[][] tilesOnFrames = new Point[2][];
@@ -246,15 +245,7 @@ public class Scrabble {
     public static int calculateScore(Point[] required_points, ArrayList<Point[]> formed_words) {
         int sum = 0;
         int wordMultiplier = 1;
-
-        for(Point[] points: formed_words) {
-            System.out.print("[");
-            for(Point p : points) {
-                System.out.print(p.getTile().getValue() + ",");
-            }
-            System.out.println("]");
-        }
-
+        System.out.println(formed_words);
         formed_words.add(required_points);
         for(Point[] required : formed_words) {
             for (Point point : required) {
@@ -304,7 +295,7 @@ public class Scrabble {
             String text = BOARD_GUI.read();
             BOARD_GUI.print("> " + text, false);
             if (Scrabble.offerUsername(text)) {
-                BOARD_GUI.print("Player " + (CURRENT_PLAYER + 1) + " has been assigned the username: " + currentPlayer().getUsername(), true);
+                BOARD_GUI.print("old_game.Player " + (CURRENT_PLAYER + 1) + " has been assigned the username: " + currentPlayer().getUsername(), true);
                 alternatePlayer();
                 if (CURRENT_PLAYER == 0) {
                     BOARD_GUI.print("The game will now begin. " + currentPlayer().getUsername() + ", please feel free to input a command", true);
@@ -360,7 +351,7 @@ public class Scrabble {
 
     /**
      * A simple method to allow checks to be made to ensure a word is a valid scrabble word,
-     * as per the Collins 2019 Scrabble Dictionary
+     * as per the Collins 2019 old_game.Scrabble Dictionary
      * @param s the String to be verified
      * @return the validity of the word (true => valid, false => invalid)
      */

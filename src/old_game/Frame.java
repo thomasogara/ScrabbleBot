@@ -1,4 +1,4 @@
-/*
+package old_game;/*
   Code Authors:
   Thomas O'Gara (18379576) (thomas.ogara@ucdconnect.ie)
   Jarrett Pierse (18375813 (jarrett.pierse@ucdconnect.ie)
@@ -20,15 +20,15 @@ public class Frame extends HBox {
     /*
         Instance variables
      */
-    /** An ArrayList of Tile's, containing all the tiles which are currently on the frame*/
+    /** An ArrayList of old_game.Tile's, containing all the tiles which are currently on the frame*/
     private ArrayList<Tile> letters;
-    /** A reference to the global Pool for a given game. */
+    /** A reference to the global old_game.Pool for a given game. */
     private Pool pool;
 
     /*
         Class variables
      */
-    /** An integer constant of the Frame class, representing the maximum number of Tile's which can be placed on a Frame*/
+    /** An integer constant of the old_game.Frame class, representing the maximum number of old_game.Tile's which can be placed on a old_game.Frame*/
     public static final int FRAME_CAPACITY = 7;
 
     // GUI variables
@@ -37,7 +37,7 @@ public class Frame extends HBox {
     private Text graphicText;
 
     /**
-     * The default constructor, initialises the 'letters' instance variable, and fills it from the Pool
+     * The default constructor, initialises the 'letters' instance variable, and fills it from the old_game.Pool
      * @see Frame#letters
      */
     public Frame() {
@@ -99,7 +99,7 @@ public class Frame extends HBox {
     }
 
     /**
-     * A method which allows the Frame to be refilled via the Pool class's API.
+     * A method which allows the old_game.Frame to be refilled via the old_game.Pool class's API.
      */
     public void refill(){
         this.letters.addAll(this.pool.drawRandTiles(FRAME_CAPACITY - this.letters.size()));
@@ -109,7 +109,7 @@ public class Frame extends HBox {
     /**
      * An overloaded method which removes all elements of the argument from the 'letters' instance variable.
      * @see Frame#letters
-     * @param tiles List<Tile> containing a list of Objects to be removed from the Frame
+     * @param tiles List<old_game.Tile> containing a list of Objects to be removed from the old_game.Frame
      */
     public final void removeAll(List<Tile> tiles) {
         for(Tile tile : tiles){
@@ -120,7 +120,7 @@ public class Frame extends HBox {
 
     /**
      * An overloaded method which removes all elements of the argument from the 'letters' instance variable.
-     * @param letters_to_be_removed char[] array containing all letters to be removed from the Frame.
+     * @param letters_to_be_removed char[] array containing all letters to be removed from the old_game.Frame.
      */
     public final void removeAll(char[] letters_to_be_removed){
         this.removeAll(Arrays.asList(Tile.tileArrayFromCharArray(letters_to_be_removed)));
@@ -128,46 +128,46 @@ public class Frame extends HBox {
 
     /**
      * An overloaded method which removes all elements of the argument from the 'letters' instance variable.
-     * @param letters_to_be_removed String containing all letters to be removed from the Frame
+     * @param letters_to_be_removed String containing all letters to be removed from the old_game.Frame
      */
     public final void removeAll(String letters_to_be_removed){
         this.removeAll(Arrays.asList(Tile.tileArrayFromCharArray(letters_to_be_removed.toCharArray())));
     }
 
     /**
-     * A very simple method which allows for a check to be made if a given letter is in the Frame.
-     * @param letter Tile to be searched for in the Frame
-     * @return boolean representing whether letter is in the Frame.
+     * A very simple method which allows for a check to be made if a given letter is in the old_game.Frame.
+     * @param letter old_game.Tile to be searched for in the old_game.Frame
+     * @return boolean representing whether letter is in the old_game.Frame.
      */
     public final boolean hasLetter(Tile letter){
         return this.getLetters().contains(letter);
     }
 
     /**
-     * A method to check if a given letter is present in the Frame, where the letter is stored as a char.
-     * @param letter char to be searched for in the Frame
-     * @return boolean representing whether letter is in the Frame
+     * A method to check if a given letter is present in the old_game.Frame, where the letter is stored as a char.
+     * @param letter char to be searched for in the old_game.Frame
+     * @return boolean representing whether letter is in the old_game.Frame
      */
     public final boolean hasLetter(char letter) {
         return this.hasLetter(new Tile(letter));
     }
 
     /**
-     * A method to check if a given letter is present in the Frame, where the letter is stored as a Character.
-     * @param letter Character to be searched for in the Frame
-     * @return boolean representing whether letter is in the Frame.
+     * A method to check if a given letter is present in the old_game.Frame, where the letter is stored as a Character.
+     * @param letter Character to be searched for in the old_game.Frame
+     * @return boolean representing whether letter is in the old_game.Frame.
      */
     public final boolean hasLetter(Character letter){
         return this.hasLetter(new Tile(letter));
     }
 
     /**
-     * A method to check if a given set of letters is present in the Frame.
-     * @param letter_array Tile[] array containing letters to be searched for in the Frame
-     * @return boolean representing whether ALL letters are in the Frame.
+     * A method to check if a given set of letters is present in the old_game.Frame.
+     * @param letter_array old_game.Tile[] array containing letters to be searched for in the old_game.Frame
+     * @return boolean representing whether ALL letters are in the old_game.Frame.
      */
     public final boolean hasLetters(Tile[] letter_array){
-        int blank_required = 0; // how many blank tiles would be needed to compensate for missing letters in the Frame
+        int blank_required = 0; // how many blank tiles would be needed to compensate for missing letters in the old_game.Frame
         ArrayList<Tile> lettersCopy = new ArrayList<>(this.getLetters());
         for(Tile letter : letter_array){
             if(!lettersCopy.contains(letter))
@@ -190,18 +190,18 @@ public class Frame extends HBox {
     }
 
     /**
-     * A method to check if a given set of letters is present in the Frame, where the letters are stored as a List<Tile>
-     * @param tiles the Tile's to be removed from the Frame
-     * @return whether an equivalent Tile exists in the Frame for all elements of the input List
+     * A method to check if a given set of letters is present in the old_game.Frame, where the letters are stored as a List<old_game.Tile>
+     * @param tiles the old_game.Tile's to be removed from the old_game.Frame
+     * @return whether an equivalent old_game.Tile exists in the old_game.Frame for all elements of the input List
      */
     public final boolean hasLetters(List<Tile> tiles){
         return this.hasLetters((Tile []) tiles.toArray());
     }
 
     /**
-     * A method to check if a given set of letters is present in the Frame, where the letters are stored as a char array
-     * @param letter_array the Tile's to be removed from the Frametiles
-     * @return whether an equivalent Tile exists in the Frame for all elements of the input List
+     * A method to check if a given set of letters is present in the old_game.Frame, where the letters are stored as a char array
+     * @param letter_array the old_game.Tile's to be removed from the Frametiles
+     * @return whether an equivalent old_game.Tile exists in the old_game.Frame for all elements of the input List
      */
     public final boolean hasLetters(char[] letter_array){
         return this.hasLetters(Tile.tileArrayFromCharArray(letter_array));
@@ -209,35 +209,35 @@ public class Frame extends HBox {
 
 
     /**
-     * A method to check if a given set of letters is present in the Frame, where the letters are stored as a
+     * A method to check if a given set of letters is present in the old_game.Frame, where the letters are stored as a
      * String.
-     * @param letter_string String containing all letters to be searched for in the Frame
+     * @param letter_string String containing all letters to be searched for in the old_game.Frame
      */
     public final boolean hasLetters(String letter_string){
         return this.hasLetters(letter_string.replaceAll("\\s+", "").toUpperCase().toCharArray());
     }
 
     /**
-     * A simple method to check whether or not the Frame is empty
-     * @return boolean representing whether the Frame is empty.
+     * A simple method to check whether or not the old_game.Frame is empty
+     * @return boolean representing whether the old_game.Frame is empty.
      */
     public final boolean isEmpty(){
         return this.getLetters() == null || this.getLetters().isEmpty();
     }
 
     /**
-     * A method to get all letters in the Frame as an ArrayList of Character's
-     * Note: Changes to the returned ArrayList WILL cause changed to the Frame. It is NOT a copy.
-     * @return a reference to the Frame's 'letters' instance variable.
+     * A method to get all letters in the old_game.Frame as an ArrayList of Character's
+     * Note: Changes to the returned ArrayList WILL cause changed to the old_game.Frame. It is NOT a copy.
+     * @return a reference to the old_game.Frame's 'letters' instance variable.
      */
     public final ArrayList<Tile> getLetters(){
         return this.letters;
     }
 
     /**
-     * A method to get all the letters in the Frame as a char[] array
-     * Note: Changes to the char[] array returned WILL NOT cause changes to the Frame.
-     * @return the contents of the Frame, as a char[] array.
+     * A method to get all the letters in the old_game.Frame as a char[] array
+     * Note: Changes to the char[] array returned WILL NOT cause changes to the old_game.Frame.
+     * @return the contents of the old_game.Frame, as a char[] array.
      */
     public final char[] getLettersAsCharArray(){
         Character[] lettersToCharacterArray = this.getLettersAsCharacterArray();
@@ -249,10 +249,10 @@ public class Frame extends HBox {
     }
 
     /**
-     * A method to get all the letters in the Frame as a Character[] array
-     * Note: Changes to the Character[] array returned WILL cause changes to the Frame. The Character objects therein
+     * A method to get all the letters in the old_game.Frame as a Character[] array
+     * Note: Changes to the Character[] array returned WILL cause changes to the old_game.Frame. The Character objects therein
      * are NOT COPIES.
-     * @return the contents of the Frame, as a Character[] array.
+     * @return the contents of the old_game.Frame, as a Character[] array.
      */
     public final Character[] getLettersAsCharacterArray(){
         Character[] characters = new Character[this.getLetters().size()];
@@ -263,9 +263,9 @@ public class Frame extends HBox {
     }
 
     /**
-     * A method to get all the letters in the Frame as a String (all tokens space-separated)
-     * Note: Changes to the String returned WILL NOT cause changes to the Frame.
-     * @return the contents of the Frame, as a String.
+     * A method to get all the letters in the old_game.Frame as a String (all tokens space-separated)
+     * Note: Changes to the String returned WILL NOT cause changes to the old_game.Frame.
+     * @return the contents of the old_game.Frame, as a String.
      */
     public final String getLettersAsString(){
         char[] lettersToCharacterArray = this.getLettersAsCharArray();
@@ -277,29 +277,29 @@ public class Frame extends HBox {
     }
 
     /**
-     * A method to allow a single Tile to be added to the Frame, if capacity has not been reached
-     * @param tile the Tile to be added to the Frame
+     * A method to allow a single old_game.Tile to be added to the old_game.Frame, if capacity has not been reached
+     * @param tile the old_game.Tile to be added to the old_game.Frame
      */
     public final void add(Tile tile) {
         if (!(this.getLetters().size() < Frame.FRAME_CAPACITY)){
-            throw new IllegalArgumentException("Frame is at capacity. Additional Tile cannot be placed");
+            throw new IllegalArgumentException("old_game.Frame is at capacity. Additional old_game.Tile cannot be placed");
         }
         this.getLetters().add(tile);
         this.refreshGraphic();
     }
 
     /**
-     * A method to allow a single char to be added to the Frame, if capacity has not been reached
-     * @param letter char to be added to the Frame
+     * A method to allow a single char to be added to the old_game.Frame, if capacity has not been reached
+     * @param letter char to be added to the old_game.Frame
      */
     public final void add(char letter){
         this.add(new Tile(letter));
     }
 
     /**
-     * A method to allow an array of Tile's to be added to the Frame, if the capacity has not been reached, and will
-     * not be exceeded if all Tile's in the Array are added.
-     * @param tiles Tile[] array containging all Tile's to be added to the Frame
+     * A method to allow an array of old_game.Tile's to be added to the old_game.Frame, if the capacity has not been reached, and will
+     * not be exceeded if all old_game.Tile's in the Array are added.
+     * @param tiles old_game.Tile[] array containging all old_game.Tile's to be added to the old_game.Frame
      */
     public final void addAll(Tile[] tiles) {
         for (Tile tile : tiles) {
@@ -308,15 +308,15 @@ public class Frame extends HBox {
     }
 
     /**
-     * A method to allow a String to be added to the Frame's letters
+     * A method to allow a String to be added to the old_game.Frame's letters
      */
     public final void addAll(String s){
         this.addAll(Tile.tileArrayFromCharArray(s.toCharArray()));
     }
 
     /**
-     * A very simple method, allowing the 'pool' instance variable of a Frame to be set.
-     * @param pool the Pool to be assigned as this Frame's 'pool' variable.
+     * A very simple method, allowing the 'pool' instance variable of a old_game.Frame to be set.
+     * @param pool the old_game.Pool to be assigned as this old_game.Frame's 'pool' variable.
      */
     public final void setPool(Pool pool){
         this.pool = pool;

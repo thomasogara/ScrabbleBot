@@ -1,3 +1,5 @@
+package old_game;
+
 import javafx.application.*;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -52,8 +54,8 @@ public class BoardGUI extends Application implements EventHandler<ActionEvent> {
 
     /**
      * Execute command to execute a command from user input
-     * @param c - Command to execute
-     * @param p - Player executing the command
+     * @param c - old_game.Command to execute
+     * @param p - old_game.Player executing the command
      * @return false if command not executed , or true if executed successfully
      */
     public static Scrabble.CommandReturnWrapper execute(String c, Player p) {
@@ -95,7 +97,7 @@ public class BoardGUI extends Application implements EventHandler<ActionEvent> {
 
         // Initialize the stage & title
         this.window = primaryStage;
-        this.window.setTitle("Scrabble Game - Team Squash");
+        this.window.setTitle("old_game.Scrabble Game - Team Squash");
         this.window.setOnCloseRequest(e -> {
             e.consume();
             endProgram();
@@ -244,14 +246,14 @@ public class BoardGUI extends Application implements EventHandler<ActionEvent> {
      * gets user confirmation to end game and exit application
      */
     private void endProgram(){
-           // boolean result = PopUp.confirmDisplay("Are you sure?", "Do you want to end the game and exit the application?", "Yes", "No");
+           // boolean result = old_game.PopUp.confirmDisplay("Are you sure?", "Do you want to end the game and exit the application?", "Yes", "No");
              boolean result = true;
              if(result)
                 window.close();
     }
 }
 
-//           Colour Scheme for Board:
+//           Colour Scheme for old_game.Board:
 //                #ebca67 yellow 2L
 //                #6699e0 blue 2W
 //                #4a9c3b green 3L
