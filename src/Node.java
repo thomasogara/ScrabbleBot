@@ -1,5 +1,3 @@
-package Assignment_5;
-
 public class Node {
     private static final int NUM_LETTERS = 26;
 

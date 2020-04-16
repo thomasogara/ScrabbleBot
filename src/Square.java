@@ -1,5 +1,3 @@
-package Assignment_5;
-
 public class Square {
 
     private int letterMuliplier;
@@ -17,7 +15,9 @@ public class Square {
         this.letterMuliplier = square.letterMuliplier;
         this.wordMultiplier = square.wordMultiplier;
         this.isOccupied = square.isOccupied;
-        this.tile = new Tile(tile);
+        if (square.isOccupied) {
+            this.tile = new Tile(square.tile);
+        }
     }
 
     public int getLetterMuliplier() {

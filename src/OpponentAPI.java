@@ -1,5 +1,3 @@
-package Assignment_5;
-
 public interface OpponentAPI {
 
     int getPrintableId();

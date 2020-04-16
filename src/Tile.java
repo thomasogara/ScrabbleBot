@@ -1,5 +1,3 @@
-package Assignment_5;
-
 public class Tile {
 
     public static final char BLANK = '_';

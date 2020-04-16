@@ -1,5 +1,3 @@
-package Assignment_5;
-
 import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
@@ -131,7 +129,7 @@ public class UserInterface implements UserInterfaceAPI {
     void displaySquare(int r, int c) {
         Square square = scrabble.getBoard().getSquare(r, c);
         Button button = displaySquares[r][c];
-        StringBuilder style = new StringBuilder();
+        var style = new StringBuilder();
         style.append("-fx-background-radius: 0;");
         String color;
         if (square.isDoubleLetter()) {

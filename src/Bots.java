@@ -1,5 +1,3 @@
-package Assignment_5;
-
 import javafx.application.Application;
 
 import java.lang.reflect.Constructor;
