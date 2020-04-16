@@ -1,5 +1,5 @@
 
-public class Bot1 implements BotAPI {
+public class TeamSquashBot implements BotAPI {
 
     // The public API of Bot must not change
     // This is ONLY class that you can edit in the program
@@ -14,7 +14,7 @@ public class Bot1 implements BotAPI {
     private DictionaryAPI dictionary;
     private int turnCount = 0;
 
-    Bot1(PlayerAPI me, OpponentAPI opponent, BoardAPI board, UserInterfaceAPI ui, DictionaryAPI dictionary) {
+    TeamSquashBot(PlayerAPI me, OpponentAPI opponent, BoardAPI board, UserInterfaceAPI ui, DictionaryAPI dictionary) {
         this.me = me;
         this.opponent = opponent;
         this.board = board;
