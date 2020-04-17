@@ -1,8 +1,11 @@
-import java.awt.image.AreaAveragingScaleFilter;
+import javax.swing.text.StyledEditorKit;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Scanner;
 
 public class TeamSquashBot implements BotAPI {
 
@@ -18,6 +21,7 @@ public class TeamSquashBot implements BotAPI {
     private UserInterfaceAPI info;
     private DictionaryAPI dictionary;
     private int turnCount = 0;
+    private Gaddag gaddag;
 
     TeamSquashBot(PlayerAPI me, OpponentAPI opponent, BoardAPI board, UserInterfaceAPI ui, DictionaryAPI dictionary) {
         this.me = me;
@@ -27,6 +31,7 @@ public class TeamSquashBot implements BotAPI {
         this.dictionary = dictionary;
     }
 
+    /*
     public static ArrayList<String> permute(String str) {
         ArrayList<String> permutations = new ArrayList<>();
         permute("", str, permutations);
@@ -41,6 +46,7 @@ public class TeamSquashBot implements BotAPI {
                 permute(prefix + str.charAt(i), str.substring(0, i) + str.substring(i+1, n), list);
         }
     }
+    */
 
     public String getCommand() {
         // Add your code here to input your commands
@@ -48,12 +54,14 @@ public class TeamSquashBot implements BotAPI {
         switch (turnCount) {
             case 0:
                 command = "NAME Bot1";
+                gaddag = new Gaddag();
                 break;
             default:
+                String rack = me.getFrameAsString().replaceAll("[^A-Z_]", "");
+                /*
                 ArrayList<String> validWords = new ArrayList<>();
                 HashSet<String> substrings = new HashSet<>();
                 HashSet<String> permutations = new HashSet<>();
-                String rack = me.getFrameAsString().replaceAll("[^A-Z_]", "");
                 System.out.println(rack);
                 ArrayList<String> possibleRacks = new ArrayList<>();
                 ArrayList<String> tempRacks = new ArrayList<>();
@@ -108,11 +116,7 @@ public class TeamSquashBot implements BotAPI {
                 permutations.removeIf(word -> (!dictionary.areWords(new ArrayList<Word>() {{add(new Word(0,0,true, word));}})));
 
                 System.out.println("all dictionary checks computed");
-
-                Gaddag gaddag;
-                gaddag = new Gaddag(permutations);
-
-                System.out.println("Gaddag constructed");
+                */
 
                 ArrayList<ArrayList<Integer>> anchors = new ArrayList<>();
                 for(int r = 0; r < 15; r++){
@@ -120,26 +124,19 @@ public class TeamSquashBot implements BotAPI {
                         if(board.getSquareCopy(r, c).isOccupied()){
                             final int row = r;
                             final int column = c;
-                            anchors.add(new ArrayList<Integer>(){{add(column); add(row);}});
+                            ArrayList<Integer> anchor = new ArrayList<Integer>(){{add(column); add(row);}};
+                            anchors.add(anchor);
+                            System.out.println("anchor: " + anchor);
+                            GaddagSprawler sprawler = new GaddagSprawler(anchor.get(0), anchor.get(1), rack, gaddag);
+                            ArrayList<Word> moves = sprawler.sprawl();
+                            for(Word move : moves) {
+                                if (move != null) System.out.println("move: " + (char) ('A' + (char) move.getFirstColumn()) + (move.getFirstRow() + 1) + " " + move.getDesignatedLetters());
+                                if (move != null) moves.add(move);
+                            }
                         }
                     }
                 }
-                System.out.println("anchors: " + anchors);
-                ArrayList<Word> moves = new ArrayList<>();
-                for(int i = 0; i < anchors.size(); i++){
-                    moves.add(gaddag.sprawl(anchors.get(i).get(1), anchors.get(i).get(0), rack));
-                }
-                moves.removeAll(Collections.singleton(null));
-                if(moves.isEmpty()){
-                    command = "EXCHANGE " + rack;
-                    break;
-                }else {
-                    for (Word move : moves) {
-                        System.out.println("Word: " + move.getLetters());
-                        System.out.println("x:" + move.getFirstColumn() + ", y: " + move.getFirstRow());
-                    }
-                    command = Character.toString((char) ('A' + (char)moves.get(0).getFirstColumn())) + (moves.get(0).getFirstRow()+1) + " A " + moves.get(0).getLetters();
-                }
+                command = "EXCHANGE " + rack;
                 break;
         }
         turnCount++;
@@ -147,70 +144,49 @@ public class TeamSquashBot implements BotAPI {
         return command;
     }
 
-    public class Gaddag{
-        private HashSet<String> words;
-        private final GaddagNode root = new GaddagNode();
-        private int x, y;
-        private final ArrayList<Word> recordedMoves = new ArrayList<>();
+    private class GaddagSprawler{
+        private final int x;
+        private final int y;
+        private final String rack;
+        private final ArrayList<Word> recordedMoves;
+        private final Gaddag gaddag;
 
-        Gaddag(HashSet<String> words){
-            this.words = words;
-            for(String word : words) {
-                ArrayList<String> arcs = new ArrayList<>();
-                for (int i = 1; i <= word.length(); i++) {
-                    String rev = new StringBuilder(word).delete(i, word.length()).reverse().toString();
-                    String suffix = word.substring(i);
-                    String arc = rev + (suffix.equals("") ? "" : "#" + suffix);
-                    arcs.add(arc);
-                }
-                for(String arc : arcs){
-                    GaddagNode currentNode = root;
-                    for(char c : arc.toCharArray()){
-                        currentNode.addChild(c);
-                        currentNode = currentNode.getChild(c);
-                    }
-                    currentNode.setEndOfWord();
-                }
-            }
-        }
-
-        GaddagNode NextArc(GaddagNode arc, char letter){
-            return arc.getChild(letter);
-        }
-
-        Word sprawl(int x, int y, String rack){
+        public GaddagSprawler(int x, int y, String rack, Gaddag gaddag){
             this.x = x;
             this.y = y;
-            recordedMoves.clear();
-            generate(0, "", rack, root);
-            this.x = 0;
-            this.y = 0;
-            return recordedMoves.stream().max(this::compare).orElse(null);
+            this.rack = rack;
+            this.recordedMoves = new ArrayList<>();
+            this.gaddag = gaddag;
         }
 
-        void generate(int position, String word, String rack, GaddagNode arc){
-            if(x + position >= 15 || x + position < 0) return;
+        ArrayList<Word> sprawl(){
+            generate(0, "", rack, gaddag.root);
+            return recordedMoves;
+        }
+
+        void generate(int position, String word, String rack, Gaddag.GaddagNode arc){
             if(board.getSquareCopy(y, x + position).isOccupied()){
                 char letter = board.getSquareCopy(y, x + position).getTile().getLetter();
-                search(position, letter, word, rack, NextArc(arc, letter), arc);
+                //search(position, letter, word, rack, NextArc(arc, letter), arc);
             }else if(!rack.isEmpty()){
                 for(char letter : rack.toCharArray()){
                     if(letter == Tile.BLANK) continue;
-                    search(position, letter, word, rack.replace(String.valueOf(letter), ""), NextArc(arc, letter), arc);
+                    //search(position, letter, word, rack.replace(String.valueOf(letter), ""), NextArc(arc, letter), arc);
                 }
                 if(rack.contains(String.valueOf(Tile.BLANK))){
                     for(char letter : "ABCDEFGHIJKLMNOPQRSTUVWXYZ".toCharArray()){
-                        search(position, letter, word, rack.replace(String.valueOf(Tile.BLANK), ""), NextArc(arc, letter), arc);
+                        //search(position, letter, word, rack.replace(String.valueOf(Tile.BLANK), ""), NextArc(arc, letter), arc);
                     }
                 }
             }
         }
 
-        void search(int position, char letter, String word, String rack, GaddagNode newArc, GaddagNode oldArc){
+        /*
+        void search(int position, char letter, String word, String rack, Gaddag.GaddagNode newArc, Gaddag.GaddagNode oldArc){
             if(position <= 0){
                 word = letter + word;
                 if(oldArc.isChild(letter) && !board.getSquareCopy(y, x + position).isOccupied()){
-                    record(word, position - 1, oldArc);
+                    record(word, position, oldArc);
                 }
                 if(newArc != null){
                     if(!board.getSquareCopy(y, x + position).isOccupied()){
@@ -224,18 +200,19 @@ public class TeamSquashBot implements BotAPI {
             }else{
                 word = word + letter;
                 if(oldArc.isChild(letter) && !board.getSquareCopy(y, x + position).isOccupied()){
-                    record(word, position  - word.length() - 1, oldArc);
+                    record(word, position, oldArc);
                 }
-                if(newArc != null && !board.getSquareCopy(y, x + 1).isOccupied()){
+                if(newArc != null && !board.getSquareCopy(y, x + position).isOccupied()){
                     generate(position + 1, word, rack, newArc);
                 }
             }
         }
+         */
 
         void record(String word, int position, Node arc){
+            if(position > 0) position -= word.length();
             Word newWord = new Word(y, x + position, true, word);
             if(newWord.getLastColumn() >= 15 || newWord.getFirstColumn() < 0) return;
-            if(!arc.isEndOfWord()) return;
             recordedMoves.add(newWord);
         }
 
@@ -264,45 +241,99 @@ public class TeamSquashBot implements BotAPI {
             }
             return wordValue * wordMultipler;
         }
+    }
 
-        private class GaddagNode extends Node{
-            // 26 letters + prefix/suffix separator '#'
-            private static final int NUM_LETTERS = 27;
+    public class Gaddag{
+        // end of word
+        private final Character EOW = '>';
+        // middle of word
+        private final Character MOW = '#';
+        // start of word
+        private final Character SOW = '<';
+        // root node of the dictionary, initialised with value SOW
+        private final GaddagNode root = new GaddagNode(SOW);
 
-            private GaddagNode[] children = new GaddagNode[NUM_LETTERS];
-            private boolean endOfWord;
-
-            GaddagNode () {
-                for (int i=0; i<NUM_LETTERS-1; i++) {
-                    children[i] = null;
+        Gaddag(){
+            try{
+                Scanner sc = new Scanner(new File("csw.txt"));
+                String line;
+                int i = 0;
+                while((line = sc.nextLine()) != null){
+                    System.out.println("words encountered :" + i++);
+                    add(line);
                 }
-                endOfWord = false;
+                sc.close();
+            } catch (IOException e){
+                e.printStackTrace();
+            }
+        }
+
+        private void add(String word){
+            ArrayList<String> arcs = new ArrayList<>();
+            String rev = null;
+            String suffix = null;
+            String arc = null;
+            for (int i = 1; i <= word.length(); i++) {
+                rev = new StringBuilder(word).delete(i, word.length()).reverse().toString();
+                suffix = word.substring(i);
+                arc = rev + (suffix.equals("") ? "" : "#" + suffix);
+                arcs.add(arc);
+                rev = null;
+                suffix = null;
+                arc = null;
+            }
+            for(String path : arcs){
+                // TODO
+                // can't just create naive gaddag because memory will run out,
+                // need a more compressed version, but thats not easy to code
+            }
+            arcs = null;
+        }
+
+        private class GaddagNode{
+            private Character data;
+            private ArrayList<GaddagNode> children;
+            private boolean terminal;
+
+            public GaddagNode(Character data){
+                this.data = data;
+                children = new ArrayList<>();
+                terminal = false;
             }
 
-            public GaddagNode addChild (char letter) {
-                int index = (letter == '#' ? 26 :((int) letter) - ((int) 'A'));
-                if (children[index] == null) {
-                    children[index] = new GaddagNode();
+            public void add(String str) {
+                if (!str.equals("")) {
+                    if (!containsTree(str.charAt(0))) {
+                        children.add(new GaddagNode(str.charAt(0)));
+                    }
+                    getTree(str.charAt(0)).add(str.substring(1));
+                } else {
+                    terminal = true;
                 }
-                return(children[index]);
             }
 
-            public void setEndOfWord () {
-                endOfWord = true;
+            public boolean containsTree(Character c){
+                for(GaddagNode g : children) if (g.getData() == c) return true;
+                return false;
             }
 
-            public GaddagNode getChild (char letter) {
-                int index = (letter == '#' ? 26 :((int) letter) - ((int) 'A'));
-                return children[index];
+            public GaddagNode getTree(Character c){
+                for(GaddagNode g : children) if (g.getData() == c) return g;
+                return null;
             }
 
-            public boolean isChild (char letter) {
-                int index = (letter == '#' ? 26 :((int) letter) - ((int) 'A'));
-                return children[index]!=null;
-            }
+            public boolean isTerminal(){ return terminal; }
 
-            public boolean isEndOfWord () {
-                return endOfWord;
+            public Character getData() { return data; }
+
+            public ArrayList<GaddagNode> getChildren(){ return children; }
+
+            public boolean contains(Character c){
+                if(containsTree(c)) return true;
+                else{
+                    for(GaddagNode g : children) if (g.containsTree(c)) return true;
+                    return false;
+                }
             }
         }
 
