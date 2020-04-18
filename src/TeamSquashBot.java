@@ -1,12 +1,8 @@
-import javax.swing.text.StyledEditorKit;
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Scanner;
-import java.util.function.Predicate;
 
 public class TeamSquashBot implements BotAPI {
 
@@ -52,74 +48,85 @@ public class TeamSquashBot implements BotAPI {
     public String getCommand() {
         // Add your code here to input your commands
         String command = "";
+        /* DEBUG */
+        String rack = me.getFrameAsString().replaceAll("[^A-Z_]", "");
+        System.out.println(rack);
+        /* DEBUG */
         if (turnCount == 0) {
             command = "NAME SQUASH";
             gaddag = new Gaddag();
-        } else {
-            if((turnCount % 2) == 0){
-                command = "SCORE";
-                ++turnCount;
-                return command;
-            }
-            String rack = me.getFrameAsString().replaceAll("[^A-Z_]", "");
-            System.out.println(rack);
-
+        } else if(board.isFirstPlay()){
             ArrayList<Word> validMoves = new ArrayList<>();
-            ArrayList<ArrayList<Integer>> anchors = new ArrayList<>();
+            for(int i = 0; i < 15; i++){
+                getMoves(7, i, rack, gaddag, validMoves);
+            }
+            for(int i = 0; i < 15; i++){
+                getMoves(i, 7, rack, gaddag, validMoves);
+            }
+            command = chooseCommand(validMoves, rack);
+        }else{
+            ArrayList<Word> validMoves = new ArrayList<>();
             for (int r = 0; r < 15; r++) {
                 for (int c = 0; c < 15; c++) {
                     if (board.getSquareCopy(r, c).isOccupied()) {
-                        ArrayList<Integer> anchor = new ArrayList<Integer>();
-                        anchor.add(c);
-                        anchor.add(r);
-                        anchors.add(anchor);
-                        GaddagSprawler sprawler = new GaddagSprawler(anchor.get(0), anchor.get(1), rack, gaddag);
-                        ArrayList<Word> moves = sprawler.sprawl();
-                        for (Word move : moves) {
-                            if (move != null){
-                                validMoves.add(move);
-                            }
-                        }
+                        getMoves(c, r, rack, gaddag, validMoves);
                     }
                 }
             }
-            validMoves.removeIf(word -> {
-                Frame frame = new Frame();
-                ArrayList<Tile> tiles = new ArrayList<>();
-                for(char c : word.getDesignatedLetters().toCharArray()){
-                    tiles.add(new Tile(c));
-                }
-                frame.addTiles(tiles);
-                return !board.isLegalPlay(frame, word);
-            });
-            if(validMoves.isEmpty()){
-                command = "EXCHANGE " + rack;
-            }else{
-                Word maxWord = validMoves.stream().max(this::compare).get();
-                StringBuilder wordString = new StringBuilder();
-                StringBuilder blankString = new StringBuilder();
-                ArrayList<Character> rackArrayList = new ArrayList<>();
-                for(char c : rack.toCharArray()){
-                    rackArrayList.add(c);
-                }
-                int row = maxWord.getFirstRow();
-                int column = maxWord.getFirstColumn();
-                for(int i = 0; i < maxWord.length(); i++){
-                    if(!rackArrayList.contains(maxWord.getLetter(i)) && !board.getSquareCopy(row, column).isOccupied()){
-                        wordString.append('_');
-                        blankString.append(maxWord.getLetter(i));
-                    }else{
-                        wordString.append(maxWord.getLetter(i));
-                    }
-                    rackArrayList.remove(new Character(maxWord.getLetter(i)));
-                    if(maxWord.isHorizontal()) column++;
-                    else row++;
-                }
-                command = String.format("%c%d %c %s %s" ,('A' + (char) maxWord.getFirstColumn()), (maxWord.getFirstRow() + 1), (maxWord.isHorizontal() ? 'A' : 'D'), wordString.toString(), blankString.toString());
+            command = chooseCommand(validMoves, rack);
+            }
+        ++turnCount;
+        System.out.println(String.format("%s %d - %d %s", me.getName(), me.getScore(), opponent.getScore(), opponent.getName()));
+        System.out.println("Bot command: \"" + command + "\"");
+        return command;
+    }
+
+    public void getMoves(int x, int y, String rack, Gaddag gaddag, ArrayList<Word> validMoves){
+        GaddagSprawler sprawler = new GaddagSprawler(x, y, rack, gaddag);
+        ArrayList<Word> moves = sprawler.sprawl();
+        for (Word move : moves) {
+            if (move != null){
+                validMoves.add(move);
             }
         }
-        ++turnCount;
-        System.out.println("Bot command: \"" + command + "\"");
+    }
+
+    public String chooseCommand(ArrayList<Word> validMoves, String rack){
+        String command = "";
+        validMoves.removeIf(word -> {
+            Frame frame = new Frame();
+            ArrayList<Tile> tiles = new ArrayList<>();
+            for(char c : word.getDesignatedLetters().toCharArray()){
+                tiles.add(new Tile(c));
+            }
+            frame.addTiles(tiles);
+            return !board.isLegalPlay(frame, word);
+        });
+        if(validMoves.isEmpty()){
+            command = "EXCHANGE " + rack;
+        }else {
+            Word maxWord = validMoves.stream().max(this::compare).get();
+            StringBuilder wordString = new StringBuilder();
+            StringBuilder blankString = new StringBuilder();
+            ArrayList<Character> rackArrayList = new ArrayList<>();
+            for (char c : rack.toCharArray()) {
+                rackArrayList.add(c);
+            }
+            int row = maxWord.getFirstRow();
+            int column = maxWord.getFirstColumn();
+            for (int i = 0; i < maxWord.length(); i++) {
+                if (!rackArrayList.contains(maxWord.getLetter(i)) && !board.getSquareCopy(row, column).isOccupied()) {
+                    wordString.append('_');
+                    blankString.append(maxWord.getLetter(i));
+                } else {
+                    wordString.append(maxWord.getLetter(i));
+                }
+                rackArrayList.remove(new Character(maxWord.getLetter(i)));
+                if (maxWord.isHorizontal()) column++;
+                else row++;
+            }
+            command = String.format("%c%d %c %s %s", ('A' + (char) maxWord.getFirstColumn()), (maxWord.getFirstRow() + 1), (maxWord.isHorizontal() ? 'A' : 'D'), wordString.toString(), blankString.toString());
+        }
         return command;
     }
 
@@ -173,7 +180,7 @@ public class TeamSquashBot implements BotAPI {
 
         void sprawlAcross(){
             isHorizontal = true;
-            generateDown(-1, "", rack, gaddag.root);
+            generateDown(0, "", rack, gaddag.root);
         }
 
         void sprawlDown(){
@@ -230,7 +237,7 @@ public class TeamSquashBot implements BotAPI {
             if(y + position >= 15 || y + position < 0) return;
             if (board.getSquareCopy(y + position, x).isOccupied()) {
                 char letter = board.getSquareCopy(y + position, x).getTile().getLetter();
-                searchDown(position - 1, letter, word, rack, arc.getTree(letter), arc);
+                searchDown(position, letter, word, rack, arc.getTree(letter), arc);
             } else if (!rack.isEmpty()) {
                 for (char letter : rack.toCharArray()) {
                     if (letter == Tile.BLANK) continue;
@@ -272,7 +279,7 @@ public class TeamSquashBot implements BotAPI {
         }
 
         void record(String word, int position, Gaddag.GaddagNode arc) {
-            if (position > 0) position -= word.length();
+            if (position >= 0) position -= word.length();
             Word newWord;
             if(isHorizontal) newWord = new Word(y, x + position, this.isHorizontal, word);
             else newWord = new Word(y + position, x, this.isHorizontal, word);
