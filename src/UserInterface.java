@@ -61,7 +61,7 @@ public class UserInterface implements UserInterfaceAPI {
         commandField.setPrefColumnCount(15);
         Timeline timeline = new Timeline(
                 new KeyFrame(
-                        Duration.seconds(Main.BOT_DELAY),
+                        Duration.millis(4000),
                         event -> {
                             if (!gameOver) {
                                 String input = bots.getBot(scrabble.getCurrentPlayerId()).getCommand();

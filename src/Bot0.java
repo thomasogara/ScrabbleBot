@@ -1,6 +1,7 @@
+import javax.swing.*;
+import java.awt.*;
 
 public class Bot0 implements BotAPI {
-
     // The public API of Bot must not change
     // This is ONLY class that you can edit in the program
     // Rename Bot to the name of your team. Use camel case.
@@ -26,27 +27,10 @@ public class Bot0 implements BotAPI {
     public String getCommand() {
         // Add your code here to input your commands
         // Your code must give the command NAME <botname> at the start of the game
-        String command = "";
-        switch (turnCount) {
-            case 0:
-                command = "NAME Bot0";
-                break;
-            case 1:
-                command = "PASS";
-                break;
-            case 2:
-                command = "HELP";
-                break;
-            case 3:
-                command = "SCORE";
-                break;
-            case 4:
-                command = "POOL";
-                break;
-            default:
-                command = "H8 A AN";
-                break;
-        }
+        String msg = "This is only a component available for testing. It allows the user to play as Bot0\n";
+        msg += me.getFrameAsString() + "\n";
+        msg += "Please input a command!\n";
+        String command = JOptionPane.showInputDialog(msg);
         turnCount++;
         return command;
     }
