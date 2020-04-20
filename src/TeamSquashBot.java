@@ -1,3 +1,4 @@
+import javax.swing.*;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -17,6 +18,7 @@ public class TeamSquashBot implements BotAPI {
     private BoardAPI board;
     private UserInterfaceAPI info;
     private DictionaryAPI dictionary;
+    private String lastCommand;
     private int turnCount = 0;
     private Gaddag gaddag;
 
@@ -46,37 +48,52 @@ public class TeamSquashBot implements BotAPI {
     */
 
     public String getCommand() {
+        System.out.println(String.format("%s %d - %d %s", me.getName(), me.getScore(), opponent.getScore(), opponent.getName()));
         // Add your code here to input your commands
         String command = "";
         /* DEBUG */
         String rack = me.getFrameAsString().replaceAll("[^A-Z_]", "");
-        System.out.println(rack);
         /* DEBUG */
+        String latestInfo = info.getLatestInfo().replaceAll("[^A-Z_ ]", "");
+        boolean challengeIssued = false;
         if (turnCount == 0) {
             command = "NAME SQUASH";
             gaddag = new Gaddag();
         } else if(board.isFirstPlay()){
             ArrayList<Word> validMoves = new ArrayList<>();
-            for(int i = 0; i < 15; i++){
-                getMoves(7, i, rack, gaddag, validMoves);
-            }
-            for(int i = 0; i < 15; i++){
-                getMoves(i, 7, rack, gaddag, validMoves);
-            }
+            getMoves(7, 7, rack, gaddag, validMoves);
             command = chooseCommand(validMoves, rack);
-        }else{
-            ArrayList<Word> validMoves = new ArrayList<>();
-            for (int r = 0; r < 15; r++) {
-                for (int c = 0; c < 15; c++) {
-                    if (board.getSquareCopy(r, c).isOccupied()) {
-                        getMoves(c, r, rack, gaddag, validMoves);
+        }else if(latestInfo.matches("[A-O]\\d{1,2} [AD] [A-Z]+.*")){
+                String[] tokens = latestInfo.split(" ");
+                String word = tokens[2];
+                if(tokens.length > 3){
+                    for(int i = 0; i < tokens[3].length(); i++){
+                        word = word.replace('_', tokens[3].charAt(i));
                     }
                 }
+                int col = Character.getNumericValue(tokens[0].charAt(0));
+                int row = Character.getNumericValue(tokens[0].charAt(1));
+                boolean isHorizontal = tokens[1].equals("A");
+                Word placedWord = new Word(col, row, isHorizontal, word);
+                if(!dictionary.areWords(new ArrayList<Word>() {{add(placedWord);}})){
+                    command = "CHALLENGE";
+                    challengeIssued = true;
+                }
+            }
+        else if(!challengeIssued){
+            ArrayList<Word> validMoves = new ArrayList<>();
+            HashSet<int[]> anchors = new HashSet<>();
+            findAnchors(anchors);
+            for(int[] anchor : anchors){
+                getMoves(anchor[0], anchor[1], rack, gaddag, validMoves);
             }
             command = chooseCommand(validMoves, rack);
-            }
+        }
+        // if the bot has stalled and cannot compute a next move
+        if(command.equals(lastCommand)){
+            command = "PASS";
+        }
         ++turnCount;
-        System.out.println(String.format("%s %d - %d %s", me.getName(), me.getScore(), opponent.getScore(), opponent.getName()));
         System.out.println("Bot command: \"" + command + "\"");
         return command;
     }
@@ -87,6 +104,27 @@ public class TeamSquashBot implements BotAPI {
         for (Word move : moves) {
             if (move != null){
                 validMoves.add(move);
+            }
+        }
+    }
+
+    public void findAnchors(HashSet<int[]> anchors){
+        for(int r = 0; r < 15 ; r++){
+            for(int c = 0; c < 15; c++){
+                if(board.getSquareCopy(r, c).isOccupied()){
+                    if(r - 1 >= 0 && !board.getSquareCopy(r - 1, c).isOccupied()){
+                        anchors.add(new int[] {c, r - 1});
+                    }
+                    if(r + 1 < 15 && !board.getSquareCopy(r + 1, c).isOccupied()){
+                        anchors.add(new int[] {c, r + 1});
+                    }
+                    if(c - 1 >= 0 && !board.getSquareCopy(r, c - 1).isOccupied()){
+                        anchors.add(new int[] {c - 1, r});
+                    }
+                    if(c + 1 < 15 && !board.getSquareCopy(r, c + 1).isOccupied()){
+                        anchors.add(new int[] {c + 1, r});
+                    }
+                }
             }
         }
     }
@@ -180,12 +218,12 @@ public class TeamSquashBot implements BotAPI {
 
         void sprawlAcross(){
             isHorizontal = true;
-            generateDown(0, "", rack, gaddag.root);
+            generateAcross(0, "", rack, gaddag.root);
         }
 
         void sprawlDown(){
             this.isHorizontal = false;
-            generateDown(-1, "", rack, gaddag.root);
+            generateDown(0, "", rack, gaddag.root);
         }
 
         void generateAcross(int position, String word, String rack, Gaddag.GaddagNode arc) {
@@ -218,7 +256,7 @@ public class TeamSquashBot implements BotAPI {
                         generateAcross(position - 1, word, rack, newArc);
                     }
                     newArc = newArc.getTree('#');
-                    if (newArc != null && !board.getSquareCopy(y, x + position).isOccupied() && !board.getSquareCopy(y, x + 1).isOccupied()) {
+                    if (x + 1 < 15 && newArc != null && !board.getSquareCopy(y, x + position).isOccupied() && !board.getSquareCopy(y, x + 1).isOccupied()) {
                         generateAcross(1, word, rack, newArc);
                     }
                 }
@@ -263,7 +301,7 @@ public class TeamSquashBot implements BotAPI {
                         generateDown(position - 1, word, rack, newArc);
                     }
                     newArc = newArc.getTree('#');
-                    if (newArc != null && !board.getSquareCopy(y + position, x).isOccupied() && !board.getSquareCopy(y + 1, x ).isOccupied()) {
+                    if (y + 1 < 15 && newArc != null && !board.getSquareCopy(y + position, x).isOccupied() && !board.getSquareCopy(y + 1, x ).isOccupied()) {
                         generateDown(1, word, rack, newArc);
                     }
                 }
