@@ -61,7 +61,7 @@ public class UserInterface implements UserInterfaceAPI {
         commandField.setPrefColumnCount(15);
         Timeline timeline = new Timeline(
                 new KeyFrame(
-                        Duration.millis(4000),
+                        Duration.seconds(Main.BOT_DELAY),
                         event -> {
                             if (!gameOver) {
                                 String input = bots.getBot(scrabble.getCurrentPlayerId()).getCommand();
@@ -129,7 +129,7 @@ public class UserInterface implements UserInterfaceAPI {
     void displaySquare(int r, int c) {
         Square square = scrabble.getBoard().getSquare(r, c);
         Button button = displaySquares[r][c];
-        StringBuilder style = new StringBuilder();
+        var style = new StringBuilder();
         style.append("-fx-background-radius: 0;");
         String color;
         if (square.isDoubleLetter()) {
