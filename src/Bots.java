@@ -13,8 +13,8 @@ public class Bots {
         List<String> params = parameters.getRaw();
         String[] botNames = new String[Scrabble.NUM_PLAYERS];
 //        if (params.size() < Scrabble.NUM_PLAYERS) {
-            botNames[0] = "Bot0";
-            botNames[1] = "Bot1";
+            botNames[0] = "Squash";
+            botNames[1] = "Squash";
 //        } else {
 //            for (int i = 0; i < Scrabble.NUM_PLAYERS; i++) {
 //                boolean found = false;

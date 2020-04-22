@@ -1,8 +1,16 @@
+/*
+    Bot Submission for Team Squash
+    Code Authors:
+        - Thomas O'Gara, thomas.ogara@ucdconnect.ie
+ */
+
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Scanner;
+import java.util.function.BinaryOperator;
 
 public class Squash implements BotAPI {
 
@@ -19,12 +27,13 @@ public class Squash implements BotAPI {
     private final DictionaryAPI dictionary;
     private final Character START_OF_WORD = '^';
     private final Character MIDDLE_OF_WORD = '#';
+    private int accumulatedInfoLength = 0;
+    private int numberOfExchanges = 0;
     private String lastCommand;
     private int turnCount = 0;
     private Gaddag gaddag;
-    private boolean stalling = false;
 
-    Squash(PlayerAPI me, OpponentAPI opponent, BoardAPI board, UserInterfaceAPI ui, DictionaryAPI dictionary) {
+    Squash(PlayerAPI me, OpponentAPI opponent, BoardAPI board, UserInterfaceAPI ui, DictionaryAPI dictionary) throws IOException {
         this.me = me;
         this.opponent = opponent;
         this.board = board;
@@ -33,58 +42,83 @@ public class Squash implements BotAPI {
     }
 
     public String getCommand() {
-        // System.out.println(String.format("%s %d - %d %s", me.getName(), me.getScore(), opponent.getScore(), opponent.getName()));
         String command = "";
         String rack = me.getFrameAsString().replaceAll("[^A-Z_]", "");
-        String latestInfo = info.getLatestInfo().replaceAll("[^A-Z_]", "");
-        System.out.println("rack: " + rack);
-        System.out.println("latest info: " + latestInfo);
+        String opponentLastPlacement = getLatestPlay();
+        boolean opponentPlacedWord = opponentLastPlacement == null || opponentLastPlacement.equals("");
         boolean challengeIssued = false;
         if (turnCount == 0) {
             command = "NAME SQUASH";
+            // use this first move as an opportunity to construct the dictionary
             gaddag = new Gaddag();
         } else if (board.isFirstPlay()) {
+            // if placing the first word, simply sprawl out from the center tile 7,7
             ArrayList<Word> validMoves = new ArrayList<>();
             getMoves(7, 7, rack, gaddag, validMoves);
             command = chooseCommand(validMoves, rack);
-        } else if (latestInfo.matches("[A-O]\\d{1,2} [AD] [A-Z]+.*")) {
-            String[] tokens = latestInfo.split(" ");
-            String location = tokens[0];
-            String direction = tokens[1];
-            String word = tokens[2];
-            if (tokens.length > 3) {
-                String blankDesignations = tokens[3];
-                for (int i = 0; i < blankDesignations.length(); i++) {
-                    word = word.replace('_', blankDesignations.charAt(i));
-                }
-            }
-            int col = Character.getNumericValue(location.charAt(0));
-            int row = Character.getNumericValue(location.charAt(1));
-            boolean isHorizontal = direction.equals("A");
-            Word placedWord = new Word(col, row, isHorizontal, word);
-            if (!dictionary.areWords(new ArrayList<Word>() {{
-                add(placedWord);
-            }})) {
-                command = "CHALLENGE";
-                challengeIssued = true;
-            }
+        } else if (opponentPlacedWord){
+            // always check to see if the opponent's last word could be challenged
+            challengeIssued = getChallenge(opponentLastPlacement);
+            if(challengeIssued) command = "CHALLENGE";
         }
         if (turnCount > 0 && !board.isFirstPlay() && !challengeIssued) {
             ArrayList<Word> validMoves = new ArrayList<>();
-            HashSet<int[]> anchors = new HashSet<>();
-            findAnchors(anchors);
+            HashSet<int[]> anchors = findAnchors();
             for (int[] anchor : anchors) {
                 getMoves(anchor[0], anchor[1], rack, gaddag, validMoves);
             }
             command = chooseCommand(validMoves, rack);
         }
-        // if the bot has stalled and cannot compute a next move
-        if (command.equals(lastCommand)) stalling = true;
-        if (stalling) command = "PASS";
-        lastCommand = command;
+        // attempt to prevent the bot from stalling, by tracking if it is issuing the same command successively
+        String temp = command;
+        if(command.equals(lastCommand)){
+            command = "PASS";
+        }
+        lastCommand = temp;
         ++turnCount;
-        System.out.println("Bot command: \"" + command + "\"");
         return command;
+    }
+
+    public String getLatestPlay(){
+        String opponentLastPlacement = "";
+        // this is used to emulate getLatestInfo() since I couldn't get that method to work
+        String latestInfo = info.getAllInfo().substring(accumulatedInfoLength);
+        // track the change in info, since info.getLatestInfo() doesn't seem to work
+        accumulatedInfoLength += latestInfo.length();
+        String[] latestInfoLines = latestInfo.split("\\R+"); // "\\R+" represents one or more newline characters
+        for(int i = latestInfoLines.length - 1; i >= 0; i--){
+            String line = latestInfoLines[i];
+            if(line == null) continue;
+            line = line.replaceAll(">", "").replaceAll("^\\s+", "").replaceAll("\\s+$", "").replaceAll("\\s+", " ");
+            if(line.equals(" ")) continue;
+            if(line.matches(">\\s+[A-O](\\d){1,2}( )+[A,D]( )+([A-Z]){1,15}") || line.matches("[A-O](\\d){1,2}( )+[A,D]( )+([A-Z_]){1,17}( )+([A-Z]){1,2}")){
+                // ensure this bot did not place the word, no point challenging your own turn
+                if(!line.matches(lastCommand)) {
+                    opponentLastPlacement = line;
+                    break;
+                }
+            }
+        }
+        return  opponentLastPlacement;
+    }
+
+    public boolean getChallenge(String opponentLastPlacement){
+        String[] tokens = opponentLastPlacement.split("\\s+");
+        if(tokens.length < 3) return false;
+        String location = tokens[0];
+        String direction = tokens[1];
+        String word = tokens[2];
+        if (tokens.length > 3) {
+            String blankDesignations = tokens[3];
+            for (int i = 0; i < blankDesignations.length(); i++) {
+                word = word.replace('_', blankDesignations.charAt(i));
+            }
+        }
+        int col = location.charAt(0) - 'A';
+        int row = Integer.parseInt(location.substring(1)) - 1;
+        boolean isHorizontal = direction.equals("A");
+        Word placedWord = new Word(row, col, isHorizontal, word);
+        return !dictionary.areWords(getAllWordsLastTurn(placedWord));
     }
 
     public void getMoves(int x, int y, String rack, Gaddag gaddag, ArrayList<Word> validMoves) {
@@ -97,25 +131,28 @@ public class Squash implements BotAPI {
         }
     }
 
-    public void findAnchors(HashSet<int[]> anchors) {
-        for (int r = 0; r < 15; r++) {
-            for (int c = 0; c < 15; c++) {
+    public HashSet<int[]> findAnchors() {
+        HashSet<int[]> anchors = new HashSet<>();
+        for (int r = 0; r < Board.BOARD_SIZE; r++) {
+            for (int c = 0; c < Board.BOARD_SIZE; c++) {
                 if (board.getSquareCopy(r, c).isOccupied()) {
-                    if (r - 1 >= 0 && !board.getSquareCopy(r - 1, c).isOccupied()) {
-                        anchors.add(new int[]{c, r - 1});
+                    anchors.add(new int[] {c, r});
+                    if(r + 1 < Board.BOARD_SIZE && !board.getSquareCopy(r + 1, c).isOccupied()){
+                        anchors.add(new int[] {c, r + 1});
                     }
-                    if (r + 1 < 15 && !board.getSquareCopy(r + 1, c).isOccupied()) {
-                        anchors.add(new int[]{c, r + 1});
+                    if(r - 1 > 0 && !board.getSquareCopy(r - 1, c).isOccupied()){
+                        anchors.add(new int[] {c, r - 1});
                     }
-                    if (c - 1 >= 0 && !board.getSquareCopy(r, c - 1).isOccupied()) {
-                        anchors.add(new int[]{c - 1, r});
+                    if(c + 1 < Board.BOARD_SIZE && !board.getSquareCopy(r , c + 1).isOccupied()){
+                        anchors.add(new int[] {c + 1, r});
                     }
-                    if (c + 1 < 15 && !board.getSquareCopy(r, c + 1).isOccupied()) {
-                        anchors.add(new int[]{c + 1, r});
+                    if(c - 1 > 0 && !board.getSquareCopy(r , c - 1).isOccupied()){
+                        anchors.add(new int[] {c - 1, r});
                     }
                 }
             }
         }
+        return anchors;
     }
 
     public String chooseCommand(ArrayList<Word> validMoves, String rack) {
@@ -128,6 +165,11 @@ public class Squash implements BotAPI {
             }
             frame.addTiles(tiles);
             return !board.isLegalPlay(frame, word);
+        });
+        validMoves.removeIf(word -> {
+            ArrayList<Word> words = getAllWordsThisTurn(word);
+            words.removeIf(w -> w.length() < 1);
+            return !dictionary.areWords(words);
         });
         if (validMoves.isEmpty()) {
             command = "EXCHANGE " + rack;
@@ -158,7 +200,7 @@ public class Squash implements BotAPI {
     }
 
     int compare(Word a, Word b) {
-        return Integer.compare(score(a), score(b));
+        return Integer.compare(getAllWordsThisTurn(a).stream().mapToInt(this::score).sum(), getAllWordsThisTurn(b).stream().mapToInt(this::score).sum());
     }
 
     int score(Word word) {
@@ -167,7 +209,7 @@ public class Squash implements BotAPI {
         int r = word.getFirstRow();
         int c = word.getFirstColumn();
         for (int i = 0; i < word.length(); i++) {
-            int letterValue = word.getLetters().charAt(i);
+            int letterValue = new Tile(word.getLetter(i)).getValue();
             if (!board.getSquareCopy(r, c).isOccupied()) {
                 wordValue += letterValue * board.getSquareCopy(r, c).getLetterMuliplier();
                 wordMultipler *= board.getSquareCopy(r, c).getWordMultiplier();
@@ -181,6 +223,118 @@ public class Squash implements BotAPI {
             }
         }
         return wordValue * wordMultipler;
+    }
+
+    private boolean isAdditionalWord(int r, int c, boolean isHorizontal) {
+        return (isHorizontal &&
+                ((r > 0 && board.getSquareCopy(r - 1, c).isOccupied()) || (r < 15 - 1 && board.getSquareCopy(r + 1, c).isOccupied()))) ||
+                (!isHorizontal &&
+                        ((c > 0 && board.getSquareCopy(r, c - 1).isOccupied()) || (c < 15 - 1 && board.getSquareCopy(r, c + 1).isOccupied())));
+    }
+
+    private Word getAdditionalWordLastTurn(int mainWordRow, int mainWordCol, boolean mainWordIsHorizontal) {
+        int firstRow = mainWordRow;
+        int firstCol = mainWordCol;
+        // search up or left for the first letter
+        while (firstRow >= 0 && firstCol >= 0 && board.getSquareCopy(firstRow, firstCol).isOccupied()) {
+            if (mainWordIsHorizontal) {
+                firstRow--;
+            } else {
+                firstCol--;
+            }
+        }
+        // went too far
+        if (mainWordIsHorizontal) {
+            firstRow++;
+        } else {
+            firstCol++;
+        }
+        // collect the letters by moving down or right
+        String letters = "";
+        int r = firstRow;
+        int c = firstCol;
+        while (r < Board.BOARD_SIZE && c < Board.BOARD_SIZE && board.getSquareCopy(r, c).isOccupied()) {
+            letters = letters + board.getSquareCopy(r,c).getTile().getLetter();
+            if (mainWordIsHorizontal) {
+                r++;
+            } else {
+                c++;
+            }
+        }
+        return new Word (firstRow, firstCol, !mainWordIsHorizontal, letters);
+    }
+
+    public Word getAdditionalWordThisTurn(int mainWordRow, int mainWordCol, boolean mainWordIsHorizontal, char l){
+        int firstRow = mainWordRow;
+        int firstCol = mainWordCol;
+        // search up or left for the first letter
+        while (firstRow >= 0 && firstCol >= 0 && (board.getSquareCopy(firstRow, firstCol).isOccupied() || (firstRow == mainWordRow && firstCol == mainWordCol))){
+            if (mainWordIsHorizontal) {
+                firstRow--;
+            } else {
+                firstCol--;
+            }
+        }
+        if (mainWordIsHorizontal) {
+            firstRow++;
+        } else {
+            firstCol++;
+        }
+        // collect the letters by moving down or right
+        String letters = "";
+        int r = firstRow;
+        int c = firstCol;
+        while (r<Board.BOARD_SIZE && c<Board.BOARD_SIZE && (board.getSquareCopy(r, c).isOccupied() || (r == mainWordRow && c == mainWordCol))) {
+            if(r == mainWordRow && c == mainWordCol){
+                letters = letters + l;
+            }else{
+                letters = letters + board.getSquareCopy(r, c).getTile().getLetter();
+            }
+            if (mainWordIsHorizontal) {
+                r++;
+            } else {
+                c++;
+            }
+        }
+        return new Word (firstRow, firstCol, !mainWordIsHorizontal, letters);
+    }
+
+    public ArrayList<Word> getAllWordsThisTurn(Word mainWord){
+        ArrayList<Word> words = new ArrayList<>();
+        words.add(mainWord);
+        int r = mainWord.getFirstRow();
+        int c = mainWord.getFirstColumn();
+        for (int i=0; i<mainWord.length(); i++) {
+            if(!board.getSquareCopy(r, c).isOccupied()) {
+                if(isAdditionalWord(r, c, mainWord.isHorizontal())) {
+                    words.add(getAdditionalWordThisTurn(r, c, mainWord.isHorizontal(), mainWord.getDesignatedLetter(i)));
+                }
+            }
+            if (mainWord.isHorizontal()) {
+                c++;
+            } else {
+                r++;
+            }
+        }
+        return words;
+    }
+
+    public ArrayList<Word> getAllWordsLastTurn(Word mainWord) {
+        ArrayList<Word> words = new ArrayList<>();
+        words.add(mainWord);
+        int r = mainWord.getFirstRow();
+        int c = mainWord.getFirstColumn();
+        for (int i=0; i<mainWord.length(); i++) {
+            if (isAdditionalWord(r, c, mainWord.isHorizontal())) {
+                words.add(getAdditionalWordLastTurn(r, c, mainWord.isHorizontal()));
+            }
+            if (mainWord.isHorizontal()) {
+                c++;
+            } else {
+                r++;
+            }
+        }
+        return words;
     }
 
     private class GaddagSprawler {
@@ -312,7 +466,7 @@ public class Squash implements BotAPI {
             else newWord = new Word(y + position, x, this.isHorizontal, word);
             if (newWord.getLastColumn() >= 15 || newWord.getFirstColumn() < 0) return;
             if (newWord.getLastRow() >= 15 || newWord.getFirstRow() < 0) return;
-            if (!arc.isTerminal()) return;
+            if (!arc.isEndOfWord()) return;
             recordedMoves.add(newWord);
         }
     }
@@ -355,15 +509,18 @@ public class Squash implements BotAPI {
             arcs = null;
         }
 
+        // an altered version of the Node class provided
+        // uses dynamic ArrayList to store children, because the
+        // static arrays of the original Node class were too memory-hungry
         private class GaddagNode {
             private final Character data;
             private final ArrayList<GaddagNode> children;
-            private boolean terminal;
+            private boolean endOfWord;
 
             public GaddagNode(Character data) {
                 this.data = data;
                 children = new ArrayList<>();
-                terminal = false;
+                endOfWord = false;
             }
 
             public void add(String str) {
@@ -373,7 +530,7 @@ public class Squash implements BotAPI {
                     }
                     getTree(str.charAt(0)).add(str.substring(1));
                 } else {
-                    terminal = true;
+                    endOfWord = true;
                 }
             }
 
@@ -387,8 +544,8 @@ public class Squash implements BotAPI {
                 return null;
             }
 
-            public boolean isTerminal() {
-                return terminal;
+            public boolean isEndOfWord() {
+                return endOfWord;
             }
 
             public Character getData() {
@@ -397,14 +554,6 @@ public class Squash implements BotAPI {
 
             public ArrayList<GaddagNode> getChildren() {
                 return children;
-            }
-
-            public boolean contains(Character c) {
-                if (containsTree(c)) return true;
-                else {
-                    for (GaddagNode g : children) if (g.containsTree(c)) return true;
-                    return false;
-                }
             }
         }
 
