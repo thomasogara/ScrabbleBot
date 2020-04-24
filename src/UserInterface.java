@@ -12,7 +12,10 @@ import javafx.scene.layout.RowConstraints;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 
+import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 
 public class UserInterface implements UserInterfaceAPI {
@@ -74,6 +77,11 @@ public class UserInterface implements UserInterfaceAPI {
                                 gameOverDelayCount++;
                             }
                             if (gameOverDelayCount >= 3) {
+                                try {
+                                    new FileWriter(new File("out.txt"), true).write(String.format("%d\t\t%d", (scrabble.getCurrentPlayer().getName().equals("SQUASH") ? scrabble.getCurrentPlayer().getScore() : scrabble.getOpposingPlayer().getScore()), (scrabble.getCurrentPlayer().getName().equals("SQUASH") ? scrabble.getOpposingPlayer().getScore() : scrabble.getCurrentPlayer().getScore())));
+                                } catch (IOException e) {
+                                    e.printStackTrace();
+                                }
                                 System.exit(0);
                             }
                         }
@@ -129,7 +137,7 @@ public class UserInterface implements UserInterfaceAPI {
     void displaySquare(int r, int c) {
         Square square = scrabble.getBoard().getSquare(r, c);
         Button button = displaySquares[r][c];
-        var style = new StringBuilder();
+        StringBuilder style = new StringBuilder();
         style.append("-fx-background-radius: 0;");
         String color;
         if (square.isDoubleLetter()) {

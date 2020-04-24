@@ -6,11 +6,11 @@
 
 import java.io.File;
 import java.io.IOException;
-import java.util.*;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Scanner;
 
-public class Squash implements BotAPI {
+public class SquashNoHeuristics implements BotAPI {
 
     // The public API of Bot must not change
     // This is ONLY class that you can edit in the program
@@ -31,7 +31,7 @@ public class Squash implements BotAPI {
     private int turnCount = 0;
     private Gaddag gaddag;
 
-    Squash(PlayerAPI me, OpponentAPI opponent, BoardAPI board, UserInterfaceAPI ui, DictionaryAPI dictionary) throws IOException {
+    SquashNoHeuristics(PlayerAPI me, OpponentAPI opponent, BoardAPI board, UserInterfaceAPI ui, DictionaryAPI dictionary) throws IOException {
         this.me = me;
         this.opponent = opponent;
         this.board = board;
@@ -46,7 +46,7 @@ public class Squash implements BotAPI {
         boolean opponentPlacedWord = opponentLastPlacement == null || opponentLastPlacement.equals("");
         boolean challengeIssued = false;
         if (turnCount == 0) {
-            command = "NAME SQUASH";
+            command = "NAME NOH";
             // use this first move as an opportunity to construct the dictionary
             gaddag = new Gaddag();
         } else if (board.isFirstPlay()) {
@@ -169,19 +169,10 @@ public class Squash implements BotAPI {
             words.removeIf(w -> w.length() < 1);
             return !dictionary.areWords(words);
         });
-
-        List<Word> sortedWords = validMoves.parallelStream().sorted(this::compareScore).collect(Collectors.toList());
-        sortedWords = sortedWords.subList((sortedWords.size() * 9) / 10, sortedWords.size());
-
         if (validMoves.isEmpty()) {
             command = "EXCHANGE " + rack;
         } else {
-            Word maxWord = null;
-            if(sortedWords.parallelStream().anyMatch(word -> (!word.getLetters().contains("_")))){
-                maxWord = sortedWords.parallelStream().filter(word -> (!word.getLetters().matches(".*[_]"))).max(Comparator.comparingDouble(word -> (score((Word) word, true) / averageLetterScore(word)))).get();
-            }else{
-                maxWord = sortedWords.parallelStream().max(Comparator.comparingDouble(word -> (score((Word) word, true) / averageLetterScore(word)))).get();
-            }
+            Word maxWord = validMoves.stream().max(this::compare).get();
             StringBuilder wordString = new StringBuilder();
             StringBuilder blankString = new StringBuilder();
             ArrayList<Character> rackArrayList = new ArrayList<>();
@@ -206,45 +197,18 @@ public class Squash implements BotAPI {
         return command;
     }
 
-    int scoreDifference(Word a, Word b){
-        ArrayList<Word> allWordsA = getAllWordsThisTurn(a);
-        allWordsA.remove(a);
-        ArrayList<Word> allWordsB = getAllWordsThisTurn(b);
-        allWordsB.remove(b);
-        return (allWordsA.parallelStream().mapToInt(word -> score(word, false)).sum() + score(a, true)) - (allWordsB.parallelStream().mapToInt(word -> score(word, false)).sum() + score(b, true));
+    int compare(Word a, Word b) {
+        return Integer.compare(getAllWordsThisTurn(a).stream().mapToInt(this::score).sum(), getAllWordsThisTurn(b).stream().mapToInt(this::score).sum());
     }
 
-    double averageLetterScore(Word word){
-        double sum = 0;
-        char[] letters = word.getLetters().toCharArray();
-        for(int i = 0; i < word.length(); i++){
-            sum += new Tile(letters[i]).getValue();
-        }
-        return sum / word.length();
-    }
-
-    int compareAverageLetterScore(Word a, Word b){
-        return Double.compare(averageLetterScore(a), averageLetterScore(b));
-    }
-
-    int compareScore(Word a, Word b) {
-        ArrayList<Word> allWordsA = getAllWordsThisTurn(a);
-        allWordsA.remove(a);
-        ArrayList<Word> allWordsB = getAllWordsThisTurn(b);
-        allWordsB.remove(b);
-        return Integer.compare(allWordsA.parallelStream().mapToInt(word -> score(word, false)).sum() + score(a, true), allWordsB.parallelStream().mapToInt(word -> score(word, false)).sum() + score(b, true));
-    }
-
-    int score(Word word, boolean placed) {
+    int score(Word word) {
         int wordValue = 0;
         int wordMultipler = 1;
         int r = word.getFirstRow();
         int c = word.getFirstColumn();
-        int placedTiles = 0;
         for (int i = 0; i < word.length(); i++) {
             int letterValue = new Tile(word.getLetter(i)).getValue();
             if (!board.getSquareCopy(r, c).isOccupied()) {
-                placedTiles++;
                 wordValue += letterValue * board.getSquareCopy(r, c).getLetterMuliplier();
                 wordMultipler *= board.getSquareCopy(r, c).getWordMultiplier();
             } else {
@@ -256,9 +220,7 @@ public class Squash implements BotAPI {
                 r++;
             }
         }
-        int bonus = 0;
-        if(placedTiles == 7) bonus = 50;
-        return wordValue * wordMultipler + bonus;
+        return wordValue * wordMultipler;
     }
 
     private boolean isAdditionalWord(int r, int c, boolean isHorizontal) {

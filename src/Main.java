@@ -9,7 +9,9 @@ public class Main extends Application {
     public static int BOT_DELAY = 3; // s
 
     public static void main(String[] args) throws FileNotFoundException {
-        launch(args);
+        for(int i = 0; i < 100; i++) {
+            launch(args);
+        }
     }
 
     @Override
