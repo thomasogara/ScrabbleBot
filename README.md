@@ -1,8 +1,8 @@
 
 # Scrabble
 
-This project is a clone of the popular board game Scrabble.
-The project also involved writing a Bot to play this game, which uses the GADDAG move generation algorithm.
+The project contains code for a Bot to play Scrabble, which uses the GADDAG move generation algorithm.
+The project also involved writing our own version of the Scrabble board game, which can be found at [the following link](https://github.com/thomasogara/Scrabble).
 
 ## Getting Started
 
