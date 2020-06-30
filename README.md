@@ -1,5 +1,5 @@
 
-# Scrabble
+# Scrabble Bot (GADDAG Algorithm)
 
 The project contains code for a Bot to play Scrabble, which uses the GADDAG move generation algorithm.
 The project also involved writing our own version of the Scrabble board game, which can be found at [the following link](https://github.com/thomasogara/Scrabble).
