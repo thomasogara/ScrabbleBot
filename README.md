@@ -4,6 +4,8 @@
 This project contains code for a Bot to play Scrabble, which uses the GADDAG move generation algorithm.
 This project also involved writing our own version of the Scrabble board game, which can be found at [the following link](https://github.com/thomasogara/Scrabble).
 
+__The code for the Bot is available at [this link](https://github.com/thomasogara/ScrabbleBot/blob/master/src/Squash.java).__
+
 ![A screenshot of the Scrabble GUI](screenshot.png)
 
 ## Getting Started
