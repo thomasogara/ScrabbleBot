@@ -4,6 +4,14 @@
         - Thomas O'Gara, thomas.ogara@ucdconnect.ie
  */
 
+/*
+* Mandated design requirements which heavily influenced the design choices for this Bot:
+*   - The Bot's entire logic must be contained within a single java file, no exceptions to this rule were allowed.
+*   - The Bot cannot rely on any custom assets. A text file was provided containing the valid words as per the competition's dictionary. Nothing else was allowed.
+*   - The Bot must not take in excess of 3 minutes to complete all moves for a game. That is, the cumulative active time of the Bot during a game must not exceed 3 minutes.
+      Exceeding the 3 minutes results in immediate disqualification.
+*/
+
 import java.io.File;
 import java.io.IOException;
 import java.util.*;
